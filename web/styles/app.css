@@ -734,8 +734,6 @@ code {
 /* Clears the summary card that overlaps the bottom of the photo. */
 .trip-page .dest-hero-content {
   padding-bottom: 56px;
-  /* The overlay is faint mid-photo; a soft shadow keeps the title legible over a bright sky. */
-  text-shadow: 0 1px 12px rgb(0 0 0 / 0.45);
 }
 
 .trip-page .dest-hero-credit {
@@ -1289,12 +1287,6 @@ a.option-row:hover .option-what strong {
     padding-bottom: 76px;
   }
 
-  .trip-page .dest-hero-credit {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
   .trip-sum-figures div {
     flex-basis: 40%;
   }
@@ -1387,6 +1379,8 @@ a.option-row:hover .option-what strong {
 
 .dest-hero-content {
   padding-bottom: 48px;
+  /* The overlay is faint mid-photo; a soft shadow keeps the title legible over a bright sky. */
+  text-shadow: 0 1px 12px rgb(0 0 0 / 0.45);
 }
 
 .dest-hero-credit {

@@ -67,7 +67,7 @@
   padding: 6px 12px;
   border: 1px solid rgba(255, 255, 255, 0.28);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.16);
+  background: rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(8px);
   font-size: 14px;
   font-weight: 600;
@@ -315,9 +315,6 @@
 
 .recentCredit {
   padding: 0 14px 12px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
   color: var(--mute);
 }
 
