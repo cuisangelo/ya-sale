@@ -7,6 +7,7 @@ import { HopCard } from "../../components/HopCard";
 import { LiveIndicator } from "../../components/LiveIndicator";
 import { Logo } from "../../components/Logo";
 import { TripMap } from "../../components/TripMap";
+import { TripSkeleton } from "../../components/TripSkeleton";
 import {
   confirmLeg,
   correctLeg,
@@ -203,11 +204,15 @@ export function TripScreen() {
               </div>
               <div>
                 <dt>Pasajes</dt>
-                <dd>{totals ? (totals.price ?? "sin dato") : "calculando…"}</dd>
+                <dd className={totals ? undefined : "is-calculating"}>
+                  {totals ? (totals.price ?? "sin dato") : "calculando…"}
+                </dd>
               </div>
               <div>
                 <dt>En camino</dt>
-                <dd>{totals ? (totals.duration ?? "sin dato") : "calculando…"}</dd>
+                <dd className={totals ? undefined : "is-calculating"}>
+                  {totals ? (totals.duration ?? "sin dato") : "calculando…"}
+                </dd>
               </div>
             </dl>
           ) : null}
@@ -220,7 +225,7 @@ export function TripScreen() {
       {state.noRouteMessage ? <p className="banner">{state.noRouteMessage}</p> : null}
       {streamError ? <p className="banner">{streamError}</p> : null}
       {!state.noRouteMessage && state.legsPlanned === 0 && !streamError ? (
-        <p className="loading">Armando tu viaje…</p>
+        <TripSkeleton origin={origin} destination={destination} />
       ) : null}
 
       {state.hops.length > 0 ? (
