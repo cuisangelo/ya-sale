@@ -7,6 +7,11 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 12:49 · Decisión · Todo va directo a `main`
+
+Cada cambio se commitea y se pushea a `main` en fast-forward, sin PR. Los PRs quedan solo para
+cuando trabajan sesiones en paralelo. Queda escrito en `AGENTS.md`.
+
 ### 12:47 · Decisión · Pendiente: proveedor de LLM
 
 Ninguno de los créditos del evento cubre un LLM general (solo el referido de Grok). Hay que

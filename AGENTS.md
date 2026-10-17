@@ -118,14 +118,18 @@ an afterthought.
 
 - Work in a worktree (`.claude/worktrees/<slug>`, ignored by git), never in the main checkout.
   Branches use `feat/`, `fix/`, `chore/` or `docs/` plus a slug.
-- **Commit and push the branch without asking.** This repo is the exception to "only commit
-  when asked". One logical change per commit.
+- **Commit and push straight to `main` without asking.** This repo is the exception to "only
+  commit when asked". One logical change per commit. From a worktree branch:
+  `git fetch origin && git rebase origin/main && git push origin HEAD:main`, so `main` only
+  moves fast-forward.
+- **Open a PR only when parallel sessions** work on the repo at the same time. Each one works
+  on its own branch, and the PR is how its work joins `main`.
 - Commit format: `<gitmoji> <type>[(scope)]: <subject>`, English, imperative, ≤72 chars. Add a
   body (3–5 lines) only when the why isn't obvious.
   Common gitmoji: ✨ feat · 🐛 fix · ♻️ refactor · 🔧 config · 📝 docs · 🚀 deploy · 🙈 gitignore
   · ➕ add dependency · 🔥 remove.
 - No attribution anywhere: no `Co-Authored-By` trailers, no "Generated with" footers.
-- Never force-push. Pushing to or merging into `main` needs the user's explicit OK.
+- Never force-push and never rewrite `main`'s history.
 
 ## Secrets: this repo is public
 
