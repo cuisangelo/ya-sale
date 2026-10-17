@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Logo } from "../components/Logo";
 import { McpUrl } from "../components/landing/McpUrl";
+import { RouteCards } from "../components/landing/RouteCards";
+import { SampleTrip } from "../components/landing/SampleTrip";
 import { TripForm } from "../components/landing/TripForm";
 import { UsageProof } from "../components/landing/UsageProof";
 import styles from "./landing.module.css";
@@ -59,16 +61,20 @@ const STEPS = [
 export default function HomePage() {
   return (
     <main className={`shell ${styles.landing}`}>
-      <section className={styles.hero} id="viaje" aria-labelledby="promesa">
-        <Logo />
-        <h1 id="promesa" className={styles.promise}>
-          Tu viaje a cualquier punto del Perú, tramo por tramo.
-        </h1>
-        <p className={styles.modes}>
-          Bus, avión, tren, colectivo, combi, mototaxi o lancha, con la fuente y la fecha de cada dato.
-        </p>
-        <TripForm />
-      </section>
+      <div className={styles.top}>
+        <section className={`${styles.hero} ${styles.areaHero}`} id="viaje" aria-labelledby="promesa">
+          <Logo />
+          <h1 id="promesa" className={styles.promise}>
+            Tu viaje a cualquier punto del Perú, tramo por tramo.
+          </h1>
+          <p className={styles.modes}>
+            Bus, avión, tren, colectivo, combi, mototaxi o lancha, con la fuente y la fecha de cada dato.
+          </p>
+          <TripForm />
+        </section>
+        <RouteCards className={`${styles.section} ${styles.areaRoutes}`} />
+        <SampleTrip className={styles.areaSample} />
+      </div>
 
       <UsageProof />
 
