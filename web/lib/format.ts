@@ -69,20 +69,13 @@ export function departureClock(iso: string): string {
   }).format(Date.parse(iso));
 }
 
-const LIMA_CLOCK = new Intl.DateTimeFormat("es-PE", {
-  hour: "2-digit",
-  minute: "2-digit",
-  hour12: false,
-  timeZone: "America/Lima",
-});
-
 // Only hop 0 says when the trip leaves; a later hop's bus would pass for the trip's departure.
 export function firstDeparture(state: TripState, firstMode: Mode | undefined): { time: string; operator: string } | null {
   if (!firstMode) return null;
   const departures = departuresFor(state, 0, firstMode);
   if (departures.length === 0) return null;
   const earliest = departures.reduce((best, next) => (Date.parse(next.departs_at) < Date.parse(best.departs_at) ? next : best));
-  return { time: LIMA_CLOCK.format(Date.parse(earliest.departs_at)), operator: earliest.operator };
+  return { time: departureClock(earliest.departs_at), operator: earliest.operator };
 }
 
 // The trip date is a calendar day with no zone; read at noon UTC it is the same day everywhere.

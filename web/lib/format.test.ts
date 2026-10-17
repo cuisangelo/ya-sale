@@ -165,6 +165,11 @@ test("firstDeparture picks the earliest of hop 0", () => {
   expect(firstDeparture(state, "bus")).toEqual({ time: "12:00", operator: "Civa" });
 });
 
+test("firstDeparture reads a midnight bus as 00:xx, never 24:xx", () => {
+  const state = withDepartures(0, "bus", [departure("Civa", "2026-10-21T00:05:00-05:00")]);
+  expect(firstDeparture(state, "bus")).toEqual({ time: "00:05", operator: "Civa" });
+});
+
 test("firstDeparture ignores later hops", () => {
   const state = withDepartures(1, "bus", [departure("Civa", "2026-10-20T06:00:00-05:00")]);
   expect(firstDeparture(state, "bus")).toBeNull();
