@@ -7,6 +7,19 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 16:55 · Cambio · La tarjeta del tramo muestra "Salidas del <fecha>" con enlace a cada salida
+
+- **Qué:** el reducer guarda las salidas de `leg_departures` por `(index, mode)`, y sobreviven
+  a que el tramo se refresque. `HopCard` las lista sobre "Ver las N opciones": logo del sitio que
+  vende, hora de salida → llegada (reloj de Lima), precio y asientos libres. Cada fila es un
+  enlace al `booking_url` de esa salida. Las opciones de siempre quedan debajo como respaldo.
+- **Pruebas:** 5 tests nuevos (reducer, `parseSse`, hora, título con la fecha, asientos).
+  Fallaron antes de implementar; ahora la web suma 33/33, `tsc` sin errores y build en verde.
+- **Decisión sobre usar el navegador de Claude para kupos:** no sirve para el flujo en vivo,
+  porque corre en la sesión de desarrollo y no en Lambda. Un Chrome headless en Lambda tampoco
+  conviene: kupos no tiene enlace por salida (depende del `sessionStorage`), en local no cargó
+  resultados ni con user agent normal, y pesa memoria, tiempo e IP de datacenter.
+
 ### 16:52 · Cambio · Contrato de salidas concretas: `Departure` y evento `leg_departures`
 
 - **Por qué:** hoy cada opción de bus dice "Salidas 5:00 a.m. – 7:30 p.m. · S/20", algo que

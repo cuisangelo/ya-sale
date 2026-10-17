@@ -1,6 +1,17 @@
 import { expect, test } from "vitest";
 import type { LegSlot, Option, Version } from "./api";
-import { initials, itineraryTotals, logoDomain, logoSrc, mapsDirectionsUrl, optionLink, priceFloor } from "./format";
+import {
+  departureClock,
+  departuresHeading,
+  initials,
+  itineraryTotals,
+  logoDomain,
+  logoSrc,
+  mapsDirectionsUrl,
+  optionLink,
+  priceFloor,
+  seatsLabel,
+} from "./format";
 
 function version(prices: [string | null, string | null], duration: number | null = 60): Version {
   return {
@@ -85,4 +96,20 @@ test("initials stand in for a missing logo", () => {
   expect(initials("Via Pacifico")).toBe("VP");
   expect(initials("TSP")).toBe("T");
   expect(initials("Turismo Amanecer Selva")).toBe("TA");
+});
+
+test("departure times read as the Lima clock whatever the viewer's zone", () => {
+  expect(departureClock("2026-10-25T19:30:00-05:00")).toBe("19:30");
+  expect(departureClock("2026-10-26T00:05:00Z")).toBe("19:05");
+});
+
+test("the departures heading names the trip day", () => {
+  expect(departuresHeading("2026-10-25")).toBe("Salidas del domingo 25 de octubre");
+});
+
+test("seats read in singular and plural, and unknown seats say nothing", () => {
+  expect(seatsLabel(1)).toBe("1 asiento libre");
+  expect(seatsLabel(12)).toBe("12 asientos libres");
+  expect(seatsLabel(0)).toBe("agotado");
+  expect(seatsLabel(null)).toBeNull();
 });
