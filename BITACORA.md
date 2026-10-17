@@ -7,6 +7,17 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 13:52 · Cambio · Persistencia de tramos por versiones
+
+- **Qué:** `LegRepository` sobre Postgres.
+- **Versiones:** un dato equivalente solo actualiza `fetched_at`; un cambio material crea una
+  versión nueva, y la confirmada nunca se sobrescribe.
+- **Confirmaciones:** una persona (huella) confirma una versión una sola vez. Una corrección
+  crea una versión ya confirmada.
+- **Prueba:** `pytest tests/test_leg_repository.py` → 6 passed.
+- **En paralelo:** Grok arma la web y los conectores de búsqueda; reviso y commiteo lo que
+  devuelvan.
+
 ### 13:45 · Cambio · Reglas de confianza de los tramos
 
 - **Qué:** el dominio de tramos en `backend/app/legs/domain.py`.
