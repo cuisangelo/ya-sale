@@ -67,7 +67,7 @@ def _settings(request: Request):
 async def create_trip(body: TripRequest, request: Request) -> StreamingResponse:
     services = _services(request)
     visitor = guards.fingerprint(request, _settings(request).fingerprint_salt)
-    if not services.limiter.allow(visitor):
+    if not await services.limiter.allow(visitor):
         raise HTTPException(429, "Demasiadas consultas seguidas. Espera un minuto.")
     trip_id = await services.usage.record_trip(body.origin, body.destination, visitor)
 
@@ -129,7 +129,7 @@ class CompareRequest(BaseModel):
 @router.post("/compare")
 async def compare(body: CompareRequest, request: Request) -> dict:
     services = _services(request)
-    if not services.limiter.allow(guards.fingerprint(request, _settings(request).fingerprint_salt)):
+    if not await services.limiter.allow(guards.fingerprint(request, _settings(request).fingerprint_salt)):
         raise HTTPException(429, "Demasiadas consultas seguidas. Espera un minuto.")
     result = await services.compare.compare(body.question)
     return {"plain": asdict(result.plain), "with_tools": asdict(result.with_tools) | {"legs": result.legs}}

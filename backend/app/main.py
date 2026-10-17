@@ -48,7 +48,7 @@ def build_services(settings: Settings, pool) -> Services:
         planner=planner,
         legs=legs,
         usage=UsageRepository(pool, settings.team_fingerprints),
-        limiter=RateLimiter(per_minute=TRIPS_PER_MINUTE_PER_FINGERPRINT),
+        limiter=RateLimiter(pool, per_minute=TRIPS_PER_MINUTE_PER_FINGERPRINT),
         compare=CompareService(client, planner),
     )
 
