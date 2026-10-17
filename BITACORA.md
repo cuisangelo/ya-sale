@@ -7,6 +7,20 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 16:20 · Cambio · Pitch mergeado, slides en /pitch/ y certificado del dominio
+
+- **PR #2 del pitch, mergeado por Cuiso:** `pitch/proyecto.md` (texto de entrega), el guion
+  de demo de 3 minutos, 8 slides en estilo textil y el post de LinkedIn.
+  - En la revisión se corrigió una afirmación: la pantalla no muestra las dos versiones de un
+    tramo en disputa; la API sí las guarda.
+  - La imagen ahora copia `pitch/slides` a `/pitch/`.
+- **Dominio:** el certificado falló (`create_failed`) porque los CAA de `cuisangelo.com`
+  solo autorizaban a DigiCert, Let's Encrypt, Google y Sectigo. Se agregó
+  `CAA 0 issue "amazon.com"` sin quitar los demás. Falta reasociar el dominio cuando el
+  servicio deje de actualizarse.
+- **Sesión `ya-sale-landing` (`4e17a12b`):** rediseña la landing y va a llevar las tipografías
+  dentro del repo, porque un build falló al bajarlas de Google Fonts.
+
 ### 16:05 · Deploy · GOOGLE_MAPS_API_KEY disponible en producción
 
 - **Contexto:** la sesión ya-sale-precios (ahora a cargo de la UX del itinerario) necesita la

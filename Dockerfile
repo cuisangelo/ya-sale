@@ -13,6 +13,7 @@ COPY backend/pyproject.toml backend/uv.lock ./
 RUN uv sync --frozen --no-dev
 COPY backend/app ./app
 COPY --from=web /web/out ./web
+COPY pitch/slides ./web/pitch
 EXPOSE 8080
 # Access logs are off: they would record client IPs, which we never keep.
 CMD ["/app/.venv/bin/uvicorn", "--factory", "app.main:build_app", "--host", "0.0.0.0", "--port", "8080", "--no-access-log", "--proxy-headers", "--forwarded-allow-ips", "*"]
