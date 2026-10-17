@@ -9,6 +9,7 @@ from pydantic import BaseModel, Field
 from app.api import guards
 from app.legs.domain import LegKey, LegVersion, display_version, leg_status
 from app.legs.repository import AlreadyConfirmed, LegNotFound
+from app.legs.serialization import leg_summary_json, version_json
 from app.trips.events import LegRefreshed, LegStored, TripEvent
 
 router = APIRouter(prefix="/api")
@@ -42,35 +43,14 @@ class CorrectionRequest(BaseModel):
     display_name: str | None = Field(default=None, max_length=40)
 
 
-def _version_json(version: LegVersion) -> dict:
-    data = {k: str(v) if isinstance(v, Decimal) else v for k, v in asdict(version.data).items()}
-    return {
-        "id": version.id,
-        **data,
-        "source_url": version.source_url,
-        "fetched_at": version.fetched_at.isoformat(),
-        "confirmations": version.confirmations,
-    }
-
-
 def _summary(leg_id: int, key: LegKey, versions: list[LegVersion]) -> dict:
-    return {
-        "leg_id": leg_id,
-        "mode": key.mode,
-        "origin": key.origin,
-        "destination": key.destination,
-        "status": leg_status(versions),
-        "version": _version_json(display_version(versions)),
-    }
+    return leg_summary_json(leg_id, key.mode, key.origin, key.destination, leg_status(versions), display_version(versions))
 
 
 def _event_json(event: TripEvent) -> dict:
     if isinstance(event, (LegStored, LegRefreshed)):
-        return {
-            "index": event.index, "leg_id": event.leg_id, "mode": event.mode,
-            "origin": event.origin, "destination": event.destination,
-            "status": event.status, "version": _version_json(event.version),
-        }
+        summary = leg_summary_json(event.leg_id, event.mode, event.origin, event.destination, event.status, event.version)
+        return {"index": event.index, **summary}
     return asdict(event)
 
 
@@ -108,7 +88,7 @@ async def _leg_or_404(request: Request, leg_id: int) -> tuple[LegKey, list[LegVe
 async def get_leg(leg_id: int, request: Request) -> dict:
     key, versions = await _leg_or_404(request, leg_id)
     summary = _summary(leg_id, key, versions)
-    return {k: v for k, v in summary.items() if k != "version"} | {"versions": [_version_json(v) for v in versions]}
+    return {k: v for k, v in summary.items() if k != "version"} | {"versions": [version_json(v) for v in versions]}
 
 
 @router.post("/legs/{leg_id}/confirmations", status_code=201)
@@ -139,3 +119,16 @@ async def correct_leg(leg_id: int, body: CorrectionRequest, request: Request) ->
 @router.get("/usage")
 async def usage(request: Request) -> dict:
     return await _services(request).usage.summary()
+
+
+class CompareRequest(BaseModel):
+    question: str = Field(min_length=5, max_length=500)
+
+
+@router.post("/compare")
+async def compare(body: CompareRequest, request: Request) -> dict:
+    services = _services(request)
+    if not services.limiter.allow(guards.fingerprint(request, _settings(request).fingerprint_salt)):
+        raise HTTPException(429, "Demasiadas consultas seguidas. Espera un minuto.")
+    result = await services.compare.compare(body.question)
+    return {"plain": asdict(result.plain), "with_tools": asdict(result.with_tools) | {"legs": result.legs}}

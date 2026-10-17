@@ -7,6 +7,16 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 14:28 · Cambio · Comparación y servidor MCP
+
+- **Comparación:** `POST /api/compare` hace la misma pregunta al mismo modelo (Opus 5.5) dos
+  veces: sin herramientas y con la herramienta `plan_trip` de Ya Sale. Los contadores
+  (fuentes, fechas, confirmados) salen de los tramos que devolvió la herramienta, no del texto.
+- **MCP:** servidor en `/mcp` (SDK `mcp` v2, `MCPServer`, HTTP sin estado) con las
+  herramientas `plan_trip`, `get_leg` y `confirm_leg`. Probado por HTTP con un dominio que no
+  es localhost.
+- **Prueba:** `pytest -q` → 59 passed.
+
 ### 14:18 · Cambio · API en vivo, confirmaciones y uso
 
 - **Viajes en vivo:** `POST /api/trips` transmite el viaje por SSE (`trip_started`,
