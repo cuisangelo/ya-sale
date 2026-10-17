@@ -24,6 +24,25 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
   `sts:GetServiceBearerToken`, aplicado con `infra/github-oidc.sh`.
 - `infra/README.md` describe ahora la arquitectura real: web en Vercel, API en Lambda.
 
+### 15:53 · Cambio · Mapa del viaje: los tramos por tierra siguen la carretera
+
+- **Por qué:** cada tramo era una recta entre dos puntos; Lima → Tarapoto cruzaba la sierra en
+  diagonal.
+- **Decisión:** la geometría sale del router público OSRM, consultado desde el navegador
+  (`web/lib/roads.ts`, con un caché por cada par de puntos). Sin cambios en el backend ni key.
+  Alternativa descartada por ahora: Google Routes desde el backend. Es más robusta, pero la
+  polilínea de Lima → Tarapoto pesa 46k caracteres y habría que simplificarla y cachearla; la
+  sesión ya-sale-precios habilitó la API y midió eso.
+- **Qué:** tierra = carretera, animada al llegar; avión = arco punteado; lancha = recta
+  punteada; tren = recta. Si el router falla, el tramo se dibuja recto con el aviso
+  "Sin ruta por carretera: trazo aproximado" y el error queda en consola.
+- **Prueba:** `tsc` limpio, `pnpm test` 24/24 (3 nuevos en `roads.test.ts`). Mutación: al
+  quitar el `cache.delete` de los fallos, el test del caché se pone rojo, y vuelve a verde al
+  restaurarlo. Capturas Playwright con OSRM real: Lima → Tarapoto por la Carretera Central,
+  arco punteado del avión al cambiar de pestaña. Con el router bloqueado (503) se ven las
+  rectas con el aviso.
+- **Estado:** PR #11 abierto, pendiente de merge; todavía no está en producción.
+
 ### 15:45 · Deploy · La API pasa de App Runner a AWS Lambda
 
 - **Por qué:** App Runner tardaba unos 10 minutos por deploy. Cuiso pidió deploys rápidos y
@@ -54,6 +73,13 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
   - se repromovió en Vercel la web anterior, se desplegó el backend a mano y se corrigió el CD
     para comparar contra lo que está vivo.
 - **App Runner:** queda como respaldo hasta confirmar Lambda en producción.
+
+### 15:40 · Deploy · Carga viva de la vista de viaje en producción
+
+- PR #9 mergeado a las 15:39 (`66b38b2`). Vercel quedó `success` a las 15:40.
+- **Verificado en `yasale.cuisangelo.com/viaje`:** responde 200 y el chunk
+  `page-1f608adbdc73e756.js` trae las frases nuevas ("Partiendo el viaje en tramos",
+  "Seguimos en eso") y la barra de progreso ("Tramos actualizados").
 
 ### 15:38 · Cambio · Vista de viaje: carga que se nota viva
 
