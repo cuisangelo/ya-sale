@@ -7,7 +7,7 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
-### 16:30 · Cambio · /mcp sin barra final
+### 15:01 · Cambio · /mcp sin barra final
 
 - **Bug:** lo encontró la sesión de landing en producción. `POST /mcp` respondía 405, y solo
   `/mcp/` funcionaba; la web estática montada en `/` atrapaba la ruta sin barra.
@@ -16,7 +16,7 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 - **Prueba:** el test reproduce el caso de producción (web montada más `POST /mcp`); falló con
   405 antes del arreglo. `pytest -q` → 75 passed.
 
-### 16:20 · Cambio · Pitch mergeado, slides en /pitch/ y certificado del dominio
+### 14:58 · Cambio · Pitch mergeado, slides en /pitch/ y certificado del dominio
 
 - **PR #2 del pitch, mergeado por Cuiso:** `pitch/proyecto.md` (texto de entrega), el guion
   de demo de 3 minutos, 8 slides en estilo textil y el post de LinkedIn.
@@ -30,7 +30,7 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 - **Sesión `ya-sale-landing` (`4e17a12b`):** rediseña la landing y va a llevar las tipografías
   dentro del repo, porque un build falló al bajarlas de Google Fonts.
 
-### 16:05 · Deploy · GOOGLE_MAPS_API_KEY disponible en producción
+### 14:51 · Deploy · GOOGLE_MAPS_API_KEY disponible en producción
 
 - **Contexto:** la sesión ya-sale-precios (ahora a cargo de la UX del itinerario) necesita la
   variable nueva `GOOGLE_MAPS_API_KEY` (Geocoding API, solo servidor, proyecto GCP
@@ -44,7 +44,7 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 - **Pipeline:** el CI ya no cancela corridas de `main`, solo de PRs, porque una de `main`
   puede estar a mitad de un deploy.
 
-### 15:55 · Deploy · Dominio yasale.cuisangelo.com
+### 14:48 · Deploy · Dominio yasale.cuisangelo.com
 
 - **Pedido:** Cuiso lo pidió como URL principal del producto.
 - **Hecho:** dominio asociado al servicio de App Runner. En el DNS de Vercel se crearon, con
@@ -55,7 +55,7 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 - **Pendiente:** que AWS valide el certificado. Las slides irán en `/pitch/` cuando se mergee
   el PR del pitch.
 
-### 15:45 · Deploy · Ya Sale en producción (AWS App Runner)
+### 14:45 · Deploy · Ya Sale en producción (AWS App Runner)
 
 - **URL:** https://ibiarhyx7y.us-east-1.awsapprunner.com (imagen `42e53fc`).
 - **Prueba de humo:** `/api/health` → `{"ok":true}`, `/` → 200, y `/viaje/`, `/comparar/`,
@@ -71,7 +71,7 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
   (requiere revisión humana). En las 8 rutas de demo, los tramos con precio pasaron de 5/12 a
   10/11; suite completa: 74 passed.
 
-### 15:47 · Cambio · CI/CD con GitHub Actions y OIDC
+### 14:45 · Cambio · CI/CD con GitHub Actions y OIDC
 
 - **CI:** en cada push y PR, tests del backend (con Postgres) y de la web (vitest y build).
 - **CD:** en cada push a `main`, si el CI pasa, construye la imagen, la sube a ECR y corre
@@ -80,7 +80,7 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
   OIDC solo desde `main` de `cuisangelo/ya-sale`; solo puede subir la imagen `ya-sale` y
   actualizar ese servicio. Lo crea `infra/github-oidc.sh`.
 
-### 15:05 · Cambio · Web con las cuatro pantallas (delegada a Grok)
+### 14:30 · Cambio · Web con las cuatro pantallas (delegada a Grok)
 
 - **Qué:** Next.js con export estático.
   - Pantallas: inicio, itinerario en vivo por SSE, comparación y uso.
@@ -94,7 +94,7 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 - **Integración local:** el backend sirve la web y la API desde el mismo origen. `/`,
   `/viaje/`, `/comparar/`, `/uso/`, `/api/health`, `/api/usage` y los SVG responden 200.
 
-### 14:58 · Decisión · Dos sesiones paralelas de Claude
+### 14:20 · Decisión · Dos sesiones paralelas de Claude
 
 - **`ca039a8c` · ya-sale-precios** (rama `feat/ya-sale-precios`): que más tramos vuelvan con
   precio, más un script que precarga 8 rutas de demo.
@@ -104,7 +104,7 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
   bitácora, para evitar conflictos; sus avances se registran acá al mergear. Esta sesión
   revisa la web de Grok y hace el deploy.
 
-### 14:50 · Prueba · Primer viaje real de punta a punta (local)
+### 14:17 · Prueba · Primer viaje real de punta a punta (local)
 
 - **Consulta:** `POST /api/trips` Cusco → Aguas Calientes, con Tavily, Exa y Claude reales,
   contra el backend en Docker.
@@ -118,7 +118,7 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 - **Ajuste:** `compose.yaml` suma valores de desarrollo para `FINGERPRINT_SALT` y
   `TEAM_FINGERPRINTS`; la configuración falló a propósito porque faltaban.
 
-### 14:40 · Prueba · Créditos de los sponsors: configurados y útiles
+### 14:16 · Prueba · Créditos de los sponsors: configurados y útiles
 
 - **Probado:** `scripts/probe_providers.py` con las claves reales, sobre tres viajes (Tarapoto
   → Sauce, Cusco → Aguas Calientes, Iquitos → Nauta). Exit 0.
@@ -134,7 +134,7 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 - **Secretos:** las claves quedaron en SSM (`/ya-sale/*`) con `infra/secrets.sh`, junto al
   `DATABASE_URL` de la base privada, que ya está `available`.
 
-### 14:12 · Decisión · Infraestructura AWS: base privada con NAT
+### 14:05 · Decisión · Infraestructura AWS: base privada con NAT
 
 - **Pedido:** Cuiso pidió toda la infraestructura en AWS, con la mejor relación
   calidad-precio.
@@ -147,7 +147,7 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 - **Scripts:** `infra/setup.sh`, `infra/secrets.sh` y `infra/deploy.sh`. Detalle en
   `infra/README.md`.
 
-### 14:28 · Cambio · Comparación y servidor MCP
+### 13:58 · Cambio · Comparación y servidor MCP
 
 - **Comparación:** `POST /api/compare` hace la misma pregunta al mismo modelo (Opus 5.5) dos
   veces: sin herramientas y con la herramienta `plan_trip` de Ya Sale. Los contadores
@@ -157,7 +157,7 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
   es localhost.
 - **Prueba:** `pytest -q` → 59 passed.
 
-### 14:18 · Cambio · API en vivo, confirmaciones y uso
+### 13:55 · Cambio · API en vivo, confirmaciones y uso
 
 - **Viajes en vivo:** `POST /api/trips` transmite el viaje por SSE (`trip_started`,
   `leg_stored`, `leg_refreshed`, `leg_error`, `no_route`, `trip_done`).
@@ -171,7 +171,7 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
   - la IP nunca se loguea.
 - **Prueba:** `pytest -q` → 52 passed.
 
-### 14:10 · Cambio · Planificador de viajes: primero lo guardado, después en vivo
+### 13:53 · Cambio · Planificador de viajes: primero lo guardado, después en vivo
 
 - **Qué:** `TripPlanner`.
   1. Busca cómo llegar y arma la cadena de tramos con Claude.
@@ -181,7 +181,7 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
   5. Si un proveedor falla, ese tramo marca error y los demás siguen.
 - **Prueba:** `pytest -q` → 42 passed.
 
-### 14:02 · Cambio · Conectores de búsqueda (delegado a Grok)
+### 13:50 · Cambio · Conectores de búsqueda (delegado a Grok)
 
 - **Qué:** Tavily como fuente principal (`country=peru`, contenido completo) y Exa de respaldo
   si Tavily falla o no trae nada. Tope de búsquedas por viaje (`SearchBudget`) y contenido
@@ -191,7 +191,7 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
   test que primero falló.
 - **Prueba:** `pytest -q` → 35 passed.
 
-### 13:58 · Cambio · Extractor de tramos con Claude
+### 13:49 · Cambio · Extractor de tramos con Claude
 
 - **Qué:** `LegExtractor` con Claude Opus 5.5 (`messages.parse` y salida validada con
   Pydantic, effort `low`). Extrae tramos de las páginas encontradas y arma la cadena de
@@ -205,7 +205,7 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 - **Prueba:** `pytest tests/test_extractor.py` → 7 passed. Se verificó en el código del SDK
   1.15.0 que `output_format` se combina con `output_config`.
 
-### 13:52 · Cambio · Persistencia de tramos por versiones
+### 13:47 · Cambio · Persistencia de tramos por versiones
 
 - **Qué:** `LegRepository` sobre Postgres.
 - **Versiones:** un dato equivalente solo actualiza `fetched_at`; un cambio material crea una
