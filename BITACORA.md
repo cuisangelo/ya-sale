@@ -7,6 +7,26 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 13:10 · Decisión · Alcance, latencia y modelo por defecto
+
+Cuiso pidió avanzar sin responder estas tres preguntas, así que quedan las propuestas por
+defecto. Se pueden cambiar.
+
+- **Orden de recorte:**
+  1. motor con búsqueda y extracción;
+  2. itinerario con confirmar;
+  3. comparación lado a lado;
+  4. MCP;
+  5. página de uso;
+  6. Apify;
+  7. CLI.
+
+  El MVP para publicar en LinkedIn son los cinco primeros.
+- **Latencia:** lo guardado se muestra al instante y cada tramo se refresca en vivo en
+  pantalla, marcando cuáles ya se actualizaron.
+- **LLM:** Claude Opus 5.5 en todo, con los créditos de API del plan Max de Cuiso (organización
+  de Console vinculada). Falta el login de `ant`.
+
 ### 13:04 · Decisión · El producto se llama Ya Sale
 
 "Kekero" era temporal. "Ya Sale" es lo que grita el cobrador aunque la combi no salga: es
