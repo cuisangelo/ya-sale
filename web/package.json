@@ -4,7 +4,7 @@
   "packageManager": "pnpm@10.29.3",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && rm -rf out/pitch && cp -R ../pitch/slides out/pitch",
     "test": "vitest run"
   },
   "dependencies": {

@@ -7,6 +7,33 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 15:22 · Deploy · Web en Vercel, API en App Runner: yasale.cuisangelo.com en vivo
+
+- **Por qué:**
+  - el deploy completo tardaba unos 20 minutos (19:51 → 20:11 UTC): la imagen con la web y
+    App Runner, que tarda unos 10 minutos por actualización con salida por VPC;
+  - CloudFront quedó bloqueado: AWS pide verificar la cuenta, lo que requiere un caso de
+    soporte.
+- **Elegido:** Cuiso eligió la opción A, la web en Vercel.
+- **Cómo queda:**
+  - la web (export estático) se sirve desde Vercel, en el proyecto `ya-sale`, conectado al
+    repo, así que cada push a `main` la despliega;
+  - `web/vercel.json` reenvía `/api/*` y `/mcp` a App Runner, un solo origen y sin CORS;
+  - las slides se copian a `/pitch/` en el build.
+- **Dominio:** `yasale.cuisangelo.com` pasa al proyecto de Vercel, con certificado automático
+  porque el DNS ya vive ahí. Se borró el CNAME que apuntaba a App Runner.
+- **Verificado en `yasale.cuisangelo.com`:** `/`, `/pitch/` y `/api/health` → 200. En
+  `ya-sale.vercel.app`, las cuatro pantallas, `/og-image.png`, `/api/usage` y `POST /mcp` →
+  200, y un viaje real Lima → Paracas por SSE a través del proxy completó (`trip_started`,
+  `leg_refreshed`, `trip_done`).
+- **Backend:**
+  - la imagen ya no construye la web, solo Python;
+  - se despliega solo si cambia `backend/`, el `Dockerfile` o `infra/`;
+  - el build usa la caché de capas de GitHub Actions.
+- **Ajuste:** con el framework en modo Next.js, Vercel aplicaba la redirección de barra final
+  antes de los rewrites (`/api/health` → 308 → 404). Se configuró como sitio estático
+  (`outputDirectory: out`).
+
 ### 15:01 · Cambio · /mcp sin barra final
 
 - **Bug:** lo encontró la sesión de landing en producción. `POST /mcp` respondía 405, y solo
