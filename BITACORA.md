@@ -7,6 +7,20 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 14:50 · Prueba · Primer viaje real de punta a punta (local)
+
+- **Consulta:** `POST /api/trips` Cusco → Aguas Calientes, con Tavily, Exa y Claude reales,
+  contra el backend en Docker.
+- **Resultado:** `trip_started`, 2 `leg_refreshed` y `trip_done`.
+  - Bus Cusco → Ollantaytambo: 125 min, primer bus 03:00 y último 19:00, con link de compra
+    de redBus. Fuente: redbus.pe.
+  - Tren Ollantaytambo → Aguas Calientes: sale de la Estación de Ollantaytambo, 90 min.
+    Fuente: cuscoperu.com.
+- **Criterio de aceptación:** cumplido; cada tramo tiene `source_url` y `fetched_at`.
+- **Pendiente:** esta vez ninguno de los dos tramos trajo precio.
+- **Ajuste:** `compose.yaml` suma valores de desarrollo para `FINGERPRINT_SALT` y
+  `TEAM_FINGERPRINTS`; la configuración falló a propósito porque faltaban.
+
 ### 14:40 · Prueba · Créditos de los sponsors: configurados y útiles
 
 - **Probado:** `scripts/probe_providers.py` con las claves reales, sobre tres viajes (Tarapoto

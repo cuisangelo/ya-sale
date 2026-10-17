@@ -24,6 +24,8 @@ services:
       UV_PROJECT_ENVIRONMENT: /venv
       UV_LINK_MODE: copy
       DATABASE_URL: postgresql://yasale:yasale@postgres:5432/yasale
+      FINGERPRINT_SALT: local-dev-salt
+      TEAM_FINGERPRINTS: ""
     depends_on:
       postgres:
         condition: service_healthy
