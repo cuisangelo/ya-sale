@@ -7,6 +7,19 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 14:12 · Decisión · Infraestructura AWS: base privada con NAT
+
+- **Pedido:** Cuiso pidió toda la infraestructura en AWS, con la mejor relación
+  calidad-precio.
+- **Descartado:** abrir el Postgres a internet (la opción más barata). El sistema de permisos
+  lo bloqueó por debilitar la seguridad, y con razón.
+- **Elegido:**
+  - RDS privado, alcanzable solo desde App Runner por un conector VPC;
+  - NAT gateway para la salida a Tavily, Exa y Claude (unos USD 1,1 por día);
+  - secretos en SSM.
+- **Scripts:** `infra/setup.sh`, `infra/secrets.sh` y `infra/deploy.sh`. Detalle en
+  `infra/README.md`.
+
 ### 14:28 · Cambio · Comparación y servidor MCP
 
 - **Comparación:** `POST /api/compare` hace la misma pregunta al mismo modelo (Opus 5.5) dos
