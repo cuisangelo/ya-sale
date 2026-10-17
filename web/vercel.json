@@ -1,0 +1,8 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "https://ibiarhyx7y.us-east-1.awsapprunner.com/api/:path*" },
+    { "source": "/mcp", "destination": "https://ibiarhyx7y.us-east-1.awsapprunner.com/mcp/" },
+    { "source": "/mcp/:path*", "destination": "https://ibiarhyx7y.us-east-1.awsapprunner.com/mcp/:path*" }
+  ]
+}
