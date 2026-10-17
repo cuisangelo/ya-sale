@@ -7,6 +7,26 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 17:02 · Cambio · Primer vendedor con pasaje exacto: Cruz del Sur
+
+- **Qué:** `app/connectors/cruzdelsur.py` consulta la API de su propia web de venta
+  (`one-api.cruzdelsur.com.pe`): lee la clave pública de `/config` en cada arranque (no se
+  guarda ni se registra), traduce el lugar a su slug con `/places`, busca y consulta el
+  resultado hasta que el estado sea `finished`. Cada salida enlaza a
+  `viajes.cruzdelsur.com.pe/purchase/{tripId}/new/A1`, que abre la selección de asiento de esa
+  salida sin sesión. Si no atienden el lugar (p. ej. Barranca), devuelve `[]` sin buscar.
+- **Prueba en vivo desde la laptop:** Lima → Trujillo el 23-10-2026, 16 salidas (09:05 → 19:50,
+  S/85, 45 asientos libres…); Lima → Ica, 61. El enlace de la salida de las 09:05 del 22-10 abrió
+  en un Chrome limpio "Lima - Trujillo · 09:05 - 22 Oct · 46 Libres · S/ 85". Ahí nos detuvimos:
+  sin datos personales y sin pago.
+- **Prueba de la UI:** stream real de producción (Lima → Trujillo) con un `leg_departures`
+  armado con esas salidas: la tarjeta muestra "Salidas del viernes 23 de octubre" con 16 filas,
+  logo, hora, precio y asientos, sobre "Ver las 10 opciones".
+- **Tests:** 8 tests del adaptador contra respuestas grabadas (`tests/fixtures/cruzdelsur`, con
+  clave falsa); el backend suma 117/117.
+- **Descartados por ahora:** redbus (Akamai y bloqueo de Chromium automatizado), kupos
+  (API firmada y cifrada) y PeruRail (Akamai). Oltursa sigue como segundo vendedor.
+
 ### 16:55 · Cambio · La tarjeta del tramo muestra "Salidas del <fecha>" con enlace a cada salida
 
 - **Qué:** el reducer guarda las salidas de `leg_departures` por `(index, mode)`, y sobreviven

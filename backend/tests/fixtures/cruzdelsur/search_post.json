@@ -1,0 +1,315 @@
+{
+ "search": {
+  "parent_search_id": 24650449,
+  "id": 7344785,
+  "departs": "2026-10-22",
+  "origin_id": "lima",
+  "destination_id": "trujillo",
+  "international": false,
+  "type_of_transport": {
+   "bus": {
+    "active": true,
+    "terminal_ids": [
+     "t-lima-terminal-lima-plaza-norte",
+     "t-lima-terminal-lima",
+     "t-lima-terminal-lima-atocongo",
+     "t-lima-terminal-lima-javier-prado",
+     "t-trujillo-terminal-trujillo"
+    ],
+    "line_ids": [
+     "ica-eco-express",
+     "cruzero-plus",
+     "ica-express",
+     "cruzero-suite",
+     "cruzero-evolution",
+     "confort-suite-new",
+     "confort-suite"
+    ],
+    "stats": {}
+   },
+   "rides": {
+    "active": false,
+    "stats": {}
+   },
+   "flights": {
+    "active": false,
+    "carrier_ids": [],
+    "airport_ids": [],
+    "stats": {}
+   },
+   "mix": {
+    "active": false
+   }
+  },
+  "created_at": "2026-10-17T16:56:45.190-05:00",
+  "route_type": "default"
+ },
+ "config": {
+  "installments_min_amount": 30.0,
+  "payment_plans": {
+   "3": 300,
+   "6": 600,
+   "9": 900,
+   "12": 1200
+  }
+ },
+ "terminals": {
+  "t-lima-terminal-lima": {
+   "id": "t-lima-terminal-lima",
+   "name": "Lima",
+   "city_id": "lima",
+   "city_name": "Lima",
+   "coordinates": {
+    "lat": 0.0,
+    "long": 0.0
+   },
+   "state_name": "Lima",
+   "code": null,
+   "tags": [],
+   "directions": null
+  },
+  "t-trujillo-terminal-trujillo": {
+   "id": "t-trujillo-terminal-trujillo",
+   "name": "Trujillo",
+   "city_id": "trujillo",
+   "city_name": "Trujillo",
+   "coordinates": {
+    "lat": -8.1038055,
+    "long": -79.0236282
+   },
+   "state_name": "La Libertad",
+   "code": null,
+   "tags": [],
+   "directions": null
+  },
+  "t-lima-terminal-lima-javier-prado": {
+   "id": "t-lima-terminal-lima-javier-prado",
+   "name": "Lima [Javier Prado]",
+   "city_id": "lima",
+   "city_name": "Lima",
+   "coordinates": {
+    "lat": -12.0895199,
+    "long": -77.0170141
+   },
+   "state_name": "Lima",
+   "code": null,
+   "tags": [],
+   "directions": null
+  },
+  "t-lima-terminal-lima-plaza-norte": {
+   "id": "t-lima-terminal-lima-plaza-norte",
+   "name": "Lima [Plaza Norte]",
+   "city_id": "lima",
+   "city_name": "Lima",
+   "coordinates": {
+    "lat": -12.00522711434791,
+    "long": -77.05605403558224
+   },
+   "state_name": "Lima",
+   "code": null,
+   "tags": [],
+   "directions": "Abordaje por puerta 10"
+  },
+  "t-lima-terminal-lima-atocongo": {
+   "id": "t-lima-terminal-lima-atocongo",
+   "name": "Lima [Atocongo]",
+   "city_id": "lima",
+   "city_name": "Lima",
+   "coordinates": {
+    "lat": -12.15630016989497,
+    "long": -76.98396684842787
+   },
+   "state_name": "Lima",
+   "code": null,
+   "tags": [],
+   "directions": null
+  }
+ },
+ "lines": {
+  "ica-eco-express": {
+   "name": "Ica Eco Express",
+   "abbr": "ica-eco-express",
+   "human_abbr": "Ica Eco Express",
+   "transporter_name": "Cruz del Sur",
+   "allows_seat_selection": true,
+   "volatile_pricing": false,
+   "average_ratings": 0,
+   "last_ratings": [],
+   "total_ratings": 0,
+   "services": [],
+   "service_type": "first_class",
+   "logo_url": null,
+   "ally": true,
+   "ticket_counter_exchange": true,
+   "redirection_info": null,
+   "commission_estimate": "5.0",
+   "importance": 0,
+   "open_ticket_logos_urls": []
+  },
+  "cruzero-plus": {
+   "name": "Cruzero Plus",
+   "abbr": "cruzero-plus",
+   "human_abbr": "Cruzero Plus",
+   "transporter_name": "Cruz del Sur",
+   "allows_seat_selection": true,
+   "volatile_pricing": false,
+   "average_ratings": 0,
+   "last_ratings": [],
+   "total_ratings": 0,
+   "services": [
+    "air_conditioning",
+    "bathroom"
+   ],
+   "service_type": null,
+   "logo_url": null,
+   "ally": true,
+   "ticket_counter_exchange": true,
+   "redirection_info": null,
+   "commission_estimate": "5.0",
+   "importance": 0,
+   "open_ticket_logos_urls": []
+  },
+  "ica-express": {
+   "name": "Ica Express",
+   "abbr": "ica-express",
+   "human_abbr": "Ica Line Express",
+   "transporter_name": "Cruz del Sur",
+   "allows_seat_selection": true,
+   "volatile_pricing": false,
+   "average_ratings": 0,
+   "last_ratings": [],
+   "total_ratings": 0,
+   "services": [
+    "air_conditioning",
+    "bathroom"
+   ],
+   "service_type": null,
+   "logo_url": null,
+   "ally": true,
+   "ticket_counter_exchange": true,
+   "redirection_info": null,
+   "commission_estimate": "5.0",
+   "importance": 0,
+   "open_ticket_logos_urls": []
+  },
+  "cruzero-suite": {
+   "name": "Suite",
+   "abbr": "cruzero-suite",
+   "human_abbr": "Cruzero Suite",
+   "transporter_name": "Cruz del Sur",
+   "allows_seat_selection": true,
+   "volatile_pricing": false,
+   "average_ratings": 0,
+   "last_ratings": [],
+   "total_ratings": 0,
+   "services": [
+    "air_conditioning",
+    "bathroom"
+   ],
+   "service_type": null,
+   "logo_url": null,
+   "ally": true,
+   "ticket_counter_exchange": true,
+   "redirection_info": null,
+   "commission_estimate": "5.0",
+   "importance": 0,
+   "open_ticket_logos_urls": []
+  },
+  "cruzero-evolution": {
+   "name": "Evolution",
+   "abbr": "cruzero-evolution",
+   "human_abbr": "Crucero Evolution",
+   "transporter_name": "Cruz del Sur",
+   "allows_seat_selection": true,
+   "volatile_pricing": false,
+   "average_ratings": 0,
+   "last_ratings": [],
+   "total_ratings": 0,
+   "services": [
+    "air_conditioning",
+    "bathroom"
+   ],
+   "service_type": null,
+   "logo_url": null,
+   "ally": true,
+   "ticket_counter_exchange": true,
+   "redirection_info": null,
+   "commission_estimate": "5.0",
+   "importance": 0,
+   "open_ticket_logos_urls": []
+  },
+  "confort-suite-new": {
+   "name": "Confort Suite",
+   "abbr": "confort-suite-new",
+   "human_abbr": "Confort Suite",
+   "transporter_name": "Cruz del Sur",
+   "allows_seat_selection": true,
+   "volatile_pricing": false,
+   "average_ratings": 0,
+   "last_ratings": [],
+   "total_ratings": 0,
+   "services": [
+    "air_conditioning",
+    "bathroom"
+   ],
+   "service_type": "first_class",
+   "logo_url": null,
+   "ally": true,
+   "ticket_counter_exchange": true,
+   "redirection_info": null,
+   "commission_estimate": "5.0",
+   "importance": 0,
+   "open_ticket_logos_urls": []
+  },
+  "confort-suite": {
+   "name": "Confort",
+   "abbr": "confort-suite",
+   "human_abbr": "Confort",
+   "transporter_name": "Cruz del Sur",
+   "allows_seat_selection": true,
+   "volatile_pricing": false,
+   "average_ratings": 0,
+   "last_ratings": [],
+   "total_ratings": 0,
+   "services": [
+    "air_conditioning",
+    "bathroom"
+   ],
+   "service_type": "first_class",
+   "logo_url": null,
+   "ally": true,
+   "ticket_counter_exchange": true,
+   "redirection_info": null,
+   "commission_estimate": "5.0",
+   "importance": 0,
+   "open_ticket_logos_urls": []
+  }
+ },
+ "cities": {
+  "lima": {
+   "id": "lima",
+   "name": "Lima",
+   "state": "Lima",
+   "state_abbr": "lim",
+   "country": "Perú",
+   "country_abbr": "pe",
+   "tags": []
+  },
+  "trujillo": {
+   "id": "trujillo",
+   "name": "Trujillo",
+   "state": "La Libertad",
+   "state_abbr": "liber",
+   "country": "Perú",
+   "country_abbr": "pe",
+   "tags": []
+  }
+ },
+ "tenant": {
+  "domain": "platform.test",
+  "subdomain": "cds",
+  "locale": "es-PE",
+  "funnel": "https://viajes.cruzdelsur.com.pe",
+  "type_of_search": "city"
+ }
+}

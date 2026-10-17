@@ -1,0 +1,11 @@
+{
+ "id": 1,
+ "name": "Cruz del Sur",
+ "config": {
+  "environment_variables": {
+   "api": {
+    "desktopKey": "fixture-desktop-key"
+   }
+  }
+ }
+}
