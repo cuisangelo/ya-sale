@@ -55,9 +55,11 @@ Cada tramo tiene uno de tres estados, y la pantalla siempre lo muestra:
 - **Extraído:** "según <fuente>, consultado el <fecha>".
 - **Confirmado:** una persona que hace la ruta confirmó esa versión exacta (paradero, precio y
   tiempo). Nunca aparece como confirmado si nadie lo confirmó.
-- **En disputa:** después de lo confirmado llegó un dato distinto, y se muestran las dos
-  versiones. Un dato es distinto si los rangos de precio no se tocan, si la duración cambia más
-  de 25% o si el paradero es otro.
+- **En disputa:** después de lo confirmado llegó un dato distinto. El tramo se marca en
+  disputa y se guardan las dos versiones: la API las devuelve (`GET /api/legs/{id}`), pero la
+  pantalla del itinerario todavía muestra solo la versión vigente con la etiqueta. Un dato es
+  distinto si los rangos de precio no se tocan, si la duración cambia más de 25% o si el
+  paradero es otro.
 
 Quien conoce un tramo puede confirmarlo o corregirlo sin crear una cuenta. Cada confirmación
 queda registrada y suma a la página de uso.

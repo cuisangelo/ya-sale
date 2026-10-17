@@ -36,7 +36,7 @@ mostrarse en pantalla.
 | **1:20–1:55** | Itinerario | Mientras llegan los tramos: "Cada tramo llega por streaming apenas se resuelve. Arriba dice cuántos van de los planeados." Cuando aparece el primero: "Este dice de dónde sale, cuánto cuesta y cuánto demora, y abajo de qué página salió el dato y cuándo se consultó. Si la página no publica el precio, lo dejamos vacío en vez de inventarlo." |
 | **1:55–2:15** | Itinerario | "Todos los tramos dicen **Extraído**. Solo una persona puede pasarlos a **Confirmado**." Le paso el mouse a un jurado: "¿Quiere confirmar este tramo, o corregirle el precio?". La tarjeta cambia de estado en pantalla. |
 | **2:15–2:30** | `https://yasale.cuisangelo.com/uso` | "La página de uso cuenta viajes, destinos, personas y tramos confirmados desde la base de datos, sin las huellas del equipo. La confirmación de recién ya está acá." Leo las cuatro cifras. |
-| **2:30–3:00** | Pestaña 1, slides 4 y 6 | "Por dentro: Tavily y Exa buscan en paralelo, Claude extrae los tramos a un esquema validado, Postgres guarda cada versión con su fuente y su fecha, y todo corre en un contenedor en AWS con la base privada. Las páginas que leemos se tratan como datos no confiables. Un tramo nunca aparece como confirmado sin una persona, y si llega un dato distinto queda en disputa con las dos versiones. El mismo motor está como MCP para usarlo desde ChatGPT o Claude. Gracias." |
+| **2:30–3:00** | Pestaña 1, slides 4 y 6 | "Por dentro: Tavily y Exa buscan en paralelo, Claude extrae los tramos a un esquema validado, Postgres guarda cada versión con su fuente y su fecha, y todo corre en un contenedor en AWS con la base privada. Las páginas que leemos se tratan como datos no confiables. Un tramo nunca aparece como confirmado sin una persona, y si llega un dato distinto queda en disputa sin pisar la versión confirmada. El mismo motor está como MCP para usarlo desde ChatGPT o Claude. Gracias." |
 
 Si al llegar a 2:30 voy atrasado, salto la slide 4 y digo solo la frase de la slide 6.
 
@@ -76,7 +76,8 @@ disparar desde el extractor.
 Una persona puede confirmar una versión una sola vez, y contamos a las personas con una huella
 anónima, sin cuentas. La respuesta honesta es que eso no prueba quién es la persona. Por eso
 una corrección no borra nada: queda como versión nueva y, si contradice lo confirmado, el tramo
-pasa a "en disputa" y se ven las dos versiones.
+pasa a "en disputa" y las dos versiones quedan guardadas. Hoy la API las devuelve; la pantalla
+muestra la vigente con la etiqueta.
 
 **5. ¿Qué pasa con un pueblo que no aparece en ninguna web?**
 Ya Sale dice que no encontró cómo llegar, en vez de inventar. Para esos lugares el camino es
