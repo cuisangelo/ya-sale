@@ -7,6 +7,18 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 17:32 · Cambio · El MCP devuelve las salidas en vivo con su enlace al asiento
+
+- **Por qué:** la identidad que sostiene Ya Sale frente a "ChatGPT ya lo busca" es el
+  inventario en vivo, que no está en la web abierta. Pero `plan_trip` del MCP ignoraba
+  `leg_departures`: un ChatGPT o Claude conectado no recibía lo más valioso que tenemos.
+- **Qué cambia:** `plan_trip` responde
+  `{legs, departures: [{index, mode, departures}], notes}`. Cada salida trae hora, precio,
+  asientos libres y `booking_url`. La descripción de la herramienta pide la fecha en
+  YYYY-MM-DD, que es lo que permite buscar salidas. `docs/API.md` actualizado.
+- **Pruebas:** `test_plan_trip_tool_returns_live_departures_with_their_seat_links` falló antes
+  de implementar (el enlace no estaba en la respuesta) y después pasó. Backend 130/130.
+
 ### 17:23 · Cambio · Las opciones de kupos, Civa y SKY abren la búsqueda del día del viaje
 
 - **Qué:** `datedLink` en `web/lib/format.ts` reescribe el enlace de una opción cuando el sitio

@@ -114,3 +114,7 @@ Request `{"question": "Quiero ir de Lima a Sauce sin tour..."}` →
 
 Streamable HTTP at `/mcp` with tools `plan_trip(origin, destination, date)`,
 `get_leg(leg_id)`, `confirm_leg(leg_id, version_id, display_name?)`.
+
+`plan_trip` returns `{legs: LegSummary[], departures: {index, mode, departures: Departure[]}[], notes: string[]}`;
+`departures` carries the same live departures as the `leg_departures` event, so an AI can quote a real
+departure and hand over its `booking_url`.

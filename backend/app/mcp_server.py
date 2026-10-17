@@ -2,10 +2,11 @@ from collections.abc import Callable
 
 from mcp.server.mcpserver import MCPServer
 
+from app.departures.serialization import departure_json
 from app.legs.domain import display_version, leg_status
 from app.legs.repository import AlreadyConfirmed
 from app.legs.serialization import leg_summary_json, version_json
-from app.trips.events import LegError, LegRefreshed, LegStored, NoRoute
+from app.trips.events import LegDepartures, LegError, LegRefreshed, LegStored, NoRoute
 
 CONFIRMATION_FINGERPRINT = "mcp"
 
@@ -21,15 +22,22 @@ def build_mcp(services: Callable[[], object]) -> MCPServer:
 
     @server.tool()
     async def plan_trip(origin: str, destination: str, date: str) -> dict:
-        """Plan a trip in Peru leg by leg (bus, plane, train, colectivo, combi, mototaxi, boat), with sources."""
+        """Plan a trip in Peru leg by leg (bus, plane, train, colectivo, combi, mototaxi, boat), with sources.
+
+        `date` is YYYY-MM-DD. For bus legs it also returns the live departures sellers have on that day,
+        each with its time, price, free seats and a booking_url that opens that departure's seats.
+        """
         latest: dict[tuple[int, str], dict] = {}
+        departures: list[dict] = []
         notes: list[str] = []
         async for event in services().planner.plan(origin, destination, date, trip_id=0):
             if isinstance(event, (LegStored, LegRefreshed)):
                 latest[(event.index, event.mode)] = leg_summary_json(event.leg_id, event.mode, event.origin, event.destination, event.status, event.version)
+            elif isinstance(event, LegDepartures):
+                departures.append({"index": event.index, "mode": event.mode, "departures": [departure_json(d) for d in event.departures]})
             elif isinstance(event, (LegError, NoRoute)):
                 notes.append(event.message)
-        return {"legs": [latest[i] for i in sorted(latest)], "notes": notes}
+        return {"legs": [latest[i] for i in sorted(latest)], "departures": departures, "notes": notes}
 
     @server.tool()
     async def get_leg(leg_id: int) -> dict:
