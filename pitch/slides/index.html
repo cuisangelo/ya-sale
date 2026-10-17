@@ -307,12 +307,14 @@
   </section>
 
   <section class="slide" aria-label="Arquitectura y seguridad">
-    <h2>Un contenedor, una base privada</h2>
+    <h2>Web en Vercel, API en AWS</h2>
     <div class="arq">
       <div class="diagrama">
         <div class="nodo">Navegador / ChatGPT / Claude</div>
         <div class="baja" aria-hidden="true">↓</div>
-        <div class="nodo app"><b>App Runner</b>FastAPI + MCP + web</div>
+        <div class="nodo"><b>Vercel</b>web y slides · reenvía /api y /mcp</div>
+        <div class="baja" aria-hidden="true">↓</div>
+        <div class="nodo app"><b>App Runner</b>FastAPI + MCP</div>
         <div class="baja" aria-hidden="true">↓</div>
         <div class="par">
           <div class="nodo"><b>RDS</b>Postgres privado</div>
