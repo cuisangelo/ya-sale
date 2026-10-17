@@ -7,6 +7,24 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 15:38 · Cambio · Vista de viaje: carga que se nota viva
+
+- **Por qué:** mientras el backend arma la cadena de tramos solo se veía "Armando tu viaje…",
+  y cada tramo pendiente era una línea gris; no quedaba claro si seguía procesando.
+- **Qué:**
+  - antes de `trip_started`: franja textil que se va tejiendo, frases que siguen los pasos
+    reales del planner (buscar cómo llegar, leer guías, partir en tramos, transbordos),
+    contador de segundos y tarjetas + mapa en esqueleto;
+  - cada tramo pendiente: esqueleto de Pasaje/Viaje y frases propias del modo; cuando se
+    acaban queda "Seguimos en eso…" con el contador corriendo;
+  - indicador en vivo con barra de progreso tejida k de N, punto que late en las tabs que
+    siguen buscando, totales "calculando…" pulsando y entrada animada de los datos;
+  - todo se apaga con `prefers-reduced-motion`.
+- **Prueba:** `tsc --noEmit` limpio, `pnpm test` 21/21. Build estático servido con un SSE
+  simulado (plan de 9 s, tramos llegando a los 13, 17 y 22 s) y capturas con Playwright en
+  1280 px y 390 px en cada fase, sin errores de consola. Las capturas encontraron la barra
+  vacía (relleno `<span>` inline) y el contador partido en mobile; ambos corregidos.
+
 ### 15:22 · Deploy · Web en Vercel, API en App Runner: yasale.cuisangelo.com en vivo
 
 - **Por qué:**

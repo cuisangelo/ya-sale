@@ -10,6 +10,7 @@ import {
   purchaseUrl,
   sourceLabel,
 } from "../lib/format";
+import { LoadingWords } from "./LoadingWords";
 import { ModeIcon } from "./ModeIcon";
 import { StatusBadge } from "./StatusBadge";
 
@@ -62,7 +63,9 @@ export function HopCard({ index, hop, slots, selected, active, now, onSelect, on
                 <ModeIcon mode={mode} />
                 <span className="mode-tab-text">
                   <strong>{modeLabel(mode)}</strong>
-                  <span>{floor ?? (tab?.error ? "sin datos" : "buscando…")}</span>
+                  <span className={floor || tab?.error ? undefined : "tab-searching"}>
+                    {floor ?? (tab?.error ? "sin datos" : "buscando…")}
+                  </span>
                 </span>
               </button>
             );
@@ -77,12 +80,31 @@ export function HopCard({ index, hop, slots, selected, active, now, onSelect, on
 
       {slot && summary ? (
         <LegDetails slot={slot} version={summary.version} town={hop.origin} now={now} />
+      ) : slot?.error ? (
+        <p className="leg-error">{slot.error}</p>
       ) : (
-        <p className={slot?.error ? "leg-error" : "loading"}>
-          {slot?.error ?? `Buscando ${modeLabel(selected).toLowerCase()} de ${hop.origin} a ${hop.destination}…`}
-        </p>
+        <PendingLeg mode={selected} hop={hop} />
       )}
     </article>
+  );
+}
+
+function PendingLeg({ mode, hop }: { mode: Mode; hop: Hop }) {
+  return (
+    <div className="hop-pending">
+      <div className="skeleton-figures" aria-hidden="true">
+        <span className="skeleton-block" />
+        <span className="skeleton-block" />
+      </div>
+      <LoadingWords
+        words={[
+          `Buscando ${modeLabel(mode).toLowerCase()} de ${hop.origin} a ${hop.destination}…`,
+          "Leyendo páginas de empresas y viajeros…",
+          "Anotando precios, horarios y paraderos…",
+          "Comparando lo que dice cada fuente…",
+        ]}
+      />
+    </div>
   );
 }
 

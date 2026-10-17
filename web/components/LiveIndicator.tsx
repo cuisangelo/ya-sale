@@ -10,10 +10,24 @@ export function LiveIndicator({
   const text = live
     ? `Actualizando en vivo · ${current} de ${planned} tramos`
     : `Listo · ${current} de ${planned} tramos`;
+  // A sliver stays visible at 0 so the bar reads as started, not empty.
+  const filled = live ? Math.max(current / planned, 0.06) : 1;
   return (
-    <p className={live ? "live live-on" : "live"} aria-live="polite">
-      <span className="live-dot" aria-hidden="true" />
-      {text}
-    </p>
+    <div className="live-box">
+      <p className={live ? "live live-on" : "live"} aria-live="polite">
+        <span className="live-dot" aria-hidden="true" />
+        {text}
+      </p>
+      <span
+        className="live-bar"
+        role="progressbar"
+        aria-label="Tramos actualizados"
+        aria-valuemin={0}
+        aria-valuemax={planned}
+        aria-valuenow={current}
+      >
+        <span className={live ? "loom" : "loom loom-done"} style={{ width: `${filled * 100}%` }} />
+      </span>
+    </div>
   );
 }
