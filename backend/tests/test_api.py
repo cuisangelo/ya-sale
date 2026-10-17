@@ -7,12 +7,13 @@ import httpx
 import pytest
 
 from app.api.guards import RateLimiter
+from app.departures.domain import LIMA, Departure
 from app.legs.domain import LegData, LegKey, LegOption
 from app.legs.repository import LegRepository
 from app.main import Services, create_app
 from app.places.domain import MapPoint
 from app.trips.domain import PlannedHop
-from app.trips.events import LegRefreshed, TripDone, TripMapped, TripStarted
+from app.trips.events import LegDepartures, LegRefreshed, TripDone, TripMapped, TripStarted
 from app.usage.repository import UsageRepository
 
 BODY = {"origin": "Cusco", "destination": "Aguas Calientes", "date": "2026-10-25"}
@@ -33,6 +34,8 @@ class FakePlanner:
         leg_id = await self._repo.leg_id_of(KEY)
         option = LegOption(leg_data(price=(12, 12)), "https://b.pe", datetime.now(UTC))
         yield LegRefreshed(0, leg_id, "combi", "Cusco", "Ollantaytambo", "extracted", version, (option,))
+        departure = Departure("Movil Bus", datetime(2026, 10, 25, 19, 30, tzinfo=LIMA), None, Decimal(35), 12, "https://movilbus.pe/x", "movilbus.pe")
+        yield LegDepartures(0, "bus", (departure,))
         yield TripMapped((MapPoint("Cusco", -13.53, -71.97),))
         yield TripDone(1)
 
@@ -68,9 +71,9 @@ async def test_trip_stream_events(api):
     response = await api.post("/api/trips", json=BODY, headers=headers())
     assert response.headers["content-type"].startswith("text/event-stream")
     events = sse_events(response.text)
-    assert [name for name, _ in events] == ["trip_started", "leg_refreshed", "trip_mapped", "trip_done"]
+    assert [name for name, _ in events] == ["trip_started", "leg_refreshed", "leg_departures", "trip_mapped", "trip_done"]
     assert events[0][1]["hops"] == [{"origin": "Cusco", "destination": "Ollantaytambo", "modes": ["combi"]}]
-    assert events[2][1] == {"points": [{"name": "Cusco", "lat": -13.53, "lng": -71.97}]}
+    assert events[3][1] == {"points": [{"name": "Cusco", "lat": -13.53, "lng": -71.97}]}
     leg = events[1][1]
     assert leg["options"] == [{
         "departure_point": "Paradero", "operator": None, "price_min_pen": "12", "price_max_pen": "12",
@@ -80,6 +83,25 @@ async def test_trip_stream_events(api):
     assert leg["version"]["source_url"] == "https://a.pe"
     assert leg["version"]["fetched_at"]
     assert leg["version"]["price_min_pen"] == "10"
+
+
+async def test_leg_departures_event_carries_each_departure_in_lima_time(api):
+    events = dict(sse_events((await api.post("/api/trips", json=BODY, headers=headers())).text))
+    assert events["leg_departures"] == {
+        "index": 0,
+        "mode": "bus",
+        "departures": [
+            {
+                "operator": "Movil Bus",
+                "departs_at": "2026-10-25T19:30:00-05:00",
+                "arrives_at": None,
+                "price_pen": "35",
+                "seats_available": 12,
+                "booking_url": "https://movilbus.pe/x",
+                "seller": "movilbus.pe",
+            }
+        ],
+    }
 
 
 async def test_confirmation_returns_confirmed_leg(api):

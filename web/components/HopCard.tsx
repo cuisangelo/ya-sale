@@ -1,6 +1,8 @@
-import { useState } from "react";
-import type { Hop, LegSlot, Mode, Option, Version } from "../lib/api";
+import { type ReactNode, useState } from "react";
+import type { Departure, Hop, LegSlot, Mode, Option, Version } from "../lib/api";
 import {
+  departureClock,
+  departuresHeading,
   formatDuration,
   formatPrice,
   freshnessLine,
@@ -13,6 +15,7 @@ import {
   optionLink,
   priceFloor,
   purchaseUrl,
+  seatsLabel,
   sourceLabel,
 } from "../lib/format";
 import { LoadingWords } from "./LoadingWords";
@@ -24,13 +27,15 @@ interface HopCardProps {
   hop: Hop;
   slots: Partial<Record<Mode, LegSlot>>;
   selected: Mode;
+  departures: Departure[];
+  date: string;
   active: boolean;
   now: number;
   onSelect: (mode: Mode) => void;
   onFocus: () => void;
 }
 
-export function HopCard({ index, hop, slots, selected, active, now, onSelect, onFocus }: HopCardProps) {
+export function HopCard({ index, hop, slots, selected, departures, date, active, now, onSelect, onFocus }: HopCardProps) {
   const slot = slots[selected];
   const summary = slot?.summary ?? null;
   const pending = !slot?.live && !slot?.error;
@@ -84,11 +89,14 @@ export function HopCard({ index, hop, slots, selected, active, now, onSelect, on
       )}
 
       {slot && summary ? (
-        <LegDetails slot={slot} version={summary.version} town={hop.origin} now={now} />
-      ) : slot?.error ? (
-        <p className="leg-error">{slot.error}</p>
+        <LegDetails slot={slot} version={summary.version} town={hop.origin} now={now}>
+          <DepartureList departures={departures} date={date} />
+        </LegDetails>
       ) : (
-        <PendingLeg mode={selected} hop={hop} />
+        <>
+          {slot?.error ? <p className="leg-error">{slot.error}</p> : <PendingLeg mode={selected} hop={hop} />}
+          <DepartureList departures={departures} date={date} />
+        </>
       )}
     </article>
   );
@@ -113,7 +121,15 @@ function PendingLeg({ mode, hop }: { mode: Mode; hop: Hop }) {
   );
 }
 
-function LegDetails({ slot, version, town, now }: { slot: LegSlot; version: Version; town: string; now: number }) {
+interface LegDetailsProps {
+  slot: LegSlot;
+  version: Version;
+  town: string;
+  now: number;
+  children: ReactNode;
+}
+
+function LegDetails({ slot, version, town, now, children }: LegDetailsProps) {
   const price = formatPrice(version.price_min_pen, version.price_max_pen);
   const buy = purchaseUrl(version.purchase_url);
   const note = [version.operator, version.schedule_note].filter(Boolean).join(". ");
@@ -156,8 +172,44 @@ function LegDetails({ slot, version, town, now }: { slot: LegSlot; version: Vers
       <p className="mono source">{freshnessLine(slot, now)}</p>
       {slot.error ? <p className="leg-error">{slot.error}</p> : null}
 
+      {children}
       {slot.options.length > 1 ? <OptionList options={slot.options} /> : null}
     </div>
+  );
+}
+
+// Each row opens that exact departure on the seller's site, where the seat is picked.
+function DepartureList({ departures, date }: { departures: Departure[]; date: string }) {
+  if (departures.length === 0) return null;
+  const heading = departuresHeading(date);
+  return (
+    <section className="departures" aria-label={heading}>
+      <h3>{heading}</h3>
+      <ul>
+        {departures.map((departure) => {
+          const seats = seatsLabel(departure.seats_available);
+          return (
+            <li key={departure.booking_url}>
+              <a className="option-row" href={departure.booking_url} target="_blank" rel="noreferrer">
+                <OptionLogo operator={departure.operator} link={departure.booking_url} />
+                <div className="option-what">
+                  <strong>
+                    {departureClock(departure.departs_at)}
+                    {departure.arrives_at ? ` → ${departureClock(departure.arrives_at)}` : null}
+                  </strong>
+                  <span>{departure.operator}</span>
+                </div>
+                <div className="option-figures">
+                  <strong>{formatPrice(departure.price_pen, null) ?? "sin precio"}</strong>
+                  {seats ? <span>{seats}</span> : null}
+                </div>
+                <span className="option-source mono">{sourceLabel(departure.booking_url)}</span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
   );
 }
 

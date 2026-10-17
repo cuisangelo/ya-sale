@@ -7,10 +7,11 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
 from app.api import guards
+from app.departures.serialization import departure_json
 from app.legs.domain import LegKey, LegVersion, display_version, leg_status
 from app.legs.repository import AlreadyConfirmed, LegNotFound
 from app.legs.serialization import leg_summary_json, option_json, version_json
-from app.trips.events import LegRefreshed, LegStored, TripEvent
+from app.trips.events import LegDepartures, LegRefreshed, LegStored, TripEvent
 
 router = APIRouter(prefix="/api")
 
@@ -19,6 +20,7 @@ _EVENT_NAMES = {
     "LegStored": "leg_stored",
     "LegRefreshed": "leg_refreshed",
     "LegError": "leg_error",
+    "LegDepartures": "leg_departures",
     "TripMapped": "trip_mapped",
     "NoRoute": "no_route",
     "TripDone": "trip_done",
@@ -52,6 +54,8 @@ def _event_json(event: TripEvent) -> dict:
     if isinstance(event, (LegStored, LegRefreshed)):
         summary = leg_summary_json(event.leg_id, event.mode, event.origin, event.destination, event.status, event.version)
         return {"index": event.index, **summary, "options": [option_json(o) for o in event.options]}
+    if isinstance(event, LegDepartures):
+        return {"index": event.index, "mode": event.mode, "departures": [departure_json(d) for d in event.departures]}
     return asdict(event)
 
 

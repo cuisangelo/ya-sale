@@ -11,6 +11,7 @@ import { TripSkeleton } from "../../components/TripSkeleton";
 import {
   confirmLeg,
   correctLeg,
+  departuresFor,
   errorText,
   initialTripState,
   isAbortError,
@@ -257,6 +258,8 @@ export function TripScreen() {
                     hop={hop}
                     slots={slots}
                     selected={selectedModes[index]}
+                    departures={departuresFor(state, index, selectedModes[index])}
+                    date={date}
                     active={activeHop === index}
                     now={now}
                     onSelect={(mode) => {

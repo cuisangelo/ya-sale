@@ -41,6 +41,16 @@ export interface Option {
   fetched_at: string;
 }
 
+export interface Departure {
+  operator: string;
+  departs_at: string;
+  arrives_at: string | null;
+  price_pen: string | null;
+  seats_available: number | null;
+  booking_url: string;
+  seller: string;
+}
+
 export interface Hop {
   origin: string;
   destination: string;
@@ -79,6 +89,7 @@ export interface TripState {
   hops: Hop[];
   points: MapPoint[];
   legs: LegSlot[];
+  departures: Record<string, Departure[]>;
   noRouteMessage: string | null;
   done: boolean;
   progress: { done: number; planned: number };
@@ -92,6 +103,7 @@ export type TripSseEvent =
   | { event: "leg_stored"; data: LegEventData }
   | { event: "leg_refreshed"; data: LegEventData }
   | { event: "leg_error"; data: { index: number; mode: Mode; message: string } }
+  | { event: "leg_departures"; data: { index: number; mode: Mode; departures: Departure[] } }
   | { event: "trip_mapped"; data: { points: MapPoint[] } }
   | { event: "no_route"; data: { message: string } }
   | { event: "trip_done"; data: { legs: number } };
@@ -178,6 +190,7 @@ const EVENT_NAMES = [
   "leg_stored",
   "leg_refreshed",
   "leg_error",
+  "leg_departures",
   "trip_mapped",
   "no_route",
   "trip_done",
@@ -191,6 +204,7 @@ export const initialTripState: TripState = {
   hops: [],
   points: [],
   legs: [],
+  departures: {},
   noRouteMessage: null,
   done: false,
   progress: { done: 0, planned: 0 },
@@ -206,6 +220,14 @@ function withProgress(state: Omit<TripState, "progress">): TripState {
 
 export function slotFor(state: TripState, index: number, mode: Mode): LegSlot | undefined {
   return state.legs.find((leg) => leg.index === index && leg.mode === mode);
+}
+
+function departuresKey(index: number, mode: Mode): string {
+  return `${index}:${mode}`;
+}
+
+export function departuresFor(state: TripState, index: number, mode: Mode): Departure[] {
+  return state.departures[departuresKey(index, mode)] ?? [];
 }
 
 function upsert(legs: LegSlot[], slot: LegSlot): LegSlot[] {
@@ -231,6 +253,7 @@ export function reduceTrip(state: TripState, event: TripSseEvent): TripState {
         hops: event.data.hops,
         points: [],
         legs: [],
+        departures: {},
         noRouteMessage: null,
         done: false,
       });
@@ -252,6 +275,11 @@ export function reduceTrip(state: TripState, event: TripSseEvent): TripState {
         }),
       });
     }
+    case "leg_departures":
+      return withProgress({
+        ...bare(state),
+        departures: { ...state.departures, [departuresKey(event.data.index, event.data.mode)]: event.data.departures },
+      });
     case "trip_mapped":
       return withProgress({ ...bare(state), points: event.data.points });
     case "no_route":
@@ -281,6 +309,7 @@ function bare(state: TripState): Omit<TripState, "progress"> {
     hops: state.hops,
     points: state.points,
     legs: state.legs,
+    departures: state.departures,
     noRouteMessage: state.noRouteMessage,
     done: state.done,
   };

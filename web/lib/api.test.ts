@@ -1,5 +1,15 @@
 import { expect, test } from "vitest";
-import { initialTripState, parseSse, reduceTrip, slotFor, type Hop, type LegSummary, type Mode } from "./api";
+import {
+  departuresFor,
+  initialTripState,
+  parseSse,
+  reduceTrip,
+  slotFor,
+  type Departure,
+  type Hop,
+  type LegSummary,
+  type Mode,
+} from "./api";
 
 function version(id: number) {
   return {
@@ -215,4 +225,44 @@ test("trip_mapped keeps the located places", () => {
     data: { points: [{ name: "Lima", lat: -12.05, lng: -77.04 }] },
   });
   expect(state.points).toEqual([{ name: "Lima", lat: -12.05, lng: -77.04 }]);
+});
+
+function departure(time: string): Departure {
+  return {
+    operator: "Movil Bus",
+    departs_at: `2026-10-25T${time}:00-05:00`,
+    arrives_at: null,
+    price_pen: "35",
+    seats_available: 12,
+    booking_url: `https://www.movilbus.pe/salida/${time}`,
+    seller: "movilbus.pe",
+  };
+}
+
+test("leg_departures are kept per hop and mode and survive the leg refreshing", () => {
+  const started = reduceTrip(initialTripState, {
+    event: "trip_started",
+    data: { trip_id: 4, origin: "Lima", destination: "Barranca", legs_planned: 1, hops: [hop("bus", "avion")] },
+  });
+  const withDepartures = reduceTrip(started, {
+    event: "leg_departures",
+    data: { index: 0, mode: "bus", departures: [departure("07:00"), departure("19:30")] },
+  });
+  const refreshed = reduceTrip(withDepartures, {
+    event: "leg_refreshed",
+    data: { index: 0, options: [], ...leg() },
+  });
+
+  expect(departuresFor(refreshed, 0, "bus").map((d) => d.departs_at)).toEqual([
+    "2026-10-25T07:00:00-05:00",
+    "2026-10-25T19:30:00-05:00",
+  ]);
+  expect(departuresFor(refreshed, 0, "avion")).toEqual([]);
+  expect(refreshed.progress).toEqual({ done: 1, planned: 2 });
+});
+
+test("parseSse reads a leg_departures frame", () => {
+  const data = { index: 0, mode: "bus", departures: [departure("07:00")] };
+  const { events } = parseSse(`event: leg_departures\ndata: ${JSON.stringify(data)}\n\n`);
+  expect(events).toEqual([{ event: "leg_departures", data }]);
 });

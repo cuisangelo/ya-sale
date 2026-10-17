@@ -7,6 +7,58 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 17:02 · Cambio · Primer vendedor con pasaje exacto: Cruz del Sur
+
+- **Qué:** `app/connectors/cruzdelsur.py` consulta la API de su propia web de venta
+  (`one-api.cruzdelsur.com.pe`): lee la clave pública de `/config` en cada arranque (no se
+  guarda ni se registra), traduce el lugar a su slug con `/places`, busca y consulta el
+  resultado hasta que el estado sea `finished`. Cada salida enlaza a
+  `viajes.cruzdelsur.com.pe/purchase/{tripId}/new/A1`, que abre la selección de asiento de esa
+  salida sin sesión. Si no atienden el lugar (p. ej. Barranca), devuelve `[]` sin buscar.
+- **Prueba en vivo desde la laptop:** Lima → Trujillo el 23-10-2026, 16 salidas (09:05 → 19:50,
+  S/85, 45 asientos libres…); Lima → Ica, 61. El enlace de la salida de las 09:05 del 22-10 abrió
+  en un Chrome limpio "Lima - Trujillo · 09:05 - 22 Oct · 46 Libres · S/ 85". Ahí nos detuvimos:
+  sin datos personales y sin pago.
+- **Prueba de la UI:** stream real de producción (Lima → Trujillo) con un `leg_departures`
+  armado con esas salidas: la tarjeta muestra "Salidas del viernes 23 de octubre" con 16 filas,
+  logo, hora, precio y asientos, sobre "Ver las 10 opciones".
+- **Tests:** 8 tests del adaptador contra respuestas grabadas (`tests/fixtures/cruzdelsur`, con
+  clave falsa); el backend suma 117/117.
+- **Descartados por ahora:** redbus (Akamai y bloqueo de Chromium automatizado), kupos
+  (API firmada y cifrada) y PeruRail (Akamai). Oltursa sigue como segundo vendedor.
+
+### 16:55 · Cambio · La tarjeta del tramo muestra "Salidas del <fecha>" con enlace a cada salida
+
+- **Qué:** el reducer guarda las salidas de `leg_departures` por `(index, mode)`, y sobreviven
+  a que el tramo se refresque. `HopCard` las lista sobre "Ver las N opciones": logo del sitio que
+  vende, hora de salida → llegada (reloj de Lima), precio y asientos libres. Cada fila es un
+  enlace al `booking_url` de esa salida. Las opciones de siempre quedan debajo como respaldo.
+- **Pruebas:** 5 tests nuevos (reducer, `parseSse`, hora, título con la fecha, asientos).
+  Fallaron antes de implementar; ahora la web suma 33/33, `tsc` sin errores y build en verde.
+- **Decisión sobre usar el navegador de Claude para kupos:** no sirve para el flujo en vivo,
+  porque corre en la sesión de desarrollo y no en Lambda. Un Chrome headless en Lambda tampoco
+  conviene: kupos no tiene enlace por salida (depende del `sessionStorage`), en local no cargó
+  resultados ni con user agent normal, y pesa memoria, tiempo e IP de datacenter.
+
+### 16:52 · Cambio · Contrato de salidas concretas: `Departure` y evento `leg_departures`
+
+- **Por qué:** hoy cada opción de bus dice "Salidas 5:00 a.m. – 7:30 p.m. · S/20", algo que
+  cualquier IA responde. Lo que nos diferencia es llevar al pasaje exacto: una salida concreta
+  (empresa, hora, precio, asientos) con el enlace a su selección de asiento.
+- **Qué:** `app/departures/domain.py` define `Departure` y el puerto `DepartureSource`; cada
+  vendedor será un adaptador nuevo cableado en `build_services` (por ahora no hay ninguno).
+  `TripPlanner` consulta las fuentes en paralelo por cada tramo con bus y emite
+  `leg_departures` `{index, mode, departures}` ordenado por hora. Si una fuente falla, tarda más
+  de 15 s o no encuentra nada, se registra un warning con el vendedor y el motivo, y el viaje
+  sigue igual. Una fecha que no es `YYYY-MM-DD` (MCP, `/compare`) omite las salidas sin
+  romper el viaje. Documentado en `docs/API.md`.
+- **Pruebas:** 109/109 en verde contra Postgres local. Mutación: con el `except Exception`
+  cambiado por `except ZeroDivisionError`, fallan los tests de fuente rota y fuente lenta (2);
+  revertido, pasan.
+- **kupos.pe:** su API de disponibilidad (`api.kupos.pe/api/v3/scheduled_services`) exige
+  tokens firmados en el cliente y responde cifrada. No la vamos a eludir; queda solo como
+  búsqueda prellenada con la fecha del viaje.
+
 ### 16:28 · Cambio · El logo de cada opción es el del sitio al que lleva el clic
 
 - **Problema que vio Cuiso:** en Lima → Barranca la fila "Movil Tours" mostraba el logo de

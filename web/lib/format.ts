@@ -60,6 +60,32 @@ export function formatDate(iso: string): string {
   }).format(then);
 }
 
+export function departureClock(iso: string): string {
+  return new Intl.DateTimeFormat("es-PE", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+    timeZone: "America/Lima",
+  }).format(Date.parse(iso));
+}
+
+// The trip date is a calendar day with no zone; read at noon UTC it is the same day everywhere.
+export function departuresHeading(day: string): string {
+  const label = new Intl.DateTimeFormat("es-PE", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    timeZone: "UTC",
+  }).format(Date.parse(`${day}T12:00:00Z`));
+  return `Salidas del ${label.replace(",", "")}`;
+}
+
+export function seatsLabel(seats: number | null): string | null {
+  if (seats == null) return null;
+  if (seats === 0) return "agotado";
+  return seats === 1 ? "1 asiento libre" : `${seats} asientos libres`;
+}
+
 export function relativeTime(iso: string, now: number): string {
   const then = Date.parse(iso);
   if (Number.isNaN(then)) return iso;
