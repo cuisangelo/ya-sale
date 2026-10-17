@@ -7,6 +7,17 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 12:59 · Decisión · Rúbrica oficial confirmada
+
+El PDF "Cómo se evalúa a los equipos" confirma la rúbrica del deck:
+
+- 75% técnico: complejidad 30%, funciona 25%, calidad 20%.
+- 25% producto: problema e impacto 15%, claridad 10%.
+- Hasta +0,5 de bonus por tracción, mostrada desde el producto.
+
+Desempate por complejidad técnica. La rúbrica de la guía web queda descartada. Se actualiza
+`GUIDE.md`.
+
 ### 12:49 · Decisión · Todo va directo a `main`
 
 Cada cambio se commitea y se pushea a `main` en fast-forward, sin PR. Los PRs quedan solo para

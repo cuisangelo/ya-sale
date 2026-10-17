@@ -118,40 +118,38 @@ entregaste. El corte en el minuto 3 es estricto.
 
 ## Cómo se evalúa
 
-Las dos fuentes no coinciden. Hay que optimizar para ambas, y preguntar en Discord cuál rige.
+Rúbrica oficial (PDF "Cómo se evalúa a los equipos", entregado en el evento). Coincide con el
+deck de onboarding y reemplaza la de la guía web (tracción, técnico y pitch), que quedó
+desactualizada.
 
-**Deck de onboarding** (cada criterio de 1 a 5):
+**Requisitos para que el equipo se evalúe** (si falta uno, no se puntúa): URL pública
+desplegada, demo en vivo (slides o video no cuentan) y código en GitHub. Hora límite: domingo
+18 a las 09:00.
 
-| Criterio | Peso |
-|---|---|
-| Complejidad técnica (integraciones, datos, modelos, arquitectura) | 30% |
-| Funciona (flujo completo en vivo desde la URL pública) | 25% |
-| Calidad técnica (el jurado revisa el repo) | 20% |
-| Problema e impacto (un usuario real del track) | 15% |
-| Claridad (explicar decisiones y tradeoffs) | 10% |
+Cada uno de los 5 jurados pone de 1 a 5 en cada criterio; se multiplica por el peso y se suma.
+La nota final es el promedio de los 5. **Máximo: 5,5** (3,75 técnico + 1,25 producto + 0,5 de
+bonus).
 
-Puntos extra por tracción:
+| Criterio | Peso | 1 | 3 | 5 |
+|---|---|---|---|---|
+| Complejidad técnica | 30% | Wrapper de una API o CRUD simple | Integra APIs, datos o un modelo con lógica propia | Datos reales, modelos o servicios orquestados, arquitectura no trivial |
+| Funciona (en vivo desde la URL) | 25% | Falla en vivo | Corre con datos de juguete | Datos reales y aguanta preguntas fuera del guion |
+| Calidad técnica (repo) | 20% | Frágil o con secretos en el repo | Ordenado, con atajos | Maneja errores, casos borde y credenciales |
+| Problema e impacto | 15% | Tema genérico | — | Usuario específico y evidencia del problema |
+| Claridad | 10% | No se entiende qué hicieron | — | Qué, por qué y qué quedó fuera |
+
+**Bonus por tracción** (se suma encima, no reemplaza lo técnico):
 
 | Tracción | Puntos |
 |---|---|
-| Sin usuarios fuera del equipo | 0 |
-| Lo usa gente fuera del equipo (visible en logs o datos) | +0.25 |
-| Uso repetido, una lista de espera real o un pago | +0.5 |
+| Sin usuarios fuera del equipo, o sin evidencia | 0 |
+| Personas fuera del equipo lo usaron y se ve en registros o datos | +0,25 |
+| Uso repetido, volumen visible, lista de espera real o un pago | +0,5 |
 
-**Guía web** (cada jurado da de 1 a 5 por criterio):
+La evidencia se muestra **desde el producto**. Capturas solas, cuentas del equipo o tráfico
+automatizado no cuentan.
 
-| Criterio | Peso |
-|---|---|
-| Tracción | 30% |
-| Esfuerzo técnico | 40% |
-| Pitch | 30% |
-
-La nota de cada jurado es tracción × 6 + técnico × 8 + pitch × 6, sobre 100. El resultado es
-el promedio de los jurados. Usar IA no penaliza por sí solo: hay que explicar las decisiones y
-mostrar el flujo principal.
-
-**En la práctica:** que el flujo funcione en vivo desde la URL pública, tener usuarios reales
-fuera del equipo con evidencia en logs o datos, y que el repo se pueda leer.
+**Desempate:** gana el mayor puntaje en complejidad técnica; si sigue empatado, en "funciona".
 
 ## Premios
 
