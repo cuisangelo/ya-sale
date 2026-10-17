@@ -24,16 +24,14 @@ import {
   type Mode,
   type TripState,
 } from "../../lib/api";
-import { firstDeparture, itineraryTotals, modeLabel, tripDayLabel } from "../../lib/format";
-
-const DATE = /^\d{4}-\d{2}-\d{2}$/;
+import { firstDeparture, isTripDay, itineraryTotals, modeLabel, tripDayLabel } from "../../lib/format";
 
 export function TripScreen() {
   const searchParams = useSearchParams();
   const origin = (searchParams.get("o") ?? "").trim();
   const destination = (searchParams.get("d") ?? "").trim();
   const date = (searchParams.get("f") ?? "").trim();
-  const ready = origin !== "" && destination !== "" && DATE.test(date);
+  const ready = origin !== "" && destination !== "" && isTripDay(date);
 
   const [state, setState] = useState<TripState>(initialTripState);
   const [streamError, setStreamError] = useState<string | null>(null);

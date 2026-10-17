@@ -6,6 +6,7 @@ import {
   departuresHeading,
   firstDeparture,
   initials,
+  isTripDay,
   itineraryTotals,
   logoDomain,
   logoSrc,
@@ -179,4 +180,11 @@ test("firstDeparture returns null for an unknown mode", () => {
   const state = withDepartures(0, "bus", [departure("Civa", "2026-10-20T12:00:00-05:00")]);
   expect(firstDeparture(state, "avion")).toBeNull();
   expect(firstDeparture(state, undefined)).toBeNull();
+});
+
+test("isTripDay rejects shapes and impossible months that would make tripDayLabel throw", () => {
+  expect(isTripDay("2026-10-20")).toBe(true);
+  expect(isTripDay("2026-13-01")).toBe(false);
+  expect(isTripDay("20-10-2026")).toBe(false);
+  expect(isTripDay("")).toBe(false);
 });

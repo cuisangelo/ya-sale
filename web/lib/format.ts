@@ -89,6 +89,11 @@ export function departuresHeading(day: string): string {
   return `Salidas del ${label.replace(",", "")}`;
 }
 
+// Shape alone lets `2026-13-01` through, and formatting it throws.
+export function isTripDay(value: string): boolean {
+  return /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(Date.parse(`${value}T12:00:00Z`));
+}
+
 export function tripDayLabel(day: string): string {
   return new Intl.DateTimeFormat("es-PE", { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" })
     .format(Date.parse(`${day}T12:00:00Z`))
