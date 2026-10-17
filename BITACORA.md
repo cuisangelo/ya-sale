@@ -7,6 +7,17 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 15:55 · Deploy · Dominio yasale.cuisangelo.com
+
+- **Pedido:** Cuiso lo pidió como URL principal del producto.
+- **Hecho:** dominio asociado al servicio de App Runner. En el DNS de Vercel se crearon, con
+  la CLI (`vercel dns add`):
+  - un CNAME `yasale` que apunta a `ibiarhyx7y.us-east-1.awsapprunner.com`;
+  - los dos CNAME de validación del certificado de ACM.
+- **Verificación:** `dig` contra 1.1.1.1 resuelve los tres.
+- **Pendiente:** que AWS valide el certificado. Las slides irán en `/pitch/` cuando se mergee
+  el PR del pitch.
+
 ### 15:45 · Deploy · Ya Sale en producción (AWS App Runner)
 
 - **URL:** https://ibiarhyx7y.us-east-1.awsapprunner.com (imagen `42e53fc`).
