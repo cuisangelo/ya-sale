@@ -7,6 +7,24 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 15:53 · Cambio · Mapa del viaje: los tramos por tierra siguen la carretera
+
+- **Por qué:** cada tramo era una recta entre dos puntos; Lima → Tarapoto cruzaba la sierra en
+  diagonal.
+- **Decisión:** la geometría sale del router público OSRM, consultado desde el navegador
+  (`web/lib/roads.ts`, con un caché por cada par de puntos). Sin cambios en el backend ni key.
+  Alternativa descartada por ahora: Google Routes desde el backend. Es más robusta, pero la
+  polilínea de Lima → Tarapoto pesa 46k caracteres y habría que simplificarla y cachearla; la
+  sesión ya-sale-precios habilitó la API y midió eso.
+- **Qué:** tierra = carretera, animada al llegar; avión = arco punteado; lancha = recta
+  punteada; tren = recta. Si el router falla, el tramo se dibuja recto con el aviso
+  "Sin ruta por carretera: trazo aproximado" y el error queda en consola.
+- **Prueba:** `tsc` limpio, `pnpm test` 24/24 (3 nuevos en `roads.test.ts`). Mutación: al
+  quitar el `cache.delete` de los fallos, el test del caché se pone rojo, y vuelve a verde al
+  restaurarlo. Capturas Playwright con OSRM real: Lima → Tarapoto por la Carretera Central,
+  arco punteado del avión al cambiar de pestaña. Con el router bloqueado (503) se ven las
+  rectas con el aviso.
+
 ### 15:45 · Deploy · La API pasa de App Runner a AWS Lambda
 
 - **Por qué:** App Runner tardaba unos 10 minutos por deploy. Cuiso pidió deploys rápidos y

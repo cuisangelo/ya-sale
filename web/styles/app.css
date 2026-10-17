@@ -1114,6 +1114,20 @@ code {
   color: var(--texto-secundario);
 }
 
+.trip-map-note {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 500;
+  padding: 4px 8px;
+  border: 1px solid var(--hilo);
+  border-radius: 4px;
+  background: var(--lana);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--texto-secundario);
+}
+
 .map-stop span {
   display: block;
   width: 14px;

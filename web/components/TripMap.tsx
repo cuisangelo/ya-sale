@@ -2,12 +2,14 @@
 
 import "leaflet/dist/leaflet.css";
 import type { LatLngTuple, Map as LeafletMap, Polyline } from "leaflet";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Hop, MapPoint, Mode } from "../lib/api";
 import { modeTone, type ModeTone } from "../lib/format";
+import { roadPath } from "../lib/roads";
 
 const TILES = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
-const ATTRIBUTION = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>';
+const ATTRIBUTION =
+  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · rutas <a href="https://project-osrm.org">OSRM</a>';
 const DRAW_MS = 900;
 
 const TONE_COLORS: Record<ModeTone, string> = {
@@ -15,6 +17,14 @@ const TONE_COLORS: Record<ModeTone, string> = {
   air: "#b98a00",
   rail: "#4f6b2a",
   water: "#23356f",
+};
+
+// Straight water legs are approximate, so they read as dashed like a flight, never as a road.
+const DASHES: Record<ModeTone, string | undefined> = {
+  land: undefined,
+  air: "2 9",
+  rail: undefined,
+  water: "8 8",
 };
 
 interface TripMapProps {
@@ -27,19 +37,47 @@ interface TripMapProps {
 interface Segment {
   index: number;
   tone: ModeTone;
-  path: LatLngTuple[];
+  ends: [LatLngTuple, LatLngTuple];
+  // Null while a land leg waits for its road geometry.
+  path: LatLngTuple[] | null;
 }
 
 export function TripMap({ hops, points, selected, active }: TripMapProps) {
   const host = useRef<HTMLDivElement>(null);
   const map = useRef<LeafletMap | null>(null);
   const lines = useRef<Map<number, Polyline>>(new Map());
-  const drawn = useRef(false);
-  const segments = buildSegments(hops, points, selected);
-  const signature = JSON.stringify(segments.map((s) => [s.index, s.tone, s.path[0], s.path[s.path.length - 1]]));
+  const drawn = useRef(new Set<string>());
+  const [roads, setRoads] = useState<Record<string, LatLngTuple[]>>({});
+  const [approximate, setApproximate] = useState(false);
+  const segments = buildSegments(hops, points, selected, roads);
+  const ready = segments.filter((segment): segment is Segment & { path: LatLngTuple[] } => segment.path !== null);
+  const waiting = segments.filter((segment) => segment.path === null);
+  const signature = JSON.stringify(ready.map((s) => [s.index, s.tone, s.path.length, s.path[0], s.path.at(-1)]));
+  const waitingSignature = JSON.stringify(waiting.map((s) => s.ends));
 
   useEffect(() => {
-    if (!host.current || segments.length === 0) return;
+    let cancelled = false;
+    for (const { ends } of waiting) {
+      const [[fromLat, fromLng], [toLat, toLng]] = ends;
+      void roadPath([fromLat, fromLng], [toLat, toLng])
+        .catch((error: unknown) => {
+          // A missing road must not hide the leg: draw it straight and say so on the map.
+          console.error("Road route failed, drawing a straight line", error);
+          if (!cancelled) setApproximate(true);
+          return ends;
+        })
+        .then((path) => {
+          if (!cancelled) setRoads((current) => ({ ...current, [roadKey(ends)]: path }));
+        });
+    }
+    return () => {
+      cancelled = true;
+    };
+    // waitingSignature captures the pairs still missing a road; the array itself is new each render.
+  }, [waitingSignature]);
+
+  useEffect(() => {
+    if (!host.current || ready.length === 0) return;
     let cancelled = false;
     void import("leaflet").then((L) => {
       if (cancelled || !host.current) return;
@@ -55,18 +93,22 @@ export function TripMap({ hops, points, selected, active }: TripMapProps) {
         if (layer instanceof L.Marker) layer.remove();
       });
 
-      const animate = !drawn.current && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      segments.forEach((segment, order) => {
+      const motion = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      let order = 0;
+      for (const segment of ready) {
+        const key = JSON.stringify([segment.index, segment.tone, segment.path.length]);
+        const animate = motion && !drawn.current.has(key);
+        drawn.current.add(key);
         const line = L.polyline(animate ? [segment.path[0]] : segment.path, {
           color: TONE_COLORS[segment.tone],
           weight: 4,
           opacity: 0.9,
-          dashArray: segment.tone === "air" ? "2 9" : undefined,
+          dashArray: DASHES[segment.tone],
           lineCap: "round",
         }).addTo(leaflet);
         lines.current.set(segment.index, line);
-        if (animate) drawAlong(line, segment.path, order * DRAW_MS);
-      });
+        if (animate) drawAlong(line, segment.path, order++ * DRAW_MS);
+      }
       for (const point of points) {
         L.marker([point.lat, point.lng], {
           icon: L.divIcon({ className: "map-stop", html: "<span></span>", iconSize: [16, 16] }),
@@ -75,8 +117,7 @@ export function TripMap({ hops, points, selected, active }: TripMapProps) {
           .bindTooltip(point.name, { permanent: true, direction: "right", offset: [8, 0], className: "map-label" })
           .addTo(leaflet);
       }
-      leaflet.fitBounds(L.latLngBounds(segments.flatMap((s) => s.path)), { padding: [36, 36] });
-      drawn.current = true;
+      leaflet.fitBounds(L.latLngBounds(ready.flatMap((s) => s.path)), { padding: [36, 36] });
     });
     return () => {
       cancelled = true;
@@ -102,12 +143,22 @@ export function TripMap({ hops, points, selected, active }: TripMapProps) {
   return (
     <div className="trip-map-frame">
       <div ref={host} className="trip-map" role="img" aria-label="Mapa de la ruta del viaje" />
-      {segments.length === 0 ? <p className="trip-map-empty">Ubicando los lugares del viaje…</p> : null}
+      {ready.length === 0 ? (
+        <p className="trip-map-empty">
+          {segments.length === 0 ? "Ubicando los lugares del viaje…" : "Trazando las rutas por carretera…"}
+        </p>
+      ) : null}
+      {approximate ? <p className="trip-map-note">Sin ruta por carretera: trazo aproximado</p> : null}
     </div>
   );
 }
 
-function buildSegments(hops: Hop[], points: MapPoint[], selected: Mode[]): Segment[] {
+function buildSegments(
+  hops: Hop[],
+  points: MapPoint[],
+  selected: Mode[],
+  roads: Record<string, LatLngTuple[]>,
+): Segment[] {
   const byName = new Map(points.map((point) => [point.name, [point.lat, point.lng] as LatLngTuple]));
   const segments: Segment[] = [];
   hops.forEach((hop, index) => {
@@ -115,9 +166,16 @@ function buildSegments(hops: Hop[], points: MapPoint[], selected: Mode[]): Segme
     const to = byName.get(hop.destination);
     if (!from || !to) return;
     const tone = modeTone(selected[index] ?? hop.modes[0]);
-    segments.push({ index, tone, path: tone === "air" ? arc(from, to) : [from, to] });
+    const ends: [LatLngTuple, LatLngTuple] = [from, to];
+    // Only land legs follow roads; rivers and rail lines share nothing with a car route.
+    const path = tone === "air" ? arc(from, to) : tone === "land" ? (roads[roadKey(ends)] ?? null) : ends;
+    segments.push({ index, tone, ends, path });
   });
   return segments;
+}
+
+function roadKey([from, to]: [LatLngTuple, LatLngTuple]): string {
+  return `${from.join(",")};${to.join(",")}`;
 }
 
 // A flight reads as a flight when it bows away from the road below it.
