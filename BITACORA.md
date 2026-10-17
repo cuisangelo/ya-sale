@@ -7,6 +7,20 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 13:58 · Cambio · Extractor de tramos con Claude
+
+- **Qué:** `LegExtractor` con Claude Opus 5.5 (`messages.parse` y salida validada con
+  Pydantic, effort `low`). Extrae tramos de las páginas encontradas y arma la cadena de
+  puntos de un viaje.
+- **Protecciones:**
+  - cada página va en un cerco `<untrusted_page>` con nonce, y el prompt dice tratarla como
+    datos;
+  - se descartan los tramos con precios fuera de (0, 5000] soles, duraciones fuera de 1–4320
+    min o una URL de fuente que no está entre las páginas dadas;
+  - si Claude rechaza, devuelve vacío.
+- **Prueba:** `pytest tests/test_extractor.py` → 7 passed. Se verificó en el código del SDK
+  1.15.0 que `output_format` se combina con `output_config`.
+
 ### 13:52 · Cambio · Persistencia de tramos por versiones
 
 - **Qué:** `LegRepository` sobre Postgres.
