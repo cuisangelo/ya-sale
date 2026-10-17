@@ -45,6 +45,7 @@ aws iam put-role-policy --role-name "$ROLE" --policy-name deploy-ya-sale --polic
   \"Version\": \"2012-10-17\",
   \"Statement\": [
     {\"Effect\": \"Allow\", \"Action\": \"ecr:GetAuthorizationToken\", \"Resource\": \"*\"},
+    {\"Effect\": \"Allow\", \"Action\": [\"ecr-public:GetAuthorizationToken\", \"sts:GetServiceBearerToken\"], \"Resource\": \"*\"},
     {\"Effect\": \"Allow\", \"Action\": [
       \"ecr:BatchCheckLayerAvailability\", \"ecr:BatchGetImage\", \"ecr:CompleteLayerUpload\",
       \"ecr:InitiateLayerUpload\", \"ecr:PutImage\", \"ecr:UploadLayerPart\"],

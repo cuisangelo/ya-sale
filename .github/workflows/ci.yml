@@ -97,6 +97,12 @@ jobs:
       - if: steps.live.outputs.changed == 'true'
         id: ecr
         uses: aws-actions/amazon-ecr-login@v2
+      # Anonymous pulls of the Lambda adapter from public.ecr.aws share the runner IP's quota and
+      # fail with "Data limit exceeded"; authenticated pulls use the account's quota instead.
+      - if: steps.live.outputs.changed == 'true'
+        uses: aws-actions/amazon-ecr-login@v2
+        with:
+          registry-type: public
       - if: steps.live.outputs.changed == 'true'
         uses: docker/setup-buildx-action@v3
       - if: steps.live.outputs.changed == 'true'
