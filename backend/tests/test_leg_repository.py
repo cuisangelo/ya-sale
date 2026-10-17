@@ -1,3 +1,4 @@
+from dataclasses import replace
 from datetime import UTC, datetime, timedelta
 from decimal import Decimal
 
@@ -33,6 +34,22 @@ async def test_same_data_does_not_create_new_version(repo):
     v2 = await repo.record_version(KEY, data(price=(12, 14)), "https://b.pe", T1)
     assert v2.id == v1.id
     assert v2.fetched_at == T1
+
+
+async def test_a_found_price_creates_a_new_version_over_an_unpriced_one(repo):
+    unpriced = replace(data(), price_min_pen=None, price_max_pen=None)
+    await repo.record_version(KEY, unpriced, "https://a.pe", T0)
+    v2 = await repo.record_version(KEY, data(price=(10, 15)), "https://b.pe", T1)
+    versions = await repo.versions(KEY)
+    assert [v.id for v in versions] == [versions[0].id, v2.id]
+    assert (versions[-1].data.price_min_pen, versions[-1].source_url) == (Decimal("10"), "https://b.pe")
+
+
+async def test_an_unpriced_refresh_keeps_the_priced_version(repo):
+    v1 = await repo.record_version(KEY, data(price=(10, 15)), "https://a.pe", T0)
+    v2 = await repo.record_version(KEY, replace(data(), price_min_pen=None, price_max_pen=None), "https://b.pe", T1)
+    assert v2.id == v1.id
+    assert v2.data.price_min_pen == Decimal("10")
 
 
 async def test_confirmed_version_is_never_overwritten(repo):

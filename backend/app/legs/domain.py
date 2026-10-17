@@ -52,6 +52,16 @@ class LegVersion:
     confirmations: int
 
 
+def has_price(data: LegData) -> bool:
+    return data.price_min_pen is not None or data.price_max_pen is not None
+
+
+def completeness(data: LegData) -> tuple[bool, int]:
+    """Ranks candidates for the same leg: a price first, then how many other fields are known."""
+    others = (data.departure_point, data.operator, data.duration_min, data.schedule_note, data.purchase_url)
+    return has_price(data), sum(value is not None for value in others)
+
+
 def _price_change(a: LegData, b: LegData) -> bool:
     if None in (a.price_min_pen, a.price_max_pen, b.price_min_pen, b.price_max_pen):
         return False
@@ -72,6 +82,11 @@ def _departure_change(a: LegData, b: LegData) -> bool:
 
 def material_change(a: LegData, b: LegData) -> bool:
     return _price_change(a, b) or _duration_change(a, b) or _departure_change(a, b)
+
+
+def is_new_version(newest: LegData, candidate: LegData) -> bool:
+    # A price nobody had before is worth its own version, even when the trip itself did not change.
+    return material_change(newest, candidate) or (has_price(candidate) and not has_price(newest))
 
 
 def display_version(versions: list[LegVersion]) -> LegVersion:
