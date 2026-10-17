@@ -1,0 +1,9 @@
+web/node_modules
+web/.next
+web/out
+backend/.venv
+backend/.env
+**/__pycache__
+.superpowers
+.claude
+design-canvas

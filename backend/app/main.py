@@ -1,10 +1,12 @@
 import os
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
 
 import anthropic
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 
 from app.api.guards import RateLimiter
 from app.api.routes import router
@@ -19,6 +21,7 @@ from app.trips.planner import MAX_SEARCHES_PER_TRIP, TripPlanner
 from app.usage.repository import UsageRepository
 
 TRIPS_PER_MINUTE_PER_FINGERPRINT = 6
+WEB_DIR = Path(__file__).resolve().parent.parent / "web"
 
 
 @dataclass
@@ -44,7 +47,7 @@ def build_services(settings: Settings, pool) -> Services:
     )
 
 
-def create_app(settings: Settings) -> FastAPI:
+def create_app(settings: Settings, web_dir: Path | None = None) -> FastAPI:
     mcp = build_mcp(lambda: app.state.services)
 
     @asynccontextmanager
@@ -67,8 +70,13 @@ def create_app(settings: Settings) -> FastAPI:
         return {"ok": True}
 
     app.include_router(router)
+    # Mounted last so /api and /mcp keep priority over the static export.
+    if web_dir is not None:
+        app.mount("/", StaticFiles(directory=web_dir, html=True), name="web")
     return app
 
 
 def build_app() -> FastAPI:
-    return create_app(load_settings(os.environ))
+    # The container image ships the web export here; local dev runs the API alone.
+    web_dir = WEB_DIR if WEB_DIR.is_dir() else None
+    return create_app(load_settings(os.environ), web_dir=web_dir)
