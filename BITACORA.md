@@ -7,6 +7,29 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 17:06 · Decisión · El agente de compra (nivel 2) queda fuera por ahora
+
+- **Qué era:** un agente con computer use que abriera la salida en el sitio del vendedor,
+  eligiera asiento, llenara los datos del pasajero y se detuviera antes de pagar.
+- **Por qué no:** se probó antes de construir nada y en ningún caso le gana a un buen link.
+  - Ya hay link a la salida exacta o a la búsqueda llena: Cruz del Sur (lleva a elegir
+    asiento), Inca Rail (URL con fecha y pasajeros, muestra trenes y precios en vivo sin
+    cuenta), búsqueda de kupos, Google Vuelos (un link LIM→TRU mostró 10 vuelos de LATAM y
+    Sky, desde S/ 206).
+  - Otros bloquean la navegación automatizada: PeruRail ("Access Denied" de Akamai en su
+    motor de reservas), redbus (403 en la portada y conexión cortada en la ruta) y LATAM (403
+    "Por motivos de seguridad…"). No se intentó esquivar ningún bloqueo.
+  - Lento para una demo en vivo: la portada de kupos tardó 84,6 s desde Lima; movilbus no
+    respondió en 75 s.
+  - Pagar en un navegador remoto haría pasar la tarjeta del usuario por nuestro servidor, y
+    además muchos vendedores piden cuenta.
+- **Medido:** Chromium headless (Playwright) y curl desde Lima, entre 16:45 y 17:05. redbus
+  Lima→Trujillo declara 13 operadores y 127 servicios, y no incluye a Cruz del Sur.
+- **Queda:** los links por vendedor los hace ya-sale-salidas. El nivel 2 se nombra en el pitch
+  como lo que quedó fuera. Los términos de varios vendedores prohíben automatizar, otra razón
+  para no hacerlo sin un convenio.
+- **Recursos:** no se creó código ni nada en AWS.
+
 ### 17:02 · Cambio · Primer vendedor con pasaje exacto: Cruz del Sur
 
 - **Qué:** `app/connectors/cruzdelsur.py` consulta la API de su propia web de venta
