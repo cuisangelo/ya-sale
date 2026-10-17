@@ -7,6 +7,19 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 17:38 · Cambio · El botón del paradero muestra el lugar, no la ruta desde el usuario
+
+- **Pedido de Cuiso:** en Tarapoto → Sauce, "Cómo llegar" abría una ruta de Google Maps
+  desde donde está la persona hasta el paradero. Lo que quiere es ver solo el paradero.
+- **Qué cambia:** `mapsDirectionsUrl` (`/maps/dir/?destination=`) pasa a ser `mapsPlaceUrl`
+  (`/maps/search/?query=`), que abre el lugar con su pin. El botón ahora dice "Ver en el
+  mapa".
+- **Límite que queda:** el pin es tan bueno como el nombre extraído. Nombres descriptivos como
+  "Paradero donde salen los carros a Yurimaguas" no caen en un punto exacto. Para eso hacen
+  falta paraderos guardados con su ubicación verificada.
+- **Pruebas:** el test del enlace se reescribió y falló antes de implementar; web 35/35 y
+  `tsc` en verde.
+
 ### 17:32 · Cambio · El MCP devuelve las salidas en vivo con su enlace al asiento
 
 - **Por qué:** la identidad que sostiene Ya Sale frente a "ChatGPT ya lo busca" es el

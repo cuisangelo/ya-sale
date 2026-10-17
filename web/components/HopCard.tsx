@@ -10,7 +10,7 @@ import {
   initials,
   logoDomain,
   logoSrc,
-  mapsDirectionsUrl,
+  mapsPlaceUrl,
   modeLabel,
   modeTone,
   optionLink,
@@ -161,12 +161,12 @@ function LegDetails({ slot, version, trip, now, children }: LegDetailsProps) {
           </span>
           <a
             className="maps-link"
-            href={mapsDirectionsUrl(version.departure_point, trip.origin)}
+            href={mapsPlaceUrl(version.departure_point, trip.origin)}
             target="_blank"
             rel="noreferrer"
           >
             <img src="/textil/motivo-chakana.svg" alt="" width={14} height={14} />
-            Cómo llegar
+            Ver en el mapa
           </a>
         </p>
       ) : null}
