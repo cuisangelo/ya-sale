@@ -7,7 +7,53 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
-### 14:25 · Decisión · Pantallas del MVP aprobadas
+### 13:40 · Decisión · Spec del MVP, plan de implementación y deploy en AWS
+
+- **Plan:** `docs/superpowers/plans/2026-10-17-ya-sale-mvp.md`, en 10 tareas:
+  1. esqueleto;
+  2. dominio de tramos;
+  3. persistencia;
+  4. extractor;
+  5. búsqueda;
+  6. planificador;
+  7. API;
+  8. comparación y MCP;
+  9. web;
+  10. deploy.
+- **Deploy:** en la cuenta AWS del perfil `default` (región `us-east-1`), con App Runner, RDS
+  Postgres y ECR, en un solo contenedor que sirve la API, el MCP y la web. Reemplaza a
+  Vercel y Maritime.
+- **Corrección:** las horas de las entradas entre 13:08 y 13:33 se ajustaron a las de sus
+  commits; antes estaban adelantadas.
+
+Spec (contrato del MVP):
+
+- **Goal:** una persona escribe origen, destino y fecha y ve su viaje en el Perú tramo por
+  tramo, en cualquier modo. Cada tramo lleva fuente, fecha y estado, y se refresca en vivo. Lo
+  mismo vía MCP desde ChatGPT o Claude, más la comparación y la página de uso.
+- **I/O:**
+  - Entrada web: `POST /api/trips {origin, destination, date}` (SSE).
+  - Entrada MCP: `plan_trip(origin, destination, date)`.
+  - Salida: tramos con modo, puntos, precio, duración, `source_url`, `fetched_at`, estado y
+    versión.
+  - Otros endpoints: `POST /api/legs/{id}/confirmations` y `GET /api/usage`.
+- **Invariants:**
+  - Nunca "confirmado" sin una confirmación humana sobre esa versión.
+  - Todo dato lleva `source_url` y `fetched_at`.
+  - Un cambio material crea una versión nueva y marca "en disputa", sin sobrescribir la
+    versión confirmada.
+  - El uso sale de la base, no de constantes.
+- **Security:**
+  - Claves solo en el servidor, validadas al arrancar.
+  - Límite por huella y tope de búsquedas y llamadas al LLM por viaje.
+  - Páginas no confiables: el extractor solo devuelve JSON validado.
+  - Sin datos personales; nunca se loguean claves ni la IP en claro.
+- **Acceptance:** `uv run pytest -q` en verde, y `curl` a `POST /api/trips` en el deploy
+  devuelve al menos 2 tramos con `source_url` y `fetched_at`.
+- **Out of scope:** cuentas, compra, vuelta, hoteles, GPS, tarjeta única. CLI y Apify solo si
+  sobra tiempo.
+
+### 13:33 · Decisión · Pantallas del MVP aprobadas
 
 - **Aprobadas:** inicio, itinerario con refresco en vivo, comparación lado a lado y uso en
   vivo.
@@ -18,7 +64,7 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
   - mockup de referencia en `design/pantallas-mockup.html`.
 - **Siguiente paso:** plan de implementación.
 
-### 14:10 · Decisión · Logo final: inti de franjas, hecho a mano
+### 13:30 · Decisión · Logo final: inti de franjas, hecho a mano
 
 - **Descartado:** el tawa inti qocha de centro en cuatro ("se ve raro, muy perfecto").
 - **Elegido:** el rombo de hebras original, con acabado artesanal:
@@ -30,7 +76,7 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 - **En el repo:** `design/textil/logo-inti.svg` y `franja.svg`. Con esto se cierra la identidad
   y se pasa a las pantallas.
 
-### 14:00 · Decisión · Logo tawa inti qocha y franja de urdimbre
+### 13:27 · Decisión · Logo tawa inti qocha y franja de urdimbre
 
 - **Por qué:** el inti escalonado y la franja de crucecitas seguían leyéndose como pixeles a
   tamaño chico.
@@ -46,14 +92,14 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
   - triángulos qocha en la franja.
 - **En el repo:** `design/textil/logo-tawa-inti.svg` y `franja.svg`.
 
-### 13:55 · Decisión · Tareas chicas a Grok 4.7 por Cursor
+### 13:26 · Decisión · Tareas chicas a Grok 4.7 por Cursor
 
 Para ahorrar uso de Claude, las tareas mecánicas se delegan con
 `cursor-agent -p --model grok-4.7-medium`. Las decisiones, la arquitectura y la seguridad quedan
 en el agente principal, y lo que devuelva Grok se verifica antes de commitear. Queda en
 `AGENTS.md`.
 
-### 13:45 · Decisión · Estilo final: tejido vectorial con toques de hilo
+### 13:21 · Decisión · Estilo final: tejido vectorial con toques de hilo
 
 - **Pixel art descartado:** a Cuiso no le gustó.
 - **Variantes modernas comparadas:**
@@ -69,7 +115,7 @@ en el agente principal, y lo que devuelva Grok se verifica antes de commitear. Q
   `design/textil/`. El README tiene la paleta, los estados y la anatomía de la tarjeta de
   tramo.
 
-### 13:30 · Cambio · Recursos de la identidad textil
+### 13:15 · Cambio · Recursos de la identidad textil
 
 - **Qué:** `design/textil/` con 4 motivos (inti, chakana, ch'aska y mayu), una franja tejida y
   7 íconos de transporte (bus, combi, colectivo, mototaxi, avión, tren y lancha). Todos son
@@ -80,7 +126,7 @@ en el agente principal, y lo que devuelva Grok se verifica antes de commitear. Q
 - **Referencias:** Awamaki y el Centro de Textiles Tradicionales del Cusco (tintes).
 - **Siguiente paso:** Cuiso revisa el detalle en el compañero visual.
 
-### 13:20 · Decisión · De cualquier punto a cualquier punto, todos los modos
+### 13:11 · Decisión · De cualquier punto a cualquier punto, todos los modos
 
 - **Qué:** el producto deja de ser "de Lima a un pueblo" y pasa a ser de cualquier origen a
   cualquier destino del Perú. Cubre todos los tipos de transporte:
@@ -93,12 +139,12 @@ en el agente principal, y lo que devuelva Grok se verifica antes de commitear. Q
   ejemplo entre varios.
 - **Efecto en `IDEA.md`:** el tramo urbano ya no queda fuera.
 
-### 13:20 · Decisión · Dirección visual: textil andino
+### 13:11 · Decisión · Dirección visual: textil andino
 
 Entre chicha, paradero, combi, costa-sierra-selva y retablo, Cuiso elige el textil andino.
 Pide detallarlo con recursos propios o encontrados.
 
-### 13:10 · Decisión · Alcance, latencia y modelo por defecto
+### 13:08 · Decisión · Alcance, latencia y modelo por defecto
 
 Cuiso pidió avanzar sin responder estas tres preguntas, así que quedan las propuestas por
 defecto. Se pueden cambiar.
