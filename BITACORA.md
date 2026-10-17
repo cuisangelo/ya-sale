@@ -41,6 +41,7 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
   restaurarlo. Capturas Playwright con OSRM real: Lima → Tarapoto por la Carretera Central,
   arco punteado del avión al cambiar de pestaña. Con el router bloqueado (503) se ven las
   rectas con el aviso.
+- **Estado:** PR #11 abierto, pendiente de merge; todavía no está en producción.
 
 ### 15:45 · Deploy · La API pasa de App Runner a AWS Lambda
 
@@ -72,6 +73,13 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
   - se repromovió en Vercel la web anterior, se desplegó el backend a mano y se corrigió el CD
     para comparar contra lo que está vivo.
 - **App Runner:** queda como respaldo hasta confirmar Lambda en producción.
+
+### 15:40 · Deploy · Carga viva de la vista de viaje en producción
+
+- PR #9 mergeado a las 15:39 (`66b38b2`). Vercel quedó `success` a las 15:40.
+- **Verificado en `yasale.cuisangelo.com/viaje`:** responde 200 y el chunk
+  `page-1f608adbdc73e756.js` trae las frases nuevas ("Partiendo el viaje en tramos",
+  "Seguimos en eso") y la barra de progreso ("Tramos actualizados").
 
 ### 15:38 · Cambio · Vista de viaje: carga que se nota viva
 
