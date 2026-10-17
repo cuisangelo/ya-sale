@@ -1,7 +1,14 @@
+import type { RecentTrip } from "./api";
+
 export interface TripDraft {
   origin: string;
   destination: string;
   date: string;
+}
+
+export interface RecentSearch {
+  trip: RecentTrip;
+  href: string;
 }
 
 export type TripHrefResult = { ok: true; href: string } | { ok: false; error: string };
@@ -28,4 +35,15 @@ export function tripHref(draft: TripDraft, today: string): TripHrefResult {
 export function limaToday(now: Date): string {
   // en-CA formats dates as YYYY-MM-DD.
   return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Lima" }).format(now);
+}
+
+// Any visitor's input lands in the recent list, so one unusable search is logged and skipped
+// instead of blanking the home for everyone.
+export function buildRecentSearches(trips: RecentTrip[], today: string): RecentSearch[] {
+  return trips.flatMap((trip) => {
+    const result = tripHref({ origin: trip.origin, destination: trip.destination, date: today }, today);
+    if (result.ok) return [{ trip, href: result.href }];
+    console.error(`Skipping recent search ${trip.origin} → ${trip.destination}: ${result.error}`);
+    return [];
+  });
 }

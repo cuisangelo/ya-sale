@@ -4,13 +4,9 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { RecentTrip } from "../../lib/api";
 import { relativeTime } from "../../lib/format";
+import type { RecentSearch } from "../../lib/landing";
 import { destinationPhoto, type Photo } from "../../lib/photos";
 import styles from "../../app/landing.module.css";
-
-export interface RecentSearch {
-  trip: RecentTrip;
-  href: string;
-}
 
 export function RecentSearches({ searches, now }: { searches: RecentSearch[]; now: number }) {
   if (searches.length === 0) return null;

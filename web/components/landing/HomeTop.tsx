@@ -2,22 +2,16 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { fetchRecentTrips, type RecentTrip } from "../../lib/api";
+import { fetchRecentTrips } from "../../lib/api";
 import { relativeTime } from "../../lib/format";
-import { limaToday, tripHref } from "../../lib/landing";
+import { buildRecentSearches, limaToday, type RecentSearch } from "../../lib/landing";
 import { DestinationHero } from "../DestinationHero";
 import { Logo } from "../Logo";
-import { RecentSearches, type RecentSearch } from "./RecentSearches";
+import { RecentSearches } from "./RecentSearches";
 import { TripForm } from "./TripForm";
 import styles from "../../app/landing.module.css";
 
 type Recent = { searches: RecentSearch[]; now: number };
-
-function recentSearch(trip: RecentTrip, today: string): RecentSearch {
-  const result = tripHref({ origin: trip.origin, destination: trip.destination, date: today }, today);
-  if (!result.ok) throw new Error(`Invalid recent trip ${trip.origin} → ${trip.destination}: ${result.error}`);
-  return { trip, href: result.href };
-}
 
 export function HomeTop() {
   const [recent, setRecent] = useState<Recent | null>(null);
@@ -26,8 +20,7 @@ export function HomeTop() {
     let current = true;
     fetchRecentTrips()
       .then((trips) => {
-        const today = limaToday(new Date());
-        const searches = trips.map((trip) => recentSearch(trip, today));
+        const searches = buildRecentSearches(trips, limaToday(new Date()));
         if (current) setRecent({ searches, now: Date.now() });
       })
       .catch((error: unknown) => {
