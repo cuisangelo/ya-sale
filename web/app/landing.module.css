@@ -1,0 +1,201 @@
+/* Mobile first: most visitors arrive on a phone, so the base rules are the small screen. */
+
+.landing {
+  padding-top: 20px;
+  gap: 40px;
+}
+
+.hero,
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hero {
+  gap: 14px;
+}
+
+.landing .promise {
+  font-size: clamp(30px, 8.5vw, 46px);
+  line-height: 1.05;
+  max-width: 760px;
+}
+
+.modes {
+  font-size: 16px;
+  color: var(--texto-secundario);
+  max-width: 620px;
+}
+
+.landing .form {
+  grid-template-columns: 1fr 1fr;
+  padding: 14px;
+}
+
+.landing .form > label:nth-of-type(-n + 2) {
+  grid-column: 1 / -1;
+}
+
+.formError {
+  color: var(--cochinilla);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.heading {
+  font-family: var(--font-bricolage), sans-serif;
+  font-weight: 800;
+  font-size: 26px;
+  line-height: 1.1;
+}
+
+.landing .stats {
+  grid-template-columns: 1fr 1fr;
+}
+
+.steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.step {
+  background: #fff;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  font-size: 15px;
+}
+
+.stepTitle {
+  margin: 0 0 4px;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.motif {
+  width: 36px;
+  height: 36px;
+  flex: none;
+  background: center / contain no-repeat;
+}
+
+.mayu {
+  background-image: url("/textil/motivo-mayu.svg");
+}
+
+.chakana {
+  background-image: url("/textil/motivo-chakana.svg");
+}
+
+.chaska {
+  background-image: url("/textil/motivo-chaska.svg");
+}
+
+.lastMile {
+  position: relative;
+  overflow: hidden;
+  background: var(--anil);
+  color: var(--lana);
+  border-radius: 10px;
+  padding: 38px 18px 22px;
+  font-size: 15px;
+}
+
+/* The woven band edges the call to action like the border of a manta. */
+.lastMile::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 16px;
+  background: url("/textil/franja.svg") repeat-x;
+  background-size: 29px 16px;
+}
+
+.lastMileButton {
+  align-self: flex-start;
+  background: var(--qolle);
+  color: var(--lana-oscura);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.lastMile .lastMileButton:focus-visible {
+  outline-color: var(--qolle);
+}
+
+.howTo {
+  margin: 0;
+  padding-left: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 15px;
+}
+
+.mcpUrl {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.mcpUrl code {
+  font-size: 13px;
+  padding: 8px 10px;
+  word-break: break-all;
+}
+
+.mcpUrl .btn {
+  padding: 8px 14px;
+  font-size: 14px;
+}
+
+@media (min-width: 720px) {
+  .landing {
+    padding-top: 36px;
+    gap: 52px;
+  }
+
+  .modes {
+    font-size: 18px;
+  }
+
+  .heading {
+    font-size: 30px;
+  }
+
+  .landing .stats {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .steps {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .step {
+    flex-direction: column;
+  }
+
+  .lastMile {
+    padding: 44px 32px 30px;
+    font-size: 17px;
+  }
+}
+
+@media (min-width: 860px) {
+  .landing .form {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    padding: 16px;
+  }
+
+  .landing .form > label:nth-of-type(-n + 2) {
+    grid-column: auto;
+  }
+}
