@@ -10,7 +10,7 @@ import {
   itineraryTotals,
   logoDomain,
   logoSrc,
-  mapsDirectionsUrl,
+  mapsPlaceUrl,
   optionLink,
   priceFloor,
   seatsLabel,
@@ -51,11 +51,11 @@ function slot(prices: [string | null, string | null], duration: number | null): 
   };
 }
 
-test("maps link asks for directions to the departure point in its town", () => {
-  const url = new URL(mapsDirectionsUrl("Paradero de la Banda de Shilcayo", "Tarapoto"));
-  expect(url.origin + url.pathname).toBe("https://www.google.com/maps/dir/");
+test("maps link pins the departure point in its town, with no route from the viewer", () => {
+  const url = new URL(mapsPlaceUrl("Paradero de la Banda de Shilcayo", "Tarapoto"));
+  expect(url.origin + url.pathname).toBe("https://www.google.com/maps/search/");
   expect(url.searchParams.get("api")).toBe("1");
-  expect(url.searchParams.get("destination")).toBe("Paradero de la Banda de Shilcayo, Tarapoto, Perú");
+  expect(url.searchParams.get("query")).toBe("Paradero de la Banda de Shilcayo, Tarapoto, Perú");
 });
 
 test("price floor is the cheapest price among the leg and its options", () => {

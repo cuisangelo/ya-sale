@@ -10,7 +10,7 @@ import {
   initials,
   logoDomain,
   logoSrc,
-  mapsDirectionsUrl,
+  mapsPlaceUrl,
   modeLabel,
   optionLink,
   priceFloor,
@@ -160,11 +160,11 @@ function LegDetails({ slot, version, trip, now, children }: LegDetailsProps) {
           </span>
           <a
             className="maps-link"
-            href={mapsDirectionsUrl(version.departure_point, trip.origin)}
+            href={mapsPlaceUrl(version.departure_point, trip.origin)}
             target="_blank"
             rel="noreferrer"
           >
-            Cómo llegar
+            Ver en el mapa
           </a>
         </p>
       ) : null}

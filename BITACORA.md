@@ -32,6 +32,41 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
   `tsc`, `pnpm test` (54 passed), `next build`, la búsqueda de tamaños de letra (vacía) y
   `pytest` del backend (134 passed) pasan.
 
+### 18:18 · Cambio · Las salidas en vivo dependen del modo de cada tramo, no solo del bus
+
+- **Por qué:** el planner solo pedía salidas para tramos con bus y las emitía siempre como
+  `mode: "bus"`. Para sumar vuelos reales (sesión ya-sale-vuelos) y más empresas de bus
+  (ya-sale-empresas) hace falta que cada fuente diga qué modo vende.
+- **Qué cambia:** `DepartureSource` declara `mode`. Por cada tramo y cada modo del tramo,
+  el planner consulta solo las fuentes de ese modo y emite un `leg_departures` por
+  `(index, mode)`. Cruz del Sur y Oltursa declaran `"bus"`. La web ya guardaba y mostraba
+  las salidas por `(index, mode)`, así que no cambia. Se actualizaron la descripción de
+  `plan_trip` en el MCP y `docs/API.md`.
+- **Pruebas:** dos tests nuevos (un tramo bus/avión recibe las salidas de cada fuente en su
+  modo; una fuente de avión nunca se consulta en un tramo sin avión) fallaron antes del
+  cambio; backend 132/132 en verde.
+
+### 18:18 · Cambio · Un enlace de compra solo se muestra si estaba en la página citada
+
+- **Por qué:** Cuiso pidió enlaces que siempre funcionen. El extractor ya exigía que
+  `source_url` fuera una de las páginas buscadas, pero aceptaba el `purchase_url` tal como lo
+  escribía el modelo, que puede armar un enlace plausible que nunca existió.
+- **Qué cambia:** `purchase_url` se conserva solo si aparece literal en el texto de la página
+  citada o si es esa misma página. Si no, queda en `null`, y la web cae en la web de la
+  empresa o en la página fuente, que existen.
+- **Decisiones del mismo bloque:**
+  - **redbus.pe queda fuera.** Sus términos (`/info/terminos-y-condiciones`) dicen: "no está
+    autorizado a […] crear un vínculo profundo, utilizar, copiar, monitorizar (por ejemplo,
+    mediante spider, scrape) […] para ninguna actividad, propósito comercial o competitivo".
+    Además, su robots.txt bloquea `/search` y `/seats`.
+  - **Cruz del Sur y Oltursa siguen.** Su robots.txt permite todo, y sus términos solo
+    prohíben bots para canjear Gift Cards (Cruz del Sur).
+  - Se lanzaron las sesiones ya-sale-empresas (operadores directos, con revisión de términos
+    por cada uno) y ya-sale-vuelos (fuente de vuelos y salidas por modo).
+- **Pruebas:**
+  `test_purchase_url_survives_only_when_the_cited_page_contains_it` falló antes de
+  implementar (el enlace inventado sobrevivía) y después pasó. Backend 131/131.
+
 ### 18:13 · Cambio · Vista de viaje nueva: foto del destino y los números útiles arriba
 
 - **Por qué:** quien abre un viaje quiere saber primero cuánto cuesta, cuánto demora y cuándo
@@ -118,6 +153,19 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
   Después, `docker compose run --rm backend uv run pytest -q` dio `134 passed`.
   Mutación: sin `AND resolved_destination IS NOT NULL` en el SQL, falla
   `test_recent_skips_trips_whose_last_stop_was_not_located` (1 failed, 3 passed); revertido.
+
+### 17:38 · Cambio · El botón del paradero muestra el lugar, no la ruta desde el usuario
+
+- **Pedido de Cuiso:** en Tarapoto → Sauce, "Cómo llegar" abría una ruta de Google Maps
+  desde donde está la persona hasta el paradero. Lo que quiere es ver solo el paradero.
+- **Qué cambia:** `mapsDirectionsUrl` (`/maps/dir/?destination=`) pasa a ser `mapsPlaceUrl`
+  (`/maps/search/?query=`), que abre el lugar con su pin. El botón ahora dice "Ver en el
+  mapa".
+- **Límite que queda:** el pin es tan bueno como el nombre extraído. Nombres descriptivos como
+  "Paradero donde salen los carros a Yurimaguas" no caen en un punto exacto. Para eso hacen
+  falta paraderos guardados con su ubicación verificada.
+- **Pruebas:** el test del enlace se reescribió y falló antes de implementar; web 35/35 y
+  `tsc` en verde.
 
 ### 17:32 · Cambio · El MCP devuelve las salidas en vivo con su enlace al asiento
 

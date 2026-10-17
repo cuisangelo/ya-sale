@@ -362,10 +362,10 @@ export function priceFloor(version: Version, options: Option[]): string | null {
   return `desde S/${fromCents(Math.min(...cents))}`;
 }
 
-export function mapsDirectionsUrl(place: string, town: string): string {
-  const url = new URL("https://www.google.com/maps/dir/");
+export function mapsPlaceUrl(place: string, town: string): string {
+  const url = new URL("https://www.google.com/maps/search/");
   url.searchParams.set("api", "1");
-  url.searchParams.set("destination", `${place}, ${town}, Perú`);
+  url.searchParams.set("query", `${place}, ${town}, Perú`);
   return url.href;
 }
 

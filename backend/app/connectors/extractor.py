@@ -74,7 +74,14 @@ def _within_bounds(leg: LegOut) -> bool:
     return leg.duration_min is None or 1 <= leg.duration_min <= MAX_DURATION_MIN
 
 
-def _to_extracted(leg: LegOut) -> ExtractedLeg:
+def _verified_purchase_url(leg: LegOut, page: SearchHit) -> str | None:
+    # The model can write a plausible link that was never on the page; keep only links the cited page shows.
+    if leg.purchase_url is None or leg.purchase_url == page.url or leg.purchase_url in page.content:
+        return leg.purchase_url
+    return None
+
+
+def _to_extracted(leg: LegOut, page: SearchHit) -> ExtractedLeg:
     return ExtractedLeg(
         origin=leg.origin,
         destination=leg.destination,
@@ -86,7 +93,7 @@ def _to_extracted(leg: LegOut) -> ExtractedLeg:
             price_max_pen=Decimal(str(leg.price_max_pen)) if leg.price_max_pen is not None else None,
             duration_min=leg.duration_min,
             schedule_note=leg.schedule_note,
-            purchase_url=leg.purchase_url,
+            purchase_url=_verified_purchase_url(leg, page),
         ),
         source_url=leg.source_url,
     )
@@ -115,8 +122,8 @@ class LegExtractor:
         )
         if parsed is None:
             return []
-        given_urls = {page.url for page in pages}
-        return [_to_extracted(leg) for leg in parsed.legs if leg.source_url in given_urls and _within_bounds(leg)]
+        given = {page.url: page for page in pages}
+        return [_to_extracted(leg, given[leg.source_url]) for leg in parsed.legs if leg.source_url in given and _within_bounds(leg)]
 
     async def plan_chain(self, origin: str, destination: str, pages: list[SearchHit]) -> list[PlannedHop]:
         if not pages:
