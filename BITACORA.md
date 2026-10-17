@@ -7,6 +7,20 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 16:05 · Deploy · GOOGLE_MAPS_API_KEY disponible en producción
+
+- **Contexto:** la sesión ya-sale-precios (ahora a cargo de la UX del itinerario) necesita la
+  variable nueva `GOOGLE_MAPS_API_KEY` (Geocoding API, solo servidor, proyecto GCP
+  `ya-sale-hta`).
+- **Orden acordado** para no romper producción, porque App Runner rechaza un parámetro de SSM
+  que no existe:
+  1. la clave en SSM;
+  2. la clave en los secretos de `release.sh`;
+  3. recién entonces el PR de la UX.
+- **Hecho:** pasos 1 y 2. `infra/secrets.sh` también la sube.
+- **Pipeline:** el CI ya no cancela corridas de `main`, solo de PRs, porque una de `main`
+  puede estar a mitad de un deploy.
+
 ### 15:55 · Deploy · Dominio yasale.cuisangelo.com
 
 - **Pedido:** Cuiso lo pidió como URL principal del producto.

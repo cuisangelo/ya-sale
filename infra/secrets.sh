@@ -9,7 +9,7 @@ APP="ya-sale"
 ENV_FILE="$(dirname "$0")/../backend/.env"
 aws() { command aws --profile "$PROFILE" --region "$REGION" "$@"; }
 
-for name in ANTHROPIC_API_KEY TAVILY_API_KEY EXA_API_KEY; do
+for name in ANTHROPIC_API_KEY TAVILY_API_KEY EXA_API_KEY GOOGLE_MAPS_API_KEY; do
   value=$(grep -E "^$name=" "$ENV_FILE" | head -1 | cut -d= -f2- || true)
   if [ -z "$value" ]; then
     echo "missing $name in backend/.env" >&2
