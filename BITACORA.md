@@ -7,6 +7,27 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 18:18 · Cambio · Un enlace de compra solo se muestra si estaba en la página citada
+
+- **Por qué:** Cuiso pidió enlaces que siempre funcionen. El extractor ya exigía que
+  `source_url` fuera una de las páginas buscadas, pero aceptaba el `purchase_url` tal como lo
+  escribía el modelo, que puede armar un enlace plausible que nunca existió.
+- **Qué cambia:** `purchase_url` se conserva solo si aparece literal en el texto de la página
+  citada o si es esa misma página. Si no, queda en `null`, y la web cae en la web de la
+  empresa o en la página fuente, que existen.
+- **Decisiones del mismo bloque:**
+  - **redbus.pe queda fuera.** Sus términos (`/info/terminos-y-condiciones`) dicen: "no está
+    autorizado a […] crear un vínculo profundo, utilizar, copiar, monitorizar (por ejemplo,
+    mediante spider, scrape) […] para ninguna actividad, propósito comercial o competitivo".
+    Además, su robots.txt bloquea `/search` y `/seats`.
+  - **Cruz del Sur y Oltursa siguen.** Su robots.txt permite todo, y sus términos solo
+    prohíben bots para canjear Gift Cards (Cruz del Sur).
+  - Se lanzaron las sesiones ya-sale-empresas (operadores directos, con revisión de términos
+    por cada uno) y ya-sale-vuelos (fuente de vuelos y salidas por modo).
+- **Pruebas:**
+  `test_purchase_url_survives_only_when_the_cited_page_contains_it` falló antes de
+  implementar (el enlace inventado sobrevivía) y después pasó. Backend 131/131.
+
 ### 17:38 · Cambio · El botón del paradero muestra el lugar, no la ruta desde el usuario
 
 - **Pedido de Cuiso:** en Tarapoto → Sauce, "Cómo llegar" abría una ruta de Google Maps
