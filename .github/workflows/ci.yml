@@ -56,3 +56,32 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm vitest run
       - run: pnpm build
+
+  deploy:
+    needs: [backend, web]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      AWS_REGION: us-east-1
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::850995576375:role/ya-sale-github-deploy
+          aws-region: us-east-1
+      - id: ecr
+        uses: aws-actions/amazon-ecr-login@v2
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64
+          push: true
+          tags: ${{ steps.ecr.outputs.registry }}/ya-sale:${{ github.sha }}
+      - run: bash infra/release.sh "${{ steps.ecr.outputs.registry }}/ya-sale:${{ github.sha }}"

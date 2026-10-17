@@ -7,6 +7,31 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 15:45 · Deploy · Ya Sale en producción (AWS App Runner)
+
+- **URL:** https://ibiarhyx7y.us-east-1.awsapprunner.com (imagen `42e53fc`).
+- **Prueba de humo:** `/api/health` → `{"ok":true}`, `/` → 200, y `/viaje/`, `/comparar/`,
+  `/uso/` y `/mcp/` → 200.
+- **Aceptación del spec:** `POST /api/trips` Cusco → Aguas Calientes en producción devolvió
+  2 tramos, cada uno con fuente y fecha. El bus trae precio (S/35); el tren, no.
+- **Problemas resueltos en el camino:**
+  - el login de Docker contra ECR chocaba con el llavero de macOS → configuración temporal
+    sin el helper;
+  - pnpm 12 en la imagen rechazó rollup 4.64.9, publicado hace horas → se respeta la regla:
+    rollup fijado en 4.64.7, pnpm 10.29.3 fijado y `minimumReleaseAge` de 24 h en todos lados.
+- **Merge del PR #1 de precios:** Cuiso lo mergeó; mi merge lo bloqueó el sistema de permisos
+  (requiere revisión humana). En las 8 rutas de demo, los tramos con precio pasaron de 5/12 a
+  10/11; suite completa: 74 passed.
+
+### 15:47 · Cambio · CI/CD con GitHub Actions y OIDC
+
+- **CI:** en cada push y PR, tests del backend (con Postgres) y de la web (vitest y build).
+- **CD:** en cada push a `main`, si el CI pasa, construye la imagen, la sube a ECR y corre
+  `infra/release.sh` (actualizar App Runner, esperar `RUNNING` y prueba de humo).
+- **Seguridad:** sin claves de AWS en GitHub. El rol `ya-sale-github-deploy` se asume por
+  OIDC solo desde `main` de `cuisangelo/ya-sale`; solo puede subir la imagen `ya-sale` y
+  actualizar ese servicio. Lo crea `infra/github-oidc.sh`.
+
 ### 15:05 · Cambio · Web con las cuatro pantallas (delegada a Grok)
 
 - **Qué:** Next.js con export estático.
