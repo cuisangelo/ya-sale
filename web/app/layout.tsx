@@ -1,26 +1,27 @@
 import type { Metadata } from "next";
-import { Archivo, Bricolage_Grotesque, JetBrains_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import { Franja } from "../components/Franja";
 import "../styles/tokens.css";
 import "../styles/app.css";
 
-const bricolage = Bricolage_Grotesque({
+// Self-hosted (OFL, latin subset) so the build never depends on fetching Google Fonts.
+const bricolage = localFont({
+  src: "./fonts/BricolageGrotesque-800-latin.woff2",
   weight: "800",
-  subsets: ["latin"],
   variable: "--font-bricolage",
   display: "swap",
 });
 
-const archivo = Archivo({
-  weight: ["400", "600", "700", "800"],
-  subsets: ["latin"],
+const archivo = localFont({
+  src: "./fonts/Archivo-latin.woff2",
+  weight: "100 900",
   variable: "--font-archivo",
   display: "swap",
 });
 
-const jetbrains = JetBrains_Mono({
-  weight: ["400", "600"],
-  subsets: ["latin"],
+const jetbrains = localFont({
+  src: "./fonts/JetBrainsMono-latin.woff2",
+  weight: "400 800",
   variable: "--font-mono",
   display: "swap",
 });
