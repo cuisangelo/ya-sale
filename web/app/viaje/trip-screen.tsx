@@ -81,7 +81,7 @@ export function TripScreen() {
   if (!ready) {
     return (
       <main className="shell shell-narrow">
-        <Logo size={36} compact />
+        <Logo />
         <p className="banner">Indica origen, destino y fecha de salida.</p>
         <Link href="/">Volver al inicio</Link>
       </main>
@@ -191,7 +191,7 @@ export function TripScreen() {
 
   return (
     <main className="shell shell-trip">
-      <Logo size={36} compact />
+      <Logo />
       <div className="itinerary-head">
         <div>
           <h1 className="trip-title">
@@ -244,10 +244,9 @@ export function TripScreen() {
                 <Fragment key={index}>
                   {index > 0 ? (
                     <div className="join">
-                      <span className="mayu" aria-hidden="true" />
+                      <span className="join-line" aria-hidden="true" />
                       {modeChanged ? (
                         <>
-                          <img src="/textil/motivo-chakana.svg" alt="" width={18} height={18} />
                           <span>Transbordo en {state.hops[index - 1].destination}</span>
                         </>
                       ) : null}

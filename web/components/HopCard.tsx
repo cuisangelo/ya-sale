@@ -165,7 +165,6 @@ function LegDetails({ slot, version, trip, now, children }: LegDetailsProps) {
             target="_blank"
             rel="noreferrer"
           >
-            <img src="/textil/motivo-chakana.svg" alt="" width={14} height={14} />
             Cómo llegar
           </a>
         </p>

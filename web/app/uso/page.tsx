@@ -30,7 +30,7 @@ export default function UsagePage() {
 
   return (
     <main className="shell shell-wide">
-      <Logo size={36} compact />
+      <Logo />
       <h1 className="trip-title">Así se está usando Ya Sale</h1>
       {error ? <p className="banner">{error}</p> : null}
       {!usage && !error ? <p className="loading">Cargando el uso en vivo…</p> : null}

@@ -24,14 +24,14 @@
 }
 
 .landing .promise {
-  font-size: clamp(30px, 8.5vw, 46px);
+  font-size: 40px;
   line-height: 1.05;
   max-width: 760px;
 }
 
 .modes {
-  font-size: 16px;
-  color: var(--texto-secundario);
+  font-size: 18px;
+  color: var(--mute);
   max-width: 620px;
 }
 
@@ -87,22 +87,22 @@
 
 .routeName {
   padding: 10px 12px 0;
-  font-family: var(--font-bricolage), sans-serif;
+  font-family: var(--font-inter), system-ui, sans-serif;
   font-weight: 800;
-  font-size: 17px;
+  font-size: 18px;
   line-height: 1.15;
 }
 
 .routeCta {
   padding: 4px 12px 12px;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
-  color: var(--cochinilla);
+  color: var(--acc);
 }
 
 .credit {
-  font-size: 11px;
-  color: var(--texto-secundario);
+  font-size: 14px;
+  color: var(--mute);
 }
 
 .credit a {
@@ -113,8 +113,8 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  background: var(--input-bg);
-  border: 1.5px solid var(--hilo);
+  background: var(--soft);
+  border: 1.5px solid var(--line);
   border-radius: 10px;
   padding: 12px;
 }
@@ -125,15 +125,15 @@
 }
 
 .formError {
-  color: var(--cochinilla);
+  color: var(--acc);
   font-size: 14px;
   font-weight: 700;
 }
 
 .heading {
-  font-family: var(--font-bricolage), sans-serif;
+  font-family: var(--font-inter), system-ui, sans-serif;
   font-weight: 800;
-  font-size: 26px;
+  font-size: 40px;
   line-height: 1.1;
 }
 
@@ -156,64 +156,35 @@
   display: flex;
   gap: 14px;
   align-items: flex-start;
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .stepTitle {
   margin: 0 0 4px;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 800;
-}
-
-.motif {
-  width: 36px;
-  height: 36px;
-  flex: none;
-  background: center / contain no-repeat;
-}
-
-.mayu {
-  background-image: url("/textil/motivo-mayu.svg");
-}
-
-.chakana {
-  background-image: url("/textil/motivo-chakana.svg");
-}
-
-.chaska {
-  background-image: url("/textil/motivo-chaska.svg");
 }
 
 .lastMile {
   position: relative;
   overflow: hidden;
-  background: var(--anil);
-  color: var(--lana);
+  background: var(--ink);
+  color: var(--bg);
   border-radius: 10px;
   padding: 38px 18px 22px;
-  font-size: 15px;
-}
-
-/* The woven band edges the call to action like the border of a manta. */
-.lastMile::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto;
-  height: 16px;
-  background: url("/textil/franja.svg") repeat-x;
-  background-size: 29px 16px;
+  font-size: 14px;
 }
 
 .lastMileButton {
   align-self: flex-start;
-  background: var(--qolle);
-  color: var(--lana-oscura);
+  background: var(--acc);
+  color: #fff;
   font-weight: 800;
   text-decoration: none;
 }
 
 .lastMile .lastMileButton:focus-visible {
-  outline-color: var(--qolle);
+  outline-color: #fff;
 }
 
 .howTo {
@@ -222,7 +193,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .mcpUrl {
@@ -234,7 +205,7 @@
 }
 
 .mcpUrl code {
-  font-size: 13px;
+  font-size: 14px;
   padding: 8px 10px;
   word-break: break-all;
 }
@@ -255,7 +226,7 @@
   }
 
   .heading {
-    font-size: 30px;
+    font-size: 40px;
   }
 
   .landing .form > label:nth-of-type(-n + 2) {
@@ -292,7 +263,7 @@
 
   .lastMile {
     padding: 44px 32px 30px;
-    font-size: 17px;
+    font-size: 18px;
   }
 }
 
@@ -317,5 +288,11 @@
 
   .areaRoutes {
     grid-area: routes;
+  }
+}
+
+@media (max-width: 640px) {
+  .landing .promise {
+    font-size: 32px;
   }
 }

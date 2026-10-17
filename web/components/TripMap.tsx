@@ -13,10 +13,10 @@ const ATTRIBUTION =
 const DRAW_MS = 900;
 
 const TONE_COLORS: Record<ModeTone, string> = {
-  land: "#b5172f",
-  air: "#b98a00",
-  rail: "#4f6b2a",
-  water: "#23356f",
+  land: "#C8102E",
+  air: "#111114",
+  rail: "#111114",
+  water: "#111114",
 };
 
 // Straight water legs are approximate, so they read as dashed like a flight, never as a road.

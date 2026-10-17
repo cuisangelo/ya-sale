@@ -33,7 +33,7 @@ export default function ComparePage() {
 
   return (
     <main className="shell shell-wide">
-      <Logo size={36} compact />
+      <Logo />
       <form className="question-card" onSubmit={(event) => void submit(event)}>
         <label className="field wide">
           Pregunta
@@ -61,7 +61,6 @@ export default function ComparePage() {
             <section className="column column-tools">
               <div className="compare-head">
                 <span className="brand-mark">
-                  <img src="/textil/logo-inti.svg" alt="" width={22} height={22} />
                   <b>Claude + Ya Sale</b>
                 </span>
                 <span className="mono meta">

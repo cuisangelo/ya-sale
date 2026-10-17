@@ -17,19 +17,19 @@ const MODE_LABELS: Record<Mode, string> = {
 };
 
 const MODE_ICONS: Record<string, string> = {
-  bus: "/textil/modo-bus.svg",
-  bus_urbano: "/textil/modo-bus.svg",
-  custer: "/textil/modo-bus.svg",
-  avion: "/textil/modo-avion.svg",
-  tren: "/textil/modo-tren.svg",
-  metro: "/textil/modo-tren.svg",
-  colectivo: "/textil/modo-colectivo.svg",
-  combi: "/textil/modo-combi.svg",
-  mototaxi: "/textil/modo-mototaxi.svg",
-  moto: "/textil/modo-mototaxi.svg",
-  lancha: "/textil/modo-lancha.svg",
-  bote: "/textil/modo-lancha.svg",
-  balsa: "/textil/modo-lancha.svg",
+  bus: "/modes/bus.svg",
+  bus_urbano: "/modes/bus.svg",
+  custer: "/modes/bus.svg",
+  avion: "/modes/avion.svg",
+  tren: "/modes/tren.svg",
+  metro: "/modes/tren.svg",
+  colectivo: "/modes/colectivo.svg",
+  combi: "/modes/combi.svg",
+  mototaxi: "/modes/mototaxi.svg",
+  moto: "/modes/mototaxi.svg",
+  lancha: "/modes/lancha.svg",
+  bote: "/modes/lancha.svg",
+  balsa: "/modes/lancha.svg",
 };
 
 export type ModeTone = "land" | "air" | "rail" | "water";

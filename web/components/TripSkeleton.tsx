@@ -17,7 +17,7 @@ export function TripSkeleton({ origin, destination }: { origin: string; destinat
         <div className="trip-hops">
           <SkeletonCard />
           <div className="join">
-            <span className="mayu" />
+            <span className="join-line" />
           </div>
           <SkeletonCard />
         </div>

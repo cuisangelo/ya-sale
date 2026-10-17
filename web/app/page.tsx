@@ -42,17 +42,14 @@ export const metadata: Metadata = {
 
 const STEPS = [
   {
-    motif: "mayu",
     title: "Busca en vivo",
     text: "Cada consulta sale a buscar en la web en ese momento. Lo que ya está guardado es solo el punto de partida.",
   },
   {
-    motif: "chakana",
     title: "Tramo por tramo, con fuente y fecha",
     text: "Ves el viaje en el orden en que se hace: de dónde sale, cuánto cuesta y cuánto demora, con el link a la fuente y la fecha de consulta.",
   },
   {
-    motif: "chaska",
     title: "Lo confirma quien lo hace",
     text: "Quien viaja la ruta confirma o corrige el tramo. Ningún tramo aparece como confirmado si ninguna persona lo confirmó.",
   },
@@ -85,7 +82,6 @@ export default function HomePage() {
         <ol className={styles.steps}>
           {STEPS.map((step, index) => (
             <li key={step.title} className={styles.step}>
-              <span className={`${styles.motif} ${styles[step.motif]}`} aria-hidden="true" />
               <div>
                 <h3 className={styles.stepTitle}>
                   <span className="mono">{index + 1}.</span> {step.title}

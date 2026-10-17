@@ -7,6 +7,18 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 17:50 · Cambio · Base visual de la web: carmín, Inter en tres tamaños y logo propio
+
+- **Por qué:** el rediseño necesita una identidad propia y sin motivos textiles; esta tarea
+  deja los cimientos antes de reconstruir portada y viaje.
+- **Qué cambia:** tokens `--acc`/`--acc-soft`/`--ink`/`--mute`/`--line`/`--soft`; Inter
+  autoalojada reemplaza Bricolage, Archivo y JetBrains Mono; todo `font-size` es 40/18/14
+  (32 solo en el título móvil). Logo SVG inline y `app/icon.svg`. Íconos de modo en línea
+  (`public/modes/`) y se eliminan `public/textil/`, `Franja` y las reglas de color por modo.
+  El spinner de carga pasa a un anillo CSS. Pantallas existentes solo restiladas, sin cambiar layout.
+- **Pruebas:** `tsc`, `pnpm test` (35 passed) y `next build` pasan; los dos greps del brief
+  dan vacío; capturas a 1280 px de `/` y `/viaje/` sin imágenes rotas.
+
 ### 17:44 · Cambio · Cada búsqueda guarda su destino resuelto y `GET /api/trips/recent` las lista
 
 - **Por qué:** la portada del rediseño mostrará las últimas búsquedas reales con una foto

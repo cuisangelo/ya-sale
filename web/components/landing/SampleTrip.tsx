@@ -69,7 +69,7 @@ export function SampleTrip({ className }: { className: string }) {
         <div key={leg.leg_id}>
           {index > 0 ? (
             <div className="join">
-              <span className="mayu" aria-hidden="true" />
+              <span className="join-line" aria-hidden="true" />
               Transbordo en {leg.origin}
             </div>
           ) : null}
