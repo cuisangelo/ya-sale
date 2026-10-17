@@ -7,6 +7,24 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 18:13 · Cambio · Vista de viaje nueva: foto del destino y los números útiles arriba
+
+- **Por qué:** quien abre un viaje quiere saber primero cuánto cuesta, cuánto demora y cuándo
+  sale; la vista pasa a responder eso arriba, sobre la foto del destino.
+- **Qué cambia:** la vista de viaje usa la cabecera con foto del destino y una pastilla
+  "Lima → Sauce · mar 20 oct · Cambiar" que vuelve al inicio con el formulario precargado.
+  Una tarjeta flotante muestra Desde, En camino, Tramos con transbordos, Primera salida y el
+  estado en vivo. "Primera salida" es la salida más temprana del primer tramo con el modo
+  elegido, en hora de Lima; si ese tramo no tiene salidas, no aparece. Los tramos llevan
+  número cuadrado, pestañas en pastilla y salidas en filas con botón "Comprar". El mapa usa
+  marcadores redondos con el origen en carmín. El esqueleto de carga ya no tiene la barra
+  roja fija, y el indicador en vivo se ve distinto al terminar. La confirmación y la
+  corrección funcionan igual que antes.
+- **Pruebas:** 4 pruebas nuevas en `format.test.ts`; `tsc` y `pnpm test` (53 passed)
+  pasan. Capturas de Playwright a 1280 y 390 px en cada fase del streaming simulado, con
+  salidas de Cruz del Sur y Civa y la pestaña Avión. El único error de consola es el 404 del
+  logo de un blog sin logo guardado, que cae a iniciales.
+
 ### 18:00 · Cambio · Inicio nuevo: foto del último destino buscado y búsquedas reales
 
 - **Por qué:** el inicio es lo primero que ve el jurado; pasa a mostrar la foto del último

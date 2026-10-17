@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { FormEvent, Fragment, useEffect, useState } from "react";
+import { DestinationHero } from "../../components/DestinationHero";
 import { HopCard } from "../../components/HopCard";
 import { LiveIndicator } from "../../components/LiveIndicator";
 import { Logo } from "../../components/Logo";
@@ -23,7 +24,7 @@ import {
   type Mode,
   type TripState,
 } from "../../lib/api";
-import { itineraryTotals, modeLabel } from "../../lib/format";
+import { firstDeparture, itineraryTotals, modeLabel, tripDayLabel } from "../../lib/format";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -95,6 +96,11 @@ export function TripScreen() {
   const totals = state.done && selectedSlots.length === state.hops.length ? itineraryTotals(selectedSlots) : null;
   const legsWithSummary = selectedSlots.filter((leg) => leg.summary);
   const selected = selectedLeg || (legsWithSummary[0] ? String(legsWithSummary[0].summary?.leg_id) : "");
+  const place = state.hops.at(-1)?.destination ?? destination;
+  const placePoint = state.points.find((point) => point.name === place);
+  const departure = firstDeparture(state, selectedModes[0]);
+  const hopCount = state.hops.length;
+  const changeHref = `/?o=${encodeURIComponent(origin)}&d=${encodeURIComponent(destination)}&f=${encodeURIComponent(date)}#viaje`;
 
   async function confirmRoute() {
     setActionError(null);
@@ -190,22 +196,34 @@ export function TripScreen() {
   }
 
   return (
-    <main className="shell shell-trip">
-      <Logo />
-      <div className="itinerary-head">
-        <div>
-          <h1 className="trip-title">
-            {origin} → {destination}
-          </h1>
-          {state.hops.length > 0 ? (
-            <dl className="trip-totals">
+    <main className="trip-page">
+      <DestinationHero
+        place={place}
+        point={placePoint ? [placePoint.lat, placePoint.lng] : null}
+        height="trip"
+        nav={
+          <nav className="trip-nav" aria-label="Principal">
+            <Logo inverted />
+            <Link className="trip-edit" href={changeHref}>
+              <span className="trip-edit-text">
+                {origin} → {destination} · {tripDayLabel(date)} ·
+              </span>
+              <span className="trip-edit-action">Cambiar</span>
+            </Link>
+          </nav>
+        }
+      >
+        <p className="trip-kicker">Tu viaje a</p>
+        <h1 className="trip-place">{place}</h1>
+      </DestinationHero>
+
+      <div className="trip-body">
+        {!state.noRouteMessage && !streamError ? (
+          <section className="trip-sum" aria-label="Resumen del viaje">
+            <dl className="trip-sum-figures">
               <div>
-                <dt>Tramos</dt>
-                <dd>{state.hops.length}</dd>
-              </div>
-              <div>
-                <dt>Pasajes</dt>
-                <dd className={totals ? undefined : "is-calculating"}>
+                <dt>Desde</dt>
+                <dd className={totals ? "trip-sum-price" : "is-calculating"}>
                   {totals ? (totals.price ?? "sin dato") : "calculando…"}
                 </dd>
               </div>
@@ -215,132 +233,140 @@ export function TripScreen() {
                   {totals ? (totals.duration ?? "sin dato") : "calculando…"}
                 </dd>
               </div>
+              <div>
+                <dt>Tramos</dt>
+                <dd className={hopCount > 0 ? undefined : "is-calculating"}>
+                  {hopCount === 0
+                    ? "calculando…"
+                    : hopCount === 1
+                      ? "1 · directo"
+                      : `${hopCount} · ${hopCount - 1} ${hopCount === 2 ? "transbordo" : "transbordos"}`}
+                </dd>
+              </div>
+              {departure ? (
+                <div>
+                  <dt>Primera salida</dt>
+                  <dd>
+                    {departure.time} · {departure.operator}
+                  </dd>
+                </div>
+              ) : null}
             </dl>
-          ) : null}
-        </div>
-        {state.legsPlanned > 0 && !state.noRouteMessage ? (
-          <LiveIndicator current={state.progress.done} planned={state.progress.planned} live={!state.done} />
+            {state.legsPlanned > 0 ? (
+              <LiveIndicator current={state.progress.done} planned={state.progress.planned} live={!state.done} />
+            ) : null}
+          </section>
         ) : null}
+
+        {state.noRouteMessage ? <p className="banner">{state.noRouteMessage}</p> : null}
+        {streamError ? <p className="banner">{streamError}</p> : null}
+        {!state.noRouteMessage && state.legsPlanned === 0 && !streamError ? (
+          <TripSkeleton origin={origin} destination={destination} />
+        ) : null}
+
+        {state.hops.length > 0 ? (
+          <div className="trip-layout">
+            <div className="trip-map-column">
+              <TripMap hops={state.hops} points={state.points} selected={selectedModes} active={activeHop} />
+            </div>
+            <div className="trip-hops">
+              {state.hops.map((hop, index) => {
+                const slots = Object.fromEntries(
+                  hop.modes.map((mode) => [mode, slotFor(state, index, mode)]).filter(([, slot]) => slot),
+                );
+                return (
+                  <Fragment key={index}>
+                    {index > 0 ? <p className="join">Transbordo en {state.hops[index - 1].destination}</p> : null}
+                    <HopCard
+                      index={index}
+                      hop={hop}
+                      slots={slots}
+                      selected={selectedModes[index]}
+                      departures={departuresFor(state, index, selectedModes[index])}
+                      date={date}
+                      active={activeHop === index}
+                      now={now}
+                      onSelect={(mode) => {
+                        setChosenModes((current) => ({ ...current, [index]: mode }));
+                        setActiveHop(index);
+                      }}
+                      onFocus={() => setActiveHop(index)}
+                    />
+                  </Fragment>
+                );
+              })}
+            </div>
+          </div>
+        ) : null}
+
+        {legsWithSummary.length > 0 ? (
+          <div className="actions">
+            <label className="field field-name">
+              Tu nombre (opcional)
+              <input
+                value={displayName}
+                onChange={(event) => setDisplayName(event.target.value)}
+                placeholder="Ana"
+                maxLength={80}
+              />
+            </label>
+            <button className="btn btn-primary" type="button" disabled={busy} onClick={() => void confirmRoute()}>
+              ¿Hiciste esta ruta? Confírmala
+            </button>
+            <button
+              className="btn btn-secondary"
+              type="button"
+              disabled={busy || legsWithSummary.length === 0}
+              aria-expanded={correcting}
+              onClick={() => setCorrecting((open) => !open)}
+            >
+              Corregir un tramo
+            </button>
+            <button className="btn btn-ghost" type="button" onClick={() => void share()}>
+              {copied ? "Enlace copiado" : "Compartir"}
+            </button>
+          </div>
+        ) : null}
+
+        {correcting ? (
+          <form className="correct-form" onSubmit={(event) => void submitCorrection(event)}>
+            <label className="field wide">
+              Tramo
+              <select value={selected} onChange={(event) => setSelectedLeg(event.target.value)}>
+                {legsWithSummary.map((slot) =>
+                  slot.summary ? (
+                    <option key={slot.summary.leg_id} value={slot.summary.leg_id}>
+                      {modeLabel(slot.summary.mode)} · {slot.summary.origin} → {slot.summary.destination}
+                    </option>
+                  ) : null,
+                )}
+              </select>
+            </label>
+            <label className="field">
+              Paradero de salida
+              <input value={departurePoint} onChange={(event) => setDeparturePoint(event.target.value)} />
+            </label>
+            <label className="field">
+              Duración (minutos)
+              <input inputMode="numeric" value={duration} onChange={(event) => setDuration(event.target.value)} />
+            </label>
+            <label className="field">
+              Precio mínimo (S/)
+              <input inputMode="decimal" value={priceMin} onChange={(event) => setPriceMin(event.target.value)} />
+            </label>
+            <label className="field">
+              Precio máximo (S/)
+              <input inputMode="decimal" value={priceMax} onChange={(event) => setPriceMax(event.target.value)} />
+            </label>
+            <button className="btn btn-primary" type="submit" disabled={busy}>
+              Guardar corrección
+            </button>
+          </form>
+        ) : null}
+
+        {actionError ? <p className="banner">{actionError}</p> : null}
+        {notice ? <p className="notice">{notice}</p> : null}
       </div>
-
-      {state.noRouteMessage ? <p className="banner">{state.noRouteMessage}</p> : null}
-      {streamError ? <p className="banner">{streamError}</p> : null}
-      {!state.noRouteMessage && state.legsPlanned === 0 && !streamError ? (
-        <TripSkeleton origin={origin} destination={destination} />
-      ) : null}
-
-      {state.hops.length > 0 ? (
-        <div className="trip-layout">
-          <div className="trip-map-column">
-            <TripMap hops={state.hops} points={state.points} selected={selectedModes} active={activeHop} />
-          </div>
-          <div className="trip-hops">
-            {state.hops.map((hop, index) => {
-              const modeChanged = index > 0 && selectedModes[index - 1] !== selectedModes[index];
-              const slots = Object.fromEntries(
-                hop.modes.map((mode) => [mode, slotFor(state, index, mode)]).filter(([, slot]) => slot),
-              );
-              return (
-                <Fragment key={index}>
-                  {index > 0 ? (
-                    <div className="join">
-                      <span className="join-line" aria-hidden="true" />
-                      {modeChanged ? (
-                        <>
-                          <span>Transbordo en {state.hops[index - 1].destination}</span>
-                        </>
-                      ) : null}
-                    </div>
-                  ) : null}
-                  <HopCard
-                    index={index}
-                    hop={hop}
-                    slots={slots}
-                    selected={selectedModes[index]}
-                    departures={departuresFor(state, index, selectedModes[index])}
-                    date={date}
-                    active={activeHop === index}
-                    now={now}
-                    onSelect={(mode) => {
-                      setChosenModes((current) => ({ ...current, [index]: mode }));
-                      setActiveHop(index);
-                    }}
-                    onFocus={() => setActiveHop(index)}
-                  />
-                </Fragment>
-              );
-            })}
-          </div>
-        </div>
-      ) : null}
-
-      {legsWithSummary.length > 0 ? (
-        <div className="actions">
-          <label className="field field-name">
-            Tu nombre (opcional)
-            <input
-              value={displayName}
-              onChange={(event) => setDisplayName(event.target.value)}
-              placeholder="Ana"
-              maxLength={80}
-            />
-          </label>
-          <button className="btn btn-primary" type="button" disabled={busy} onClick={() => void confirmRoute()}>
-            ¿Hiciste esta ruta? Confírmala
-          </button>
-          <button
-            className="btn btn-secondary"
-            type="button"
-            disabled={busy || legsWithSummary.length === 0}
-            aria-expanded={correcting}
-            onClick={() => setCorrecting((open) => !open)}
-          >
-            Corregir un tramo
-          </button>
-          <button className="btn btn-ghost" type="button" onClick={() => void share()}>
-            {copied ? "Enlace copiado" : "Compartir"}
-          </button>
-        </div>
-      ) : null}
-
-      {correcting ? (
-        <form className="correct-form" onSubmit={(event) => void submitCorrection(event)}>
-          <label className="field wide">
-            Tramo
-            <select value={selected} onChange={(event) => setSelectedLeg(event.target.value)}>
-              {legsWithSummary.map((slot) =>
-                slot.summary ? (
-                  <option key={slot.summary.leg_id} value={slot.summary.leg_id}>
-                    {modeLabel(slot.summary.mode)} · {slot.summary.origin} → {slot.summary.destination}
-                  </option>
-                ) : null,
-              )}
-            </select>
-          </label>
-          <label className="field">
-            Paradero de salida
-            <input value={departurePoint} onChange={(event) => setDeparturePoint(event.target.value)} />
-          </label>
-          <label className="field">
-            Duración (minutos)
-            <input inputMode="numeric" value={duration} onChange={(event) => setDuration(event.target.value)} />
-          </label>
-          <label className="field">
-            Precio mínimo (S/)
-            <input inputMode="decimal" value={priceMin} onChange={(event) => setPriceMin(event.target.value)} />
-          </label>
-          <label className="field">
-            Precio máximo (S/)
-            <input inputMode="decimal" value={priceMax} onChange={(event) => setPriceMax(event.target.value)} />
-          </label>
-          <button className="btn btn-primary" type="submit" disabled={busy}>
-            Guardar corrección
-          </button>
-        </form>
-      ) : null}
-
-      {actionError ? <p className="banner">{actionError}</p> : null}
-      {notice ? <p className="notice">{notice}</p> : null}
     </main>
   );
 }

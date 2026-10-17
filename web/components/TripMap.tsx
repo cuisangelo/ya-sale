@@ -111,7 +111,11 @@ export function TripMap({ hops, points, selected, active }: TripMapProps) {
       }
       for (const point of points) {
         L.marker([point.lat, point.lng], {
-          icon: L.divIcon({ className: "map-stop", html: "<span></span>", iconSize: [16, 16] }),
+          icon: L.divIcon({
+            className: point.name === hops[0]?.origin ? "map-stop map-stop-origin" : "map-stop",
+            html: "<span></span>",
+            iconSize: [16, 16],
+          }),
           keyboard: false,
         })
           .bindTooltip(point.name, { permanent: true, direction: "right", offset: [8, 0], className: "map-label" })

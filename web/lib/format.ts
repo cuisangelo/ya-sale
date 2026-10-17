@@ -1,4 +1,4 @@
-import type { LegSlot, LegSummary, Mode, Option, Version } from "./api";
+import { departuresFor, type LegSlot, type LegSummary, type Mode, type Option, type TripState, type Version } from "./api";
 
 const MODE_LABELS: Record<Mode, string> = {
   bus: "Bus",
@@ -69,6 +69,22 @@ export function departureClock(iso: string): string {
   }).format(Date.parse(iso));
 }
 
+const LIMA_CLOCK = new Intl.DateTimeFormat("es-PE", {
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: false,
+  timeZone: "America/Lima",
+});
+
+// Only hop 0 says when the trip leaves; a later hop's bus would pass for the trip's departure.
+export function firstDeparture(state: TripState, firstMode: Mode | undefined): { time: string; operator: string } | null {
+  if (!firstMode) return null;
+  const departures = departuresFor(state, 0, firstMode);
+  if (departures.length === 0) return null;
+  const earliest = departures.reduce((best, next) => (Date.parse(next.departs_at) < Date.parse(best.departs_at) ? next : best));
+  return { time: LIMA_CLOCK.format(Date.parse(earliest.departs_at)), operator: earliest.operator };
+}
+
 // The trip date is a calendar day with no zone; read at noon UTC it is the same day everywhere.
 export function departuresHeading(day: string): string {
   const label = new Intl.DateTimeFormat("es-PE", {
@@ -78,6 +94,12 @@ export function departuresHeading(day: string): string {
     timeZone: "UTC",
   }).format(Date.parse(`${day}T12:00:00Z`));
   return `Salidas del ${label.replace(",", "")}`;
+}
+
+export function tripDayLabel(day: string): string {
+  return new Intl.DateTimeFormat("es-PE", { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" })
+    .format(Date.parse(`${day}T12:00:00Z`))
+    .replace(/[,.]/g, "");
 }
 
 export function seatsLabel(seats: number | null): string | null {
