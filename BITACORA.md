@@ -7,6 +7,36 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 18:29 · Cambio · Línea se suma como tercer vendedor de salidas en vivo
+
+- **Qué:** `LineaSource` (`backend/app/connectors/linea.py`) lee la lista de viajes que su propia
+  web muestra: `index.aspx/ListarOrigen` y `ListarDestino` dan los terminales, `MostrarItinerario`
+  guarda la búsqueda en la sesión y `ECommerce/wf_ListaItinerarios.aspx` devuelve el HTML con cada
+  salida (hora, servicio, precio por piso y asientos libres). Cada fila toma el precio más bajo y
+  suma los libres de los dos pisos. La lista no trae hora de llegada.
+- **Hallazgo:** su servidor guarda en la sesión la primera ruta buscada. Con un cliente compartido,
+  la segunda búsqueda devolvía los viajes de la primera (Chiclayo → cualquier destino daba siempre
+  3). Por eso cada búsqueda abre su propia sesión.
+- **Enlace:** las páginas de resultados y de asientos dependen de la sesión. A un visitante nuevo
+  `wf_itinerarioIda.aspx` lo manda a `/index.aspx` (302), así que cada fila enlaza a
+  `https://www.linea.pe/`. En Chrome headless con un perfil limpio abre con el formulario de
+  compra y Lima en la lista de origen.
+- **Pruebas:** 11 tests con fixtures grabados el 17-10 (Lima → Trujillo del 22-10 con 7 viajes y un
+  día sin viajes). Mutación: con una sesión compartida entre búsquedas,
+  `test_each_search_starts_its_own_session_so_it_never_reads_another_searchs_route` se puso rojo;
+  revertido, 11/11. Backend 144/144. En vivo desde local: Lima → Trujillo 7 salidas (09:00
+  VIP/ESPECIAL S/80, 54 libres), Lima → Chiclayo 1, Trujillo → Lima 7.
+
+### 18:16 · Decisión · Línea pasa el control de términos y robots
+
+- **robots.txt:** `www.linea.pe/robots.txt` no existe (devuelve su página de 404).
+- **Términos:** el único documento de términos es `Terminos_Condiciones_Viaje.pdf`, que regula el
+  viaje (DNI, equipaje, postergaciones). No dice nada sobre acceso automatizado, extracción de
+  datos ni enlaces. `politicas.aspx` solo lista políticas organizacionales.
+- **Cómo se usa:** las mismas llamadas que hace su formulario en el navegador, sin captcha (el
+  captcha del sitio solo protege el login de Puntos Linea), sin tokens ni cabeceras firmadas. No
+  se entra a la selección de asientos ni se envían datos personales.
+
 ### 18:18 · Cambio · Las salidas en vivo dependen del modo de cada tramo, no solo del bus
 
 - **Por qué:** el planner solo pedía salidas para tramos con bus y las emitía siempre como
