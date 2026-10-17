@@ -29,6 +29,30 @@ export interface Version {
   confirmations: number;
 }
 
+export interface Option {
+  departure_point: string | null;
+  operator: string | null;
+  price_min_pen: string | null;
+  price_max_pen: string | null;
+  duration_min: number | null;
+  schedule_note: string | null;
+  purchase_url: string | null;
+  source_url: string;
+  fetched_at: string;
+}
+
+export interface Hop {
+  origin: string;
+  destination: string;
+  modes: Mode[];
+}
+
+export interface MapPoint {
+  name: string;
+  lat: number;
+  lng: number;
+}
+
 export interface LegSummary {
   leg_id: number;
   mode: Mode;
@@ -40,7 +64,9 @@ export interface LegSummary {
 
 export interface LegSlot {
   index: number;
+  mode: Mode;
   summary: LegSummary | null;
+  options: Option[];
   live: boolean;
   error: string | null;
 }
@@ -50,6 +76,8 @@ export interface TripState {
   origin: string;
   destination: string;
   legsPlanned: number;
+  hops: Hop[];
+  points: MapPoint[];
   legs: LegSlot[];
   noRouteMessage: string | null;
   done: boolean;
@@ -59,13 +87,16 @@ export interface TripState {
 export type TripSseEvent =
   | {
       event: "trip_started";
-      data: { trip_id: number; origin: string; destination: string; legs_planned: number };
+      data: { trip_id: number; origin: string; destination: string; legs_planned: number; hops: Hop[] };
     }
-  | { event: "leg_stored"; data: { index: number } & LegSummary }
-  | { event: "leg_refreshed"; data: { index: number } & LegSummary }
-  | { event: "leg_error"; data: { index: number; message: string } }
+  | { event: "leg_stored"; data: LegEventData }
+  | { event: "leg_refreshed"; data: LegEventData }
+  | { event: "leg_error"; data: { index: number; mode: Mode; message: string } }
+  | { event: "trip_mapped"; data: { points: MapPoint[] } }
   | { event: "no_route"; data: { message: string } }
   | { event: "trip_done"; data: { legs: number } };
+
+type LegEventData = { index: number; options: Option[] } & LegSummary;
 
 export interface TripRequest {
   origin: string;
@@ -147,6 +178,7 @@ const EVENT_NAMES = [
   "leg_stored",
   "leg_refreshed",
   "leg_error",
+  "trip_mapped",
   "no_route",
   "trip_done",
 ] as const;
@@ -156,6 +188,8 @@ export const initialTripState: TripState = {
   origin: "",
   destination: "",
   legsPlanned: 0,
+  hops: [],
+  points: [],
   legs: [],
   noRouteMessage: null,
   done: false,
@@ -165,20 +199,25 @@ export const initialTripState: TripState = {
 function withProgress(state: Omit<TripState, "progress">): TripState {
   // A leg that refreshed and later failed still counts once toward "k de N".
   const done = state.legs.filter((leg) => leg.live || leg.error !== null).length;
-  return { ...state, progress: { done, planned: state.legsPlanned } };
+  // Every mode of every hop is refreshed on its own, so each one counts toward "k de N".
+  const planned = state.hops.reduce((total, hop) => total + hop.modes.length, 0);
+  return { ...state, progress: { done, planned } };
+}
+
+export function slotFor(state: TripState, index: number, mode: Mode): LegSlot | undefined {
+  return state.legs.find((leg) => leg.index === index && leg.mode === mode);
 }
 
 function upsert(legs: LegSlot[], slot: LegSlot): LegSlot[] {
-  const next = legs.filter((leg) => leg.index !== slot.index);
+  const next = legs.filter((leg) => leg.index !== slot.index || leg.mode !== slot.mode);
   next.push(slot);
   next.sort((a, b) => a.index - b.index);
   return next;
 }
 
-function summaryOf(data: { index: number } & LegSummary): LegSummary {
-  const { index, ...summary } = data;
-  void index;
-  return summary;
+function legSlot(data: LegEventData, live: boolean): LegSlot {
+  const { index, options, ...summary } = data;
+  return { index, mode: summary.mode, summary, options, live, error: null };
 }
 
 export function reduceTrip(state: TripState, event: TripSseEvent): TripState {
@@ -189,46 +228,37 @@ export function reduceTrip(state: TripState, event: TripSseEvent): TripState {
         origin: event.data.origin,
         destination: event.data.destination,
         legsPlanned: event.data.legs_planned,
+        hops: event.data.hops,
+        points: [],
         legs: [],
         noRouteMessage: null,
         done: false,
       });
     case "leg_stored":
-      return withProgress({
-        ...bare(state),
-        legs: upsert(state.legs, {
-          index: event.data.index,
-          summary: summaryOf(event.data),
-          live: false,
-          error: null,
-        }),
-      });
+      return withProgress({ ...bare(state), legs: upsert(state.legs, legSlot(event.data, false)) });
     case "leg_refreshed":
-      return withProgress({
-        ...bare(state),
-        legs: upsert(state.legs, {
-          index: event.data.index,
-          summary: summaryOf(event.data),
-          live: true,
-          error: null,
-        }),
-      });
+      return withProgress({ ...bare(state), legs: upsert(state.legs, legSlot(event.data, true)) });
     case "leg_error": {
-      const previous = state.legs.find((leg) => leg.index === event.data.index);
+      const previous = slotFor(state, event.data.index, event.data.mode);
       return withProgress({
         ...bare(state),
         legs: upsert(state.legs, {
           index: event.data.index,
+          mode: event.data.mode,
           summary: previous?.summary ?? null,
+          options: previous?.options ?? [],
           live: previous?.live ?? false,
           error: event.data.message,
         }),
       });
     }
+    case "trip_mapped":
+      return withProgress({ ...bare(state), points: event.data.points });
     case "no_route":
       return withProgress({
         ...bare(state),
         legs: [],
+        hops: [],
         legsPlanned: 0,
         noRouteMessage: event.data.message,
         done: true,
@@ -248,6 +278,8 @@ function bare(state: TripState): Omit<TripState, "progress"> {
     origin: state.origin,
     destination: state.destination,
     legsPlanned: state.legsPlanned,
+    hops: state.hops,
+    points: state.points,
     legs: state.legs,
     noRouteMessage: state.noRouteMessage,
     done: state.done,
