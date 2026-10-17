@@ -1,7 +1,10 @@
+import logging
+
 import httpx
 import pytest
 
 from app.connectors.geocoding import GoogleGeocoder
+from app.main import create_app
 from app.places.domain import GeocodingFailed, Point
 
 KEY = "secret-key"
@@ -56,3 +59,10 @@ async def test_provider_errors_fail_loud_without_leaking_the_key():
         # The httpx exception quotes the URL with the key, so it must not ride along as context.
         assert failure.value.__cause__ is None
         assert failure.value.__context__ is None or failure.value.__suppress_context__
+
+
+async def test_the_key_in_the_request_url_never_reaches_the_logs(settings, caplog):
+    create_app(settings)
+    caplog.set_level(logging.INFO)
+    await geocoder(answer({"status": "OK", "results": [result()]})).geocode("Tarapoto")
+    assert KEY not in caplog.text

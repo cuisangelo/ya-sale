@@ -1,3 +1,4 @@
+import logging
 import os
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
@@ -65,6 +66,8 @@ class McpWithoutTrailingSlash:
 
 
 def create_app(settings: Settings, web_dir: Path | None = None) -> FastAPI:
+    # httpx logs every request URL at INFO, and the geocoding key can only travel in the URL.
+    logging.getLogger("httpx").setLevel(logging.WARNING)
     mcp = build_mcp(lambda: app.state.services)
 
     @asynccontextmanager
