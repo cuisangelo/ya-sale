@@ -7,6 +7,23 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 15:54 · Deploy · Primer CD a Lambda medido; App Runner pausado; el pull del adaptador falla
+
+- **CD medido:** el run 39068229128 (`5ad2523`) salió verde. Build 18 s con caché,
+  actualización de la función 10 s y smoke test con arranque en frío 10 s. Del push a
+  producción, 1 min 39 s. Lambda corre `ya-sale:5ad2523…` y `/api/health` responde 200 en
+  0,44 s desde el dominio.
+- **App Runner:** `pause-service` sobre el servicio `ya-sale`; quedó `PAUSED`. Se reanuda con
+  `resume-service` si hace falta volver.
+- **Bloqueo:** el run 39068537021 (merge del PR #8) falló al construir. El pull anónimo de
+  `public.ecr.aws/awsguru/aws-lambda-adapter:0.9.1` devolvió
+  `toomanyrequests: Data limit exceeded`, porque la cuota anónima es por IP y las IPs de los
+  runners de GitHub se comparten. El rate limiter en Postgres todavía no está vivo.
+- **Arreglo:** el job de deploy inicia sesión en ECR Public antes del build y usa la cuota de
+  la cuenta. El rol `ya-sale-github-deploy` suma `ecr-public:GetAuthorizationToken` y
+  `sts:GetServiceBearerToken`, aplicado con `infra/github-oidc.sh`.
+- `infra/README.md` describe ahora la arquitectura real: web en Vercel, API en Lambda.
+
 ### 15:45 · Deploy · La API pasa de App Runner a AWS Lambda
 
 - **Por qué:** App Runner tardaba unos 10 minutos por deploy. Cuiso pidió deploys rápidos y
