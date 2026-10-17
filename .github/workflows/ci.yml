@@ -60,9 +60,26 @@ jobs:
       - run: pnpm vitest run
       - run: pnpm build
 
-  deploy:
-    needs: [backend, web]
+  changes:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            backend:
+              - backend/**
+              - Dockerfile
+              - infra/**
+
+  # The web deploys through Vercel's GitHub integration; only backend changes ship a new image.
+  deploy:
+    needs: [backend, web, changes]
+    if: needs.changes.outputs.backend == 'true'
     runs-on: ubuntu-latest
     concurrency:
       group: deploy-production
@@ -87,4 +104,6 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: ${{ steps.ecr.outputs.registry }}/ya-sale:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
       - run: bash infra/release.sh "${{ steps.ecr.outputs.registry }}/ya-sale:${{ github.sha }}"
