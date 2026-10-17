@@ -7,6 +7,17 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 13:30 · Cambio · Recursos de la identidad textil
+
+- **Qué:** `design/textil/` con 4 motivos (inti, chakana, ch'aska y mayu), una franja tejida y
+  7 íconos de transporte (bus, combi, colectivo, mototaxi, avión, tren y lancha). Todos son
+  SVG pixel a pixel, más el generador y la paleta de tintes naturales.
+- **Rol de cada motivo:** inti es el destino y el logo, chakana el transbordo, ch'aska un tramo
+  confirmado y mayu el camino.
+- **Origen:** diseños propios inspirados en el pallay, sin copiar el de ninguna comunidad.
+- **Referencias:** Awamaki y el Centro de Textiles Tradicionales del Cusco (tintes).
+- **Siguiente paso:** Cuiso revisa el detalle en el compañero visual.
+
 ### 13:20 · Decisión · De cualquier punto a cualquier punto, todos los modos
 
 - **Qué:** el producto deja de ser "de Lima a un pueblo" y pasa a ser de cualquier origen a
