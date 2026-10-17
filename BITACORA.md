@@ -7,6 +7,15 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 16:30 · Cambio · /mcp sin barra final
+
+- **Bug:** lo encontró la sesión de landing en producción. `POST /mcp` respondía 405, y solo
+  `/mcp/` funcionaba; la web estática montada en `/` atrapaba la ruta sin barra.
+- **Arreglo:** un middleware ASGI mínimo trata `/mcp` como `/mcp/`. No es una redirección,
+  porque algunos clientes MCP no siguen redirecciones en un POST.
+- **Prueba:** el test reproduce el caso de producción (web montada más `POST /mcp`); falló con
+  405 antes del arreglo. `pytest -q` → 75 passed.
+
 ### 16:20 · Cambio · Pitch mergeado, slides en /pitch/ y certificado del dominio
 
 - **PR #2 del pitch, mergeado por Cuiso:** `pitch/proyecto.md` (texto de entrega), el guion

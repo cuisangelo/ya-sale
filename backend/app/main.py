@@ -47,6 +47,18 @@ def build_services(settings: Settings, pool) -> Services:
     )
 
 
+class McpWithoutTrailingSlash:
+    """Routes POST /mcp to the MCP app; otherwise the static web mount answers it with 405."""
+
+    def __init__(self, app):
+        self._app = app
+
+    async def __call__(self, scope, receive, send):
+        if scope["type"] == "http" and scope["path"] == "/mcp":
+            scope = {**scope, "path": "/mcp/", "raw_path": b"/mcp/"}
+        await self._app(scope, receive, send)
+
+
 def create_app(settings: Settings, web_dir: Path | None = None) -> FastAPI:
     mcp = build_mcp(lambda: app.state.services)
 
@@ -61,6 +73,7 @@ def create_app(settings: Settings, web_dir: Path | None = None) -> FastAPI:
         await pool.close()
 
     app = FastAPI(title="Ya Sale", lifespan=lifespan)
+    app.add_middleware(McpWithoutTrailingSlash)
     app.state.settings = settings
     # Bound to 0.0.0.0 so the deployed hostname is accepted, not only localhost.
     app.mount("/mcp", mcp.streamable_http_app(streamable_http_path="/", stateless_http=True, host="0.0.0.0"))

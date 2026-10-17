@@ -4,6 +4,7 @@ from decimal import Decimal
 import httpx
 
 from app.legs.domain import LegData, LegKey
+from app.main import create_app
 from app.mcp_server import build_mcp
 from app.trips.events import LegRefreshed, TripDone, TripStarted
 
@@ -39,9 +40,21 @@ async def test_plan_trip_tool_returns_legs_with_sources(pool):
     assert "extracted" in text
 
 
-async def test_mcp_endpoint_is_mounted(settings):
-    from app.main import create_app
+async def test_mcp_without_trailing_slash_works_next_to_the_web(settings, tmp_path):
+    (tmp_path / "index.html").write_text("<h1>Ya Sale</h1>")
+    app = create_app(settings, web_dir=tmp_path)
+    async with app.router.lifespan_context(app):
+        async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://ya-sale.example") as client:
+            response = await client.post(
+                "/mcp",
+                json={"jsonrpc": "2.0", "id": 1, "method": "tools/list"},
+                headers={"Accept": "application/json, text/event-stream"},
+            )
+    assert response.status_code == 200
+    assert "plan_trip" in response.text
 
+
+async def test_mcp_endpoint_is_mounted(settings):
     app = create_app(settings)
     async with app.router.lifespan_context(app):
         async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://ya-sale.example") as client:
