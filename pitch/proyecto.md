@@ -100,8 +100,9 @@ AWS App Runner ── FastAPI (API + SSE) + servidor MCP
 - **Persistencia por versiones:** un dato equivalente solo actualiza la fecha de consulta; un
   cambio material crea una versión nueva y la versión confirmada nunca se sobrescribe.
 - **Web:** Next.js exportada como sitio estático y servida por Vercel, que reenvía `/api` y
-  `/mcp` al backend en App Runner. Usa la identidad textil andina del proyecto
-  (`design/textil/`).
+  `/mcp` al backend en App Runner. Tiene identidad propia: carmín
+  #C8102E como único acento, Inter y una foto del destino (Wikipedia/Commons, con crédito) en
+  cada viaje y en el inicio.
 - **Tests:** 74 tests con `pytest` sobre el dominio, la persistencia, el extractor, el
   planificador, la API y el MCP, más los tests y el build de la web (`vitest`).
 - **CI/CD:** GitHub Actions corre los tests del backend (con Postgres) y de la web en cada push

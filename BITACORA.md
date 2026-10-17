@@ -7,6 +7,19 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 18:31 · Cambio · Últimos arreglos de la revisión del rediseño
+
+- **Por qué:** la revisión de toda la rama encontró seis detalles antes de cerrar.
+- **Qué cambia:** si guardar el destino resuelto de un viaje falla, el flujo en vivo sigue y el
+  error queda en el log; el crédito de la foto ya no se corta (la licencia se lee completa, en
+  dos líneas si hace falta); el texto de la portada tiene la misma sombra que el del viaje y la
+  píldora es oscura; una fecha imposible como `2026-13-01` muestra el aviso de siempre en vez
+  de romper la página; `docs/API.md` documenta `GET /api/trips/recent`; el pitch describe la
+  identidad real.
+- **Pruebas:** el test nuevo de la API falla sin el `try/except` y pasa con él. `tsc`,
+  `pnpm test` (55 passed), `next build`, la búsqueda de tamaños de letra (vacía) y `pytest`
+  (135 passed). Capturas de la portada a 1280 y 390 px con los créditos completos.
+
 ### 18:20 · Cambio · Comparar y uso con la identidad nueva, e imagen para compartir
 
 - **Por qué:** al compartir el enlace se veía la imagen vieja, y `/comparar` y `/uso`

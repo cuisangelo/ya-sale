@@ -85,6 +85,13 @@ Response: `text/event-stream`; each message is `event: <name>\ndata: <json>\n\n`
 `legs_planned` counts hops. Progress = refreshed or errored `(index, mode)` legs out of all modes of all
 hops. `options` are sorted cheapest priced first, at most 10. Errors: `422` invalid body, `429 {"detail": "..."}` rate limit.
 
+## `GET /api/trips/recent`
+
+`200 [{origin, destination, place, at, lat, lng}]`, newest first, at most 8. `origin` and `destination`
+are what the visitor typed; `place`, `lat` and `lng` are the destination as the planner resolved it.
+Only trips that produced a route are listed, the team's own are excluded, and pairs are deduplicated by
+origin–destination (case-insensitive, newest kept). Fingerprints are never returned.
+
 ## `GET /api/legs/{leg_id}`
 
 `200 {leg_id, mode, origin, destination, status, versions: Version[]}` (oldest first). `404`.
