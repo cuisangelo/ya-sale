@@ -73,8 +73,8 @@ modelo.
 
 ### MCP para ChatGPT o Claude
 
-El mismo motor se expone como servidor MCP remoto en `/mcp` (HTTP), con las herramientas
-`plan_trip(origin, destination, date)`, `get_leg(leg_id)` y
+El mismo motor se expone como servidor MCP remoto en `/mcp/` (HTTP, con la barra final), con
+las herramientas `plan_trip(origin, destination, date)`, `get_leg(leg_id)` y
 `confirm_leg(leg_id, version_id, display_name?)`.
 
 ## Arquitectura
