@@ -1,28 +1,45 @@
 # Idea
 
-Un viaje completo, de Lima a cualquier pueblo del Perú, tramo por tramo y con su precio,
-armado con datos que se consultan en vivo cada vez que alguien pregunta. El ejemplo que define
-el producto es ir a Sauce, a la Laguna Azul, sin tour: Lima → Tarapoto en bus o avión, el
-tramo local hasta el paradero y el auto compartido que sale cuando llena.
+Un viaje completo **de cualquier punto a cualquier punto del Perú**, tramo por tramo y con su
+precio, armado con datos que se consultan en vivo cada vez que alguien pregunta. Cubre **todos
+los tipos de transporte**, formales e informales:
+
+- bus interprovincial, avión y tren;
+- colectivo o auto compartido que sale cuando llena, combi y cúster;
+- bus urbano, Metropolitano y Metro;
+- mototaxi y moto;
+- lancha, bote, peque-peque y balsa.
+
+Ejemplos de viajes:
+
+- de Lima a Sauce (Laguna Azul) sin tour: bus o avión hasta Tarapoto, el tramo local hasta el
+  paradero y el auto compartido;
+- de Cusco a Aguas Calientes: combi hasta Ollantaytambo y tren;
+- de Iquitos a un pueblo del río: mototaxi hasta el puerto y lancha;
+- de un distrito de Lima a otro: combi o Metropolitano.
 
 Se usa desde nuestra página o desde ChatGPT o Claude a través de nuestro MCP. La demo compara
 el mismo chat sin nuestras herramientas y con ellas.
 
 ## Quién tiene el problema y cómo lo resuelve hoy
 
-Alguien en Lima que quiere llegar a un pueblo sin pagar un tour. Hoy junta los tramos a mano:
+Cualquier persona en el Perú que tiene que llegar a un lugar que no conoce, sobre todo cuando
+el viaje mezcla transporte formal e informal o sale de la ciudad. Hoy junta los tramos a mano:
 
 - el bus en redBus o en la página de la empresa;
 - el vuelo en la aerolínea;
-- el tramo local preguntando en el paradero o en un blog que puede tener años.
+- el tren en PeruRail o Inca Rail;
+- el tramo local (colectivo, combi, mototaxi, lancha) preguntando en el paradero o en el
+  puerto, o en un blog que puede tener años.
 
-Maps y TuRuta se quedan en la ciudad, redBus vende el bus pero no engancha el colectivo. Nadie
-junta los tramos ni el precio total. Un chat general (ChatGPT sin herramientas) contesta con
+Maps y TuRuta cubren parte de la ciudad, y redBus vende el bus pero no engancha el colectivo
+ni la lancha. Nadie junta los tramos de todos los modos ni el precio total. Un chat general (ChatGPT sin herramientas) contesta con
 datos de memoria, sin fuente ni fecha, y a veces inventa paraderos o precios.
 
 ## La acción que tiene que poder completar
 
-Escribir a dónde va y en qué fechas, y ver el viaje completo en el orden en que se hace. Cada
+Escribir de dónde sale, a dónde va y cuándo, y ver el viaje completo en el orden en que se
+hace. Cada
 tramo muestra:
 
 - de dónde sale;
@@ -40,9 +57,10 @@ confirmado.
 
 Recibe destino y fechas y devuelve un itinerario ordenado de tramos. Para cualquier destino:
 
-1. **Planea la cadena de puntos intermedios:** Lima → hub regional → pueblo. Empieza por los
-   tramos ya guardados y, si faltan, busca en la web "cómo llegar a X" y un LLM extrae la
-   cadena de puntos.
+1. **Planea la cadena de puntos intermedios** entre el origen y el destino (por ejemplo
+   ciudad → hub regional → pueblo, o barrio → paradero → barrio). Empieza por los tramos ya
+   guardados y, si faltan, busca en la web "cómo llegar de X a Y" y un LLM extrae la cadena
+   de puntos y el modo de cada tramo.
 2. **Consulta cada tramo con los conectores.** **Cada consulta refresca los datos** de los
    tramos que toca. Lo guardado sirve de punto de partida, pero no reemplaza la consulta.
 3. **Guarda cada tramo encontrado** con su fuente y su fecha, para que la siguiente consulta
@@ -57,8 +75,8 @@ tramos candidatos con fuente y fecha de consulta.
 
 | Conector | Qué cubre | Con qué |
 |---|---|---|
-| Búsqueda web + extracción | Cualquier tramo, sobre todo el local: colectivos, autos que salen al llenar, balsas, motos | Tavily y Exa (créditos del evento). Un LLM extrae los tramos de las páginas a un esquema validado. |
-| Scrapers dedicados | Los sitios que más pesan: buses interprovinciales y vuelos | Apify (créditos del evento). Solo donde haya un actor que funcione. |
+| Búsqueda web + extracción | Cualquier tramo de cualquier modo, sobre todo el informal: colectivos, combis, mototaxis, lanchas, balsas | Tavily y Exa (créditos del evento). Un LLM extrae los tramos de las páginas a un esquema validado. |
+| Scrapers dedicados | Los sitios que más pesan: buses interprovinciales, vuelos y trenes | Apify (créditos del evento). Solo donde haya un actor que funcione. |
 | Confirmaciones del público | Tramos verificados por gente que los hace | Nuestra base de datos |
 
 Para bus y vuelo no copiamos inventario ni vendemos: mostramos salidas y rangos de precio
@@ -125,9 +143,8 @@ en vivo, y cada confirmación queda registrada como evidencia de uso.
 ## Qué queda fuera
 
 El viaje de vuelta (solo ida, con fecha de salida; *mi decisión*), cuentas de usuario, compra o
-reserva de pasajes, hoteles y tours, el GPS de los buses, la
-tarjeta única y el Metropolitano. El tramo dentro de Lima hasta el terminal o el aeropuerto
-queda como link a Maps.
+reserva de pasajes, hoteles y tours, el GPS en tiempo real de los vehículos y la tarjeta única
+de pago.
 
 ## Reglas que no se rompen
 

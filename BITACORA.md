@@ -7,6 +7,24 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 13:20 · Decisión · De cualquier punto a cualquier punto, todos los modos
+
+- **Qué:** el producto deja de ser "de Lima a un pueblo" y pasa a ser de cualquier origen a
+  cualquier destino del Perú. Cubre todos los tipos de transporte:
+  - bus interprovincial, avión y tren;
+  - colectivo, combi y cúster;
+  - bus urbano, Metropolitano y Metro;
+  - mototaxi y moto;
+  - lancha, bote, peque-peque y balsa.
+- **Por qué:** Cuiso sentía muy acotado el ejemplo de Tarapoto → Sauce, que pasa a ser un
+  ejemplo entre varios.
+- **Efecto en `IDEA.md`:** el tramo urbano ya no queda fuera.
+
+### 13:20 · Decisión · Dirección visual: textil andino
+
+Entre chicha, paradero, combi, costa-sierra-selva y retablo, Cuiso elige el textil andino.
+Pide detallarlo con recursos propios o encontrados.
+
 ### 13:10 · Decisión · Alcance, latencia y modelo por defecto
 
 Cuiso pidió avanzar sin responder estas tres preguntas, así que quedan las propuestas por
