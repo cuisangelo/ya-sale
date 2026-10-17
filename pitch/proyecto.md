@@ -8,9 +8,9 @@ hace la ruta lo confirmó.
 
 Track **Movilidad y Transporte** · equipo Ya Sale (Cuisangelo) · Hack the Andes 2026.
 
-- **Demo:** https://yasale.cuisangelo.com *(pendiente: falta validar el certificado del dominio)*
+- **Demo:** https://yasale.cuisangelo.com
 - **Respaldo directo:** https://ibiarhyx7y.us-east-1.awsapprunner.com
-- **Slides:** https://yasale.cuisangelo.com/pitch/ *(pendiente)*
+- **Slides:** https://yasale.cuisangelo.com/pitch/
 - **Repo:** https://github.com/cuisangelo/ya-sale
 
 ## El problema
@@ -168,5 +168,4 @@ precio cuando falta:
   tarjeta única de pago.
 - **Idea, no construido:** scrapers dedicados para buses, vuelos y trenes (Apify), una CLI
   sobre la misma API y consultas o alertas por WhatsApp o SMS (Zavu).
-- **Pendiente para la entrega:** el certificado de `yasale.cuisangelo.com`, las slides en
-  `/pitch/` y la evidencia de uso fuera del equipo en `/uso`.
+- **Pendiente:** evidencia de uso fuera del equipo en `/uso`.
