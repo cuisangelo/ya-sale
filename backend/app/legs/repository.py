@@ -6,7 +6,7 @@ from psycopg.errors import UniqueViolation
 from psycopg.types.json import Jsonb
 from psycopg_pool import AsyncConnectionPool
 
-from app.legs.domain import LegData, LegKey, LegVersion, material_change
+from app.legs.domain import LegData, LegKey, LegVersion, is_new_version
 
 CONFIRMATION_SOURCE = "ya-sale:confirmation"
 
@@ -88,7 +88,7 @@ class LegRepository:
     async def record_version(self, key: LegKey, data: LegData, source_url: str, fetched_at: datetime) -> LegVersion:
         leg_id = await self.leg_id_of(key)
         existing = await self._versions_by_id(leg_id)
-        if existing and not material_change(existing[-1].data, data):
+        if existing and not is_new_version(existing[-1].data, data):
             newest = existing[-1]
             async with self._pool.connection() as conn:
                 await conn.execute("UPDATE leg_versions SET fetched_at = %s WHERE id = %s", (fetched_at, newest.id))

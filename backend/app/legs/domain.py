@@ -84,6 +84,11 @@ def material_change(a: LegData, b: LegData) -> bool:
     return _price_change(a, b) or _duration_change(a, b) or _departure_change(a, b)
 
 
+def is_new_version(newest: LegData, candidate: LegData) -> bool:
+    # A price nobody had before is worth its own version, even when the trip itself did not change.
+    return material_change(newest, candidate) or (has_price(candidate) and not has_price(newest))
+
+
 def display_version(versions: list[LegVersion]) -> LegVersion:
     if leg_status(versions) == "confirmed":
         return next(v for v in reversed(versions) if v.confirmations > 0)

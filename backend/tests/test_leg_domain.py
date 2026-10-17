@@ -3,7 +3,7 @@ from datetime import UTC, datetime
 from decimal import Decimal
 
 from app.legs.domain import (
-    LegData, LegVersion, completeness, display_version, has_price, leg_status, material_change, normalize_place,
+    LegData, LegVersion, completeness, display_version, has_price, is_new_version, leg_status, material_change, normalize_place,
 )
 
 T0 = datetime(2026, 10, 17, tzinfo=UTC)
@@ -101,3 +101,10 @@ def test_a_priced_leg_ranks_above_an_unpriced_one_with_more_fields():
 def test_among_priced_legs_more_filled_fields_rank_higher():
     assert completeness(data(price=(10, 15), duration=90)) > completeness(data(price=(10, 15)))
 
+
+def test_a_price_found_for_an_unpriced_leg_is_a_new_version():
+    assert is_new_version(data(duration=90), data(price=(10, 15), duration=90))
+
+
+def test_losing_the_price_is_not_a_new_version():
+    assert not is_new_version(data(price=(10, 15), duration=90), data(duration=90))
