@@ -7,6 +7,19 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 13:45 · Cambio · Reglas de confianza de los tramos
+
+- **Qué:** el dominio de tramos en `backend/app/legs/domain.py`.
+- **Cuándo un dato nuevo es "otro dato":**
+  - los rangos de precio no se tocan;
+  - la duración cambia más de 25%;
+  - el paradero normalizado es distinto.
+
+  Si los precios se solapan, por ejemplo S/12 contra S/10–15, no hay disputa.
+- **Estados:** "confirmado" solo si una persona confirmó; "en disputa" si después de lo
+  confirmado llegó un dato materialmente distinto.
+- **Prueba:** `pytest tests/test_leg_domain.py` → 11 passed.
+
 ### 13:44 · Cambio · Esqueleto del backend
 
 - **Qué:** FastAPI con configuración que falla si falta cualquier variable requerida (nombra
