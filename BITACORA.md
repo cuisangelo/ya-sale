@@ -7,6 +7,28 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 17:23 · Cambio · Las opciones de kupos, Civa y SKY abren la búsqueda del día del viaje
+
+- **Qué:** `datedLink` en `web/lib/format.ts` reescribe el enlace de una opción cuando el sitio
+  acepta el viaje en la URL: kupos y Civa (que corre sobre kupos) abren
+  `/es/pasajes-bus/{origen},peru/{destino},peru?date_onward=DD-MM-AAAA`, y SKY abre
+  `initial-sale.skyairline.com` con los códigos IATA del tramo y la fecha. Antes llevaban a la
+  portada o a una búsqueda con otra fecha. Si un pueblo no tiene aeropuerto conocido, o el sitio
+  es otro, el enlace queda igual.
+- **Pruebas:** 2 tests nuevos, que fallaron antes de implementar; la web suma 35/35, `tsc` y
+  build en verde. En Chrome headless, el enlace de SKY LIM → CUZ del 25-10 listó vuelos
+  (04:50 → 06:15, S/ 233,58). El de kupos Lima → Huancayo dejó el buscador lleno, pero headless no
+  muestra resultados de kupos; la plantilla la verificó el coordinador en un navegador real.
+
+### 17:21 · Prueba · Oltursa funciona desde Lambda junto a Cruz del Sur
+
+- **Deploy:** PR #14 mergeado (merge `295ece1`); el run 39074527537 terminó con backend, web y
+  deploy en verde (22:20:06 UTC).
+- **Prueba en producción:** `POST /api/trips` con Lima → Trujillo del 2026-10-22 → 200 en 21 s.
+  `leg_departures` trajo 23 salidas intercaladas por hora: 16 de cruzdelsur.com.pe y 7 de
+  oltursa.pe (08:00 CDS S/85, 09:05 CDS S/85, 10:00 Oltursa V.RELAX 180 S/80 con 30 asientos,
+  11:15 Oltursa S/80, 19:30 CDS S/100…).
+
 ### 17:20 · Prueba · El extractor con Sonnet 5.5 funciona en producción
 
 - **Deploy:** el run 39074400710 (`4104e11`) quedó cancelado sin jobs, porque el merge del

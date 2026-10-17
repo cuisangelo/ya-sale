@@ -1,6 +1,7 @@
 import { type ReactNode, useState } from "react";
 import type { Departure, Hop, LegSlot, Mode, Option, Version } from "../lib/api";
 import {
+  datedLink,
   departureClock,
   departuresHeading,
   formatDuration,
@@ -17,6 +18,7 @@ import {
   purchaseUrl,
   seatsLabel,
   sourceLabel,
+  type TripDay,
 } from "../lib/format";
 import { LoadingWords } from "./LoadingWords";
 import { ModeIcon } from "./ModeIcon";
@@ -89,7 +91,12 @@ export function HopCard({ index, hop, slots, selected, departures, date, active,
       )}
 
       {slot && summary ? (
-        <LegDetails slot={slot} version={summary.version} town={hop.origin} now={now}>
+        <LegDetails
+          slot={slot}
+          version={summary.version}
+          trip={{ origin: hop.origin, destination: hop.destination, date }}
+          now={now}
+        >
           <DepartureList departures={departures} date={date} />
         </LegDetails>
       ) : (
@@ -124,12 +131,12 @@ function PendingLeg({ mode, hop }: { mode: Mode; hop: Hop }) {
 interface LegDetailsProps {
   slot: LegSlot;
   version: Version;
-  town: string;
+  trip: TripDay;
   now: number;
   children: ReactNode;
 }
 
-function LegDetails({ slot, version, town, now, children }: LegDetailsProps) {
+function LegDetails({ slot, version, trip, now, children }: LegDetailsProps) {
   const price = formatPrice(version.price_min_pen, version.price_max_pen);
   const buy = purchaseUrl(version.purchase_url);
   const note = [version.operator, version.schedule_note].filter(Boolean).join(". ");
@@ -154,7 +161,7 @@ function LegDetails({ slot, version, town, now, children }: LegDetailsProps) {
           </span>
           <a
             className="maps-link"
-            href={mapsDirectionsUrl(version.departure_point, town)}
+            href={mapsDirectionsUrl(version.departure_point, trip.origin)}
             target="_blank"
             rel="noreferrer"
           >
@@ -173,7 +180,7 @@ function LegDetails({ slot, version, town, now, children }: LegDetailsProps) {
       {slot.error ? <p className="leg-error">{slot.error}</p> : null}
 
       {children}
-      {slot.options.length > 1 ? <OptionList options={slot.options} /> : null}
+      {slot.options.length > 1 ? <OptionList options={slot.options} trip={trip} /> : null}
     </div>
   );
 }
@@ -214,13 +221,13 @@ function DepartureList({ departures, date }: { departures: Departure[]; date: st
   );
 }
 
-function OptionList({ options }: { options: Option[] }) {
+function OptionList({ options, trip }: { options: Option[]; trip: TripDay }) {
   return (
     <details className="options">
       <summary>Ver las {options.length} opciones que encontramos</summary>
       <ul>
         {options.map((option, position) => {
-          const link = optionLink(option);
+          const link = datedLink(optionLink(option), trip);
           const content = (
             <>
               <OptionLogo operator={option.operator} link={link} />

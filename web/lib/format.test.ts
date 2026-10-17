@@ -1,6 +1,7 @@
 import { expect, test } from "vitest";
 import type { LegSlot, Option, Version } from "./api";
 import {
+  datedLink,
   departureClock,
   departuresHeading,
   initials,
@@ -112,4 +113,24 @@ test("seats read in singular and plural, and unknown seats say nothing", () => {
   expect(seatsLabel(12)).toBe("12 asientos libres");
   expect(seatsLabel(0)).toBe("agotado");
   expect(seatsLabel(null)).toBeNull();
+});
+
+test("links to sellers that take the trip in the URL open that day's search", () => {
+  const trip = { origin: "Lima", destination: "Huancayo", date: "2026-10-25" };
+  expect(datedLink("https://kupos.pe/es/pasajes-bus/lima,peru/huancayo,peru?date_onward=17-10-2026", trip)).toBe(
+    "https://kupos.pe/es/pasajes-bus/lima,peru/huancayo,peru?date_onward=25-10-2026",
+  );
+  expect(datedLink("https://www.civa.com.pe/", { ...trip, destination: "Cerro de Pasco" })).toBe(
+    "https://www.civa.com.pe/es/pasajes-bus/lima,peru/cerro-de-pasco,peru?date_onward=25-10-2026",
+  );
+  expect(datedLink("https://www.skyairline.com/peru", { ...trip, destination: "Cusco" })).toBe(
+    "https://initial-sale.skyairline.com/es/peru?origin=LIM&destination=CUZ&departureDate=2026-10-25&arrivalDate=2026-10-25&flightType=OW&ADT=1",
+  );
+});
+
+test("links that cannot carry the trip stay as they are", () => {
+  const trip = { origin: "Lima", destination: "Sauce", date: "2026-10-25" };
+  expect(datedLink("https://www.skyairline.com/peru", trip)).toBe("https://www.skyairline.com/peru");
+  expect(datedLink("https://www.movilbus.pe/", trip)).toBe("https://www.movilbus.pe/");
+  expect(datedLink(null, trip)).toBeNull();
 });
