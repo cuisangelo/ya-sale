@@ -1,9 +1,9 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
-    { "source": "/api/:path*", "destination": "https://ibiarhyx7y.us-east-1.awsapprunner.com/api/:path*" },
-    { "source": "/mcp", "destination": "https://ibiarhyx7y.us-east-1.awsapprunner.com/mcp/" },
-    { "source": "/mcp/", "destination": "https://ibiarhyx7y.us-east-1.awsapprunner.com/mcp/" },
-    { "source": "/mcp/:path*", "destination": "https://ibiarhyx7y.us-east-1.awsapprunner.com/mcp/:path*" }
+    { "source": "/api/:path*", "destination": "https://barnocwcs3eulnrdzn7xaxvxo40qszdf.lambda-url.us-east-1.on.aws/api/:path*" },
+    { "source": "/mcp", "destination": "https://barnocwcs3eulnrdzn7xaxvxo40qszdf.lambda-url.us-east-1.on.aws/mcp/" },
+    { "source": "/mcp/", "destination": "https://barnocwcs3eulnrdzn7xaxvxo40qszdf.lambda-url.us-east-1.on.aws/mcp/" },
+    { "source": "/mcp/:path*", "destination": "https://barnocwcs3eulnrdzn7xaxvxo40qszdf.lambda-url.us-east-1.on.aws/mcp/:path*" }
   ]
 }

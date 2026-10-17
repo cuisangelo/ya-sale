@@ -49,10 +49,8 @@ aws iam put-role-policy --role-name "$ROLE" --policy-name deploy-ya-sale --polic
       \"ecr:BatchCheckLayerAvailability\", \"ecr:BatchGetImage\", \"ecr:CompleteLayerUpload\",
       \"ecr:InitiateLayerUpload\", \"ecr:PutImage\", \"ecr:UploadLayerPart\"],
      \"Resource\": \"arn:aws:ecr:$REGION:$ACCOUNT:repository/$APP\"},
-    {\"Effect\": \"Allow\", \"Action\": \"apprunner:ListServices\", \"Resource\": \"*\"},
-    {\"Effect\": \"Allow\", \"Action\": [\"apprunner:UpdateService\", \"apprunner:DescribeService\"],
-     \"Resource\": \"arn:aws:apprunner:$REGION:$ACCOUNT:service/$APP/*\"},
-    {\"Effect\": \"Allow\", \"Action\": \"iam:PassRole\", \"Resource\": \"arn:aws:iam::$ACCOUNT:role/$APP-ecr-access\"}
+    {\"Effect\": \"Allow\", \"Action\": [\"lambda:GetFunction\", \"lambda:UpdateFunctionCode\", \"lambda:GetFunctionConfiguration\", \"lambda:GetFunctionUrlConfig\"],
+     \"Resource\": \"arn:aws:lambda:$REGION:$ACCOUNT:function:$APP-api\"}
   ]
 }"
 

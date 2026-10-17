@@ -7,6 +7,37 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 15:45 · Deploy · La API pasa de App Runner a AWS Lambda
+
+- **Por qué:** App Runner tardaba unos 10 minutos por deploy. Cuiso pidió deploys rápidos y
+  eligió Lambda, después de comparar Lambda contra ECS: Lambda despliega en ~2–3 min, ECS en
+  ~5–7 y con balanceador.
+- **Cómo:**
+  - la misma imagen con el Lambda Web Adapter oficial (0.9.1), que corre uvicorn y transmite
+    SSE con Function URL `RESPONSE_STREAM`;
+  - función `ya-sale-api` en las subredes privadas y el security group del conector, así que
+    sigue llegando al RDS privado;
+  - 2 GB, 300 s de timeout y concurrencia reservada de 10;
+  - pool de Postgres de 4 conexiones por instancia, para no pasar las ~80 del RDS.
+- **Medido en la Function URL:**
+  - en frío, 23,7 s (la primera llamada tras una imagen nueva);
+  - en caliente, 0,8 s;
+  - un viaje real Cusco → Aguas Calientes empezó a transmitir en 0,6 s y terminó en 32 s, con
+    `trip_mapped` y tramos por modo, es decir el contrato nuevo del PR #5;
+  - `POST /mcp` → 200.
+- **Cambio de tráfico:** Vercel ahora reenvía `/api/*` y `/mcp` a la Function URL.
+- **CD:**
+  - compara `main` contra la imagen que corre Lambda y actualiza el código de la función;
+  - el rol de GitHub solo puede subir a ECR y actualizar `ya-sale-api`.
+- **Límite de viajes:** pasa a Postgres en el PR #8 (sesión ya-sale-precios), porque Lambda
+  corre varias instancias.
+- **Antes, en el camino:**
+  - el backend del PR #5 nunca se había desplegado, porque las corridas pendientes se
+    reemplazan entre sí;
+  - se repromovió en Vercel la web anterior, se desplegó el backend a mano y se corrigió el CD
+    para comparar contra lo que está vivo.
+- **App Runner:** queda como respaldo hasta confirmar Lambda en producción.
+
 ### 15:38 · Cambio · Vista de viaje: carga que se nota viva
 
 - **Por qué:** mientras el backend arma la cadena de tramos solo se veía "Armando tu viaje…",
