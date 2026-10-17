@@ -56,27 +56,25 @@ test("totals add the selected legs and stay unknown when one leg has no price", 
   expect(itineraryTotals([slot(["100", "140"], 1560), slot([null, null], null)])).toEqual({ price: null, duration: null });
 });
 
-test("optionLink opens the seller's purchase page, else the route page it was read from", () => {
-  expect(
-    optionLink({
-      purchase_url: "https://kupos.pe/es/pasajes-bus/lima,peru/tarapoto,peru",
-      source_url: "https://kupos.pe/es/buses/lima/tarapoto",
-    }),
-  ).toBe("https://kupos.pe/es/pasajes-bus/lima,peru/tarapoto,peru");
-  expect(optionLink({ purchase_url: null, source_url: "https://www.checkmybus.pe/lima-lp/tarapoto-sm" })).toBe(
-    "https://www.checkmybus.pe/lima-lp/tarapoto-sm",
+test("optionLink opens the purchase page, else the operator's own site, else the page it was read from", () => {
+  const buscobus = "https://buscobus.pe/horarios-y-pasajes/lima-barranca-en-bus/";
+  const link = (operator: string | null, purchase_url: string | null, source_url = buscobus) =>
+    optionLink({ operator, purchase_url, source_url });
+  expect(link("Movil Tours", "https://kupos.pe/es/pasajes-bus/lima,peru/barranca,peru")).toBe(
+    "https://kupos.pe/es/pasajes-bus/lima,peru/barranca,peru",
   );
-  expect(optionLink({ purchase_url: "javascript:alert(1)", source_url: "ftp://x.test/a" })).toBeNull();
+  expect(link("Movil Tours", null)).toBe("https://www.movilbus.pe/");
+  expect(link("Perú Rail", null)).toBe("https://www.perurail.com/");
+  expect(link("LATAM Airlines", null)).toBe("https://www.latamairlines.com/pe/es");
+  expect(link("Línea 44", null)).toBe(buscobus);
+  expect(link("Automovil Express", null)).toBe(buscobus);
+  expect(link(null, "javascript:alert(1)", "ftp://x.test/a")).toBeNull();
 });
 
-test("logoDomain shows the operator's own brand when known, else the site that sells it", () => {
-  const checkmybus = "https://www.checkmybus.pe/lima-lp/tarapoto-sm";
-  expect(logoDomain("LATAM Airlines", checkmybus)).toBe("latamairlines.com");
-  expect(logoDomain("Perú Rail", null)).toBe("perurail.com");
-  expect(logoDomain("Movil Bus", checkmybus)).toBe("movilbus.pe");
-  expect(logoDomain("Via Pacifico", checkmybus)).toBe("checkmybus.pe");
-  expect(logoDomain("Automovil Express", checkmybus)).toBe("checkmybus.pe");
-  expect(logoDomain(null, null)).toBeNull();
+test("logoDomain is the site the option's link opens", () => {
+  expect(logoDomain("https://www.checkmybus.pe/lima-lp/tarapoto-sm")).toBe("checkmybus.pe");
+  expect(logoDomain("https://www.movilbus.pe/")).toBe("movilbus.pe");
+  expect(logoDomain(null)).toBeNull();
 });
 
 test("logoSrc points at the logo stored with the web", () => {

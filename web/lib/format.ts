@@ -137,35 +137,37 @@ export function sourceLabel(sourceUrl: string): string {
   return sourceUrl;
 }
 
-export function optionLink(option: Pick<Option, "purchase_url" | "source_url">): string | null {
-  return purchaseUrl(option.purchase_url) ?? purchaseUrl(option.source_url);
-}
-
-// Operators whose own site has a usable logo; matched as whole words so "Movil" never matches "Automovil".
-const OPERATOR_DOMAINS: [string, string][] = [
-  ["latam", "latamairlines.com"],
-  ["sky airline", "skyairline.com"],
-  ["jetsmart", "jetsmart.com"],
-  ["star peru", "starperu.com"],
-  ["cruz del sur", "cruzdelsur.com.pe"],
-  ["oltursa", "oltursa.pe"],
-  ["civa", "civa.com.pe"],
-  ["movil", "movilbus.pe"],
-  ["peru rail", "perurail.com"],
-  ["perurail", "perurail.com"],
-  ["inca rail", "incarail.com"],
+// Operators that sell on their own site; matched as whole words so "Movil" never matches "Automovil".
+const OPERATOR_SITES: [string, string][] = [
+  ["latam", "https://www.latamairlines.com/pe/es"],
+  ["sky airline", "https://www.skyairline.com/peru"],
+  ["jetsmart", "https://jetsmart.com/pe/es/"],
+  ["star peru", "https://www.starperu.com/"],
+  ["cruz del sur", "https://www.cruzdelsur.com.pe/"],
+  ["oltursa", "https://www.oltursa.pe/"],
+  ["civa", "https://www.civa.com.pe/"],
+  ["movil", "https://www.movilbus.pe/"],
+  ["peru rail", "https://www.perurail.com/"],
+  ["perurail", "https://www.perurail.com/"],
+  ["inca rail", "https://incarail.com/"],
 ];
 
 function words(text: string): string {
   return ` ${text.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim()} `;
 }
 
-export function logoDomain(operator: string | null, link: string | null): string | null {
-  if (operator) {
-    const name = words(operator);
-    const known = OPERATOR_DOMAINS.find(([key]) => name.includes(` ${key} `));
-    if (known) return known[1];
-  }
+function operatorSite(operator: string | null): string | null {
+  if (!operator) return null;
+  const name = words(operator);
+  return OPERATOR_SITES.find(([key]) => name.includes(` ${key} `))?.[1] ?? null;
+}
+
+export function optionLink(option: Pick<Option, "operator" | "purchase_url" | "source_url">): string | null {
+  return purchaseUrl(option.purchase_url) ?? operatorSite(option.operator) ?? purchaseUrl(option.source_url);
+}
+
+// The logo always names the site the link opens, so the row never promises one site and opens another.
+export function logoDomain(link: string | null): string | null {
   if (!link) return null;
   return new URL(link).host.replace(/^www\./, "");
 }

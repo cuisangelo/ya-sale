@@ -180,7 +180,11 @@ function OptionList({ options }: { options: Option[] }) {
                 <strong>{formatPrice(option.price_min_pen, option.price_max_pen) ?? "sin precio"}</strong>
                 {option.duration_min != null ? <span>{formatDuration(option.duration_min)}</span> : null}
               </div>
-              <span className="option-source mono">{sourceLabel(link ?? option.source_url)}</span>
+              <span className="option-source mono">
+                {link && sourceLabel(link) !== sourceLabel(option.source_url)
+                  ? `${sourceLabel(link)} · dato de ${sourceLabel(option.source_url)}`
+                  : sourceLabel(option.source_url)}
+              </span>
             </>
           );
           return (
@@ -201,7 +205,7 @@ function OptionList({ options }: { options: Option[] }) {
 }
 
 function OptionLogo({ operator, link }: { operator: string | null; link: string | null }) {
-  const domain = logoDomain(operator, link);
+  const domain = logoDomain(link);
   const [missing, setMissing] = useState(false);
   const label = operator ?? domain ?? "?";
   return (

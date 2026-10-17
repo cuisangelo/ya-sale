@@ -7,6 +7,21 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 16:28 · Cambio · El logo de cada opción es el del sitio al que lleva el clic
+
+- **Problema que vio Cuiso:** en Lima → Barranca la fila "Movil Tours" mostraba el logo de
+  Movil Bus, pero abría `buscobus.pe/horarios-y-pasajes/lima-barranca-en-bus/`.
+- **Regla nueva:** el enlace va al `purchase_url`; si no hay y la empresa es conocida, a su
+  propia web (Movil Bus, Civa, Oltursa, Cruz del Sur, LATAM, SKY, JetSMART, Star Perú,
+  PeruRail, Inca Rail); si tampoco, a la página de la ruta de donde se leyó. El logo siempre
+  sale del dominio del enlace, así que logo y destino no pueden contradecirse.
+- **Procedencia:** cuando el destino no es la fuente del dato, la fila dice
+  `www.movilbus.pe · dato de buscobus.pe`.
+- **Pruebas:** los tests de `optionLink` y `logoDomain` se reescribieron para la regla nueva.
+  Fallaron (2) antes de implementar y después pasaron; la web suma 28/28. `tsc` y build en
+  verde. Las webs de las empresas responden 200 a `curl`, salvo LATAM (corta HTTP/2) y Civa
+  (403), que bloquean clientes que no son navegador.
+
 ### 16:22 · Cambio · Las opciones llevan directo a la ruta y muestran el logo de quien vende
 
 - **Pedido de Cuiso:** al hacer clic en una opción, llegar directo a la compra de esa ruta, y

@@ -4,7 +4,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 
 const DOMAINS = [
-  // operators, matching OPERATOR_DOMAINS in lib/format.ts
+  // operators, matching OPERATOR_SITES in lib/format.ts
   "latamairlines.com",
   "skyairline.com",
   "jetsmart.com",
