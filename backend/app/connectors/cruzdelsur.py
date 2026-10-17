@@ -68,7 +68,14 @@ class CruzDelSurSource:
         destination_slug = self._slugs.get(normalize_place(destination))
         if origin_slug is None or destination_slug is None:
             return []
-        result = await self._search(origin_slug, destination_slug, travel_date)
+        try:
+            result = await self._search(origin_slug, destination_slug, travel_date)
+        except httpx.HTTPStatusError as exc:
+            if exc.response.status_code != 401:
+                raise
+            # Their key rotated since this instance read it; read it again once, then let a second 401 surface.
+            self._auth = await self._fetch_auth()
+            result = await self._search(origin_slug, destination_slug, travel_date)
         return [
             self._departure(trip, result.lines)
             for trip in result.trips
@@ -76,7 +83,7 @@ class CruzDelSurSource:
         ]
 
     async def _fetch_auth(self) -> dict[str, str]:
-        # The public key their own web app reads at startup; it can rotate, so it is never stored.
+        # The public key their own web app reads at startup; it is kept in memory only, never logged.
         body = await self._get("/config")
         return {"Authorization": f"Token token={body['config']['environment_variables']['api']['desktopKey']}"}
 

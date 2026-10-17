@@ -7,6 +7,23 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 17:12 · Prueba · Cruz del Sur funciona desde Lambda: salidas exactas en producción
+
+- **Deploy:** PR #12 mergeado como `845c592`; el run 39073700273 de CI/CD terminó con
+  backend, web y deploy en verde (deploy 22:07:58 UTC).
+- **Prueba en producción:** `POST https://yasale.cuisangelo.com/api/trips` con Lima → Trujillo
+  del 2026-10-22 → 200 en 50 s, con los eventos `trip_started, leg_stored ×2, trip_mapped,
+  leg_departures, leg_refreshed ×2, trip_done`. `leg_departures` trajo 16 salidas ordenadas:
+  08:00 → 19:50 S/85 46 asientos, 09:05 → 19:50 S/85, 19:30 → 06:45 S/100…
+- **Enlace generado desde Lambda:** su id termina en `_3_us` (desde Lima, `_3_pe`). Abierto en
+  un Chrome limpio, mostró "Lima - Trujillo · 08:00 - 22 Oct · 46 Libres".
+- **Web pública:** `yasale.cuisangelo.com/viaje?o=Lima&d=Trujillo&f=2026-10-22`, en un Chrome
+  headless sin sesión, mostró "Salidas del jueves 22 de octubre" con 16 filas, cada una con su
+  enlace y logo.
+- **Ajuste de la revisión:** si Cruz del Sur rota su clave pública, una búsqueda con 401 vuelve
+  a leer `/config` y reintenta una vez; un segundo 401 se registra como fallo de la fuente.
+  2 tests nuevos; el backend suma 119/119.
+
 ### 17:06 · Decisión · El agente de compra (nivel 2) queda fuera por ahora
 
 - **Qué era:** un agente con computer use que abriera la salida en el sitio del vendedor,
