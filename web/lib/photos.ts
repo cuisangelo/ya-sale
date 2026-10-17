@@ -40,10 +40,11 @@ export async function destinationPhoto(
   place: string,
   point: Point,
   fetcher: typeof fetch = fetch,
-  storage: Store | undefined = globalThis.localStorage,
+  storage?: Store,
 ): Promise<Photo | null> {
+  const store = storage ?? browserStorage();
   const key = `photo:${point[0].toFixed(3)},${point[1].toFixed(3)}`;
-  const cached = memory.get(key) ?? readStored(storage, key);
+  const cached = memory.get(key) ?? readStored(store, key);
   if (cached) return cached;
 
   const file =
@@ -55,11 +56,20 @@ export async function destinationPhoto(
   const photo = await credit(file, fetcher);
   memory.set(key, photo);
   try {
-    storage?.setItem(key, JSON.stringify(photo));
+    store?.setItem(key, JSON.stringify(photo));
   } catch {
     // Private windows throw on write; the in-memory copy still serves this visit.
   }
   return photo;
+}
+
+// Reading window.localStorage itself throws a SecurityError when site data is blocked.
+function browserStorage(): Store | undefined {
+  try {
+    return globalThis.localStorage;
+  } catch {
+    return undefined;
+  }
 }
 
 function readStored(storage: Store | undefined, key: string): Photo | null {

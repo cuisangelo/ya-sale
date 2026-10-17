@@ -1,4 +1,4 @@
-import { expect, test, vi } from "vitest";
+import { afterEach, expect, test, vi } from "vitest";
 import { destinationPhoto, isPhotoFile, plainText } from "./photos";
 
 type Article = { title: string; lat?: number; lon?: number; image?: string };
@@ -140,4 +140,35 @@ test("serves a cached photo without fetching and survives a storage that throws"
   };
   const other = wiki({ Tarapoto: { title: "Tarapoto", lat: -6.49, lon: -76.36, image: "T.jpg" } });
   expect((await destinationPhoto("Tarapoto", [-6.49, -76.36], other, broken))?.url).toContain("T.jpg");
+});
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+  vi.resetModules();
+});
+
+test("still fetches the photo when reading window.localStorage throws", async () => {
+  Object.defineProperty(globalThis, "localStorage", {
+    configurable: true,
+    get() {
+      throw new Error("SecurityError");
+    },
+  });
+  const fetcher = wiki({ Chivay: { title: "Chivay", lat: -15.64, lon: -71.6, image: "C.jpg" } });
+
+  try {
+    expect((await destinationPhoto("Chivay", [-15.64, -71.6], fetcher))?.url).toContain("C.jpg");
+  } finally {
+    Reflect.deleteProperty(globalThis, "localStorage");
+  }
+});
+
+test("reads a stored photo without fetching when memory is empty", async () => {
+  const { destinationPhoto: fresh } = await import("./photos");
+  const stored = { url: "u", author: "a", license: "l", page: "p" };
+  const storage = { getItem: () => JSON.stringify(stored), setItem: () => {} };
+  const fetcher = vi.fn<typeof fetch>();
+
+  expect(await fresh("Paracas", [-13.83, -76.25], fetcher, storage)).toEqual(stored);
+  expect(fetcher).not.toHaveBeenCalled();
 });
