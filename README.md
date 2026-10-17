@@ -8,7 +8,7 @@ Proyecto del equipo **Kekero** para [Hack the Andes](https://hacktheandes.com).
 
 ## Estado
 
-Repositorio recién creado. La idea del producto todavía no está definida.
+La idea está en [IDEA.md](IDEA.md): un viaje de Lima a Sauce (Laguna Azul), sin tour. Bus o avión hasta Tarapoto, y de ahí el auto local solo si alguien que lo toma lo confirmó.
 
 Toda la información del evento (fechas, entrega, demo, rúbrica, créditos) está en [GUIDE.md](GUIDE.md).
 
