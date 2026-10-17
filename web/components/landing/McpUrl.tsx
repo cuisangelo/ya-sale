@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import styles from "../../app/landing.module.css";
 
-// The trailing slash matters: the server answers MCP on /mcp/ and rejects a POST to /mcp.
+// /mcp/ is where the MCP app is mounted, so it works on every deployed backend version.
 const MCP_PATH = "/mcp/";
 
 export function McpUrl() {
