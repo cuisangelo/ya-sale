@@ -15,6 +15,7 @@ TEST_ENV = {
     "FINGERPRINT_SALT": "test-salt",
     "TEAM_FINGERPRINTS": "team-fp",
     "GOOGLE_MAPS_API_KEY": "test",
+    "AERODATABOX_API_KEY": "test",
 }
 
 

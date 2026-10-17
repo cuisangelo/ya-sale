@@ -1,0 +1,52 @@
+{
+  "departures": [
+    {
+      "departure": {
+        "scheduledTime": {"utc": "2026-10-22 09:50Z", "local": "2026-10-22 04:50-05:00"},
+        "terminal": "1",
+        "quality": ["Basic"]
+      },
+      "arrival": {
+        "airport": {"icao": "SPZO", "iata": "CUZ", "name": "Cusco", "timeZone": "America/Lima"},
+        "scheduledTime": {"utc": "2026-10-22 11:15Z", "local": "2026-10-22 06:15-05:00"},
+        "quality": ["Basic"]
+      },
+      "number": "H2 5001",
+      "status": "Expected",
+      "codeshareStatus": "IsOperator",
+      "isCargo": false,
+      "airline": {"name": "Sky Airline Peru", "iata": "H2", "icao": "SKX"}
+    },
+    {
+      "departure": {
+        "scheduledTime": {"utc": "2026-10-22 10:25Z", "local": "2026-10-22 05:25-05:00"},
+        "quality": ["Basic"]
+      },
+      "arrival": {
+        "airport": {"icao": "SPQU", "iata": "AQP", "name": "Arequipa", "timeZone": "America/Lima"},
+        "scheduledTime": {"utc": "2026-10-22 11:55Z", "local": "2026-10-22 06:55-05:00"},
+        "quality": ["Basic"]
+      },
+      "number": "LA 2111",
+      "status": "Expected",
+      "codeshareStatus": "IsOperator",
+      "isCargo": false,
+      "airline": {"name": "LATAM", "iata": "LA", "icao": "LPE"}
+    },
+    {
+      "departure": {
+        "scheduledTime": {"utc": "2026-10-22 13:05Z", "local": "2026-10-22 08:05-05:00"},
+        "quality": ["Basic"]
+      },
+      "arrival": {
+        "airport": {"icao": "SPZO", "iata": "CUZ", "name": "Cusco", "timeZone": "America/Lima"},
+        "quality": []
+      },
+      "number": "JA 7005",
+      "status": "Expected",
+      "codeshareStatus": "IsOperator",
+      "isCargo": false,
+      "airline": {"name": "JetSMART", "iata": "JA", "icao": "JAT"}
+    }
+  ]
+}

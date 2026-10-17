@@ -10,13 +10,14 @@ FULL_ENV = {
     "FINGERPRINT_SALT": "s",
     "TEAM_FINGERPRINTS": "fp1,fp2",
     "GOOGLE_MAPS_API_KEY": "g",
+    "AERODATABOX_API_KEY": "adb",
 }
 
 
 def test_missing_vars_are_all_named():
     with pytest.raises(ConfigError) as exc:
         load_settings({"ANTHROPIC_API_KEY": "x"})
-    for name in ("TAVILY_API_KEY", "EXA_API_KEY", "DATABASE_URL", "FINGERPRINT_SALT", "TEAM_FINGERPRINTS", "GOOGLE_MAPS_API_KEY"):
+    for name in ("TAVILY_API_KEY", "EXA_API_KEY", "DATABASE_URL", "FINGERPRINT_SALT", "TEAM_FINGERPRINTS", "GOOGLE_MAPS_API_KEY", "AERODATABOX_API_KEY"):
         assert name in str(exc.value)
 
 

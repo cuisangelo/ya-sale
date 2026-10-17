@@ -14,6 +14,7 @@ from app.api.guards import RateLimiter
 from app.api.routes import router
 from app.compare.service import CompareService
 from app.config import Settings, load_settings
+from app.connectors.aerodatabox import AeroDataBoxSource
 from app.connectors.cruzdelsur import CruzDelSurSource
 from app.connectors.extractor import LegExtractor
 from app.connectors.geocoding import GoogleGeocoder
@@ -53,6 +54,7 @@ def build_services(settings: Settings, pool) -> Services:
         OltursaSource(httpx.AsyncClient(timeout=10)),
         IttsaSource(httpx.AsyncClient(timeout=10)),
         LineaSource(lambda: httpx.AsyncClient(timeout=10)),
+        AeroDataBoxSource(httpx.AsyncClient(timeout=10), settings.aerodatabox_api_key, pause_s=1),
     )
     planner = TripPlanner(
         legs, LegExtractor(client), search, lambda: SearchBudget(MAX_SEARCHES_PER_TRIP), locator, departure_sources, RouteRepository(pool)

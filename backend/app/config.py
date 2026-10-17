@@ -9,6 +9,7 @@ REQUIRED_VARS = (
     "FINGERPRINT_SALT",
     "TEAM_FINGERPRINTS",
     "GOOGLE_MAPS_API_KEY",
+    "AERODATABOX_API_KEY",
 )
 
 
@@ -25,6 +26,7 @@ class Settings:
     fingerprint_salt: str
     team_fingerprints: frozenset[str]
     google_maps_api_key: str
+    aerodatabox_api_key: str
 
 
 def load_settings(env: Mapping[str, str]) -> Settings:
@@ -40,4 +42,5 @@ def load_settings(env: Mapping[str, str]) -> Settings:
         fingerprint_salt=env["FINGERPRINT_SALT"],
         team_fingerprints=frozenset(fp.strip() for fp in env["TEAM_FINGERPRINTS"].split(",") if fp.strip()),
         google_maps_api_key=env["GOOGLE_MAPS_API_KEY"],
+        aerodatabox_api_key=env["AERODATABOX_API_KEY"],
     )

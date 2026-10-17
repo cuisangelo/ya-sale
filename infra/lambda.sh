@@ -32,7 +32,7 @@ trap 'rm -f "$ENV_FILE"' EXIT
 python3 -I - "$ENV_FILE" "$PROFILE" "$REGION" "$APP" <<'PY'
 import json, subprocess, sys
 out, profile, region, app = sys.argv[1:]
-names = ["ANTHROPIC_API_KEY", "TAVILY_API_KEY", "EXA_API_KEY", "GOOGLE_MAPS_API_KEY", "DATABASE_URL", "FINGERPRINT_SALT"]
+names = ["ANTHROPIC_API_KEY", "TAVILY_API_KEY", "EXA_API_KEY", "GOOGLE_MAPS_API_KEY", "AERODATABOX_API_KEY", "DATABASE_URL", "FINGERPRINT_SALT"]
 values = {}
 for name in names:
     values[name] = subprocess.run(

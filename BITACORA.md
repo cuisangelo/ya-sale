@@ -63,6 +63,42 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 - **Cómo se usa:** las mismas páginas que abre un visitante, sin captcha, tokens, cabeceras
   firmadas ni Cloudflare (sirve IIS). No se entra a la selección de asientos ni se envían datos.
 
+### 18:37 · Decisión · Vuelos reales: AeroDataBox, y qué fuentes quedan fuera
+
+- **Pedido de Cuiso:** que los tramos en avión muestren vuelos reales del día del viaje
+  (número de vuelo, salida, llegada, aerolínea y un enlace a esa búsqueda), no datos
+  aproximados sacados de la web.
+- **Elegida: AeroDataBox** (plan Basic gratuito de RapidAPI). Es la única fuente legal que
+  encontramos con los vuelos programados de todas las aerolíneas (SKY, LATAM, JetSMART,
+  Star Perú) para una fecha futura. No trae tarifas, así que `price_pen` queda en `null`.
+  Límites: 400 unidades al mes, 1 llamada por segundo y ventanas de 12 h, así que un día
+  son dos llamadas. Términos del plan: "Commercial use: Not allowed" y "Attribution:
+  Required". Ya Sale es una demo sin fines comerciales y muestra `aerodatabox.com` como
+  fuente de cada vuelo. La cuenta la crea Cuiso.
+- **Quedan fuera:**
+  - **Lima Airport Partners** (lima-airport.com). Sus términos
+    (`/canales-digitales/terminos-y-condiciones`) dicen: "se compromete a no acceder, o
+    intentar acceder, a ninguno de los Servicios utilizando medios automatizados, incluidos
+    secuencias de comandos o rastreadores web". Además, su tablero solo cubre ayer, hoy y
+    mañana.
+  - **API de SKY:** pide una `Ocp-Apim-Subscription-Key` que está escrita en el JS del
+    sitio, y hay Cloudflare delante. Usarla sería tomar una credencial ajena. De SKY solo se
+    usa su búsqueda con fecha como enlace.
+  - **JetSMART:** su robots.txt dice `Disallow: https://booking.jetsmart.com/` y el host
+    responde 406 a clientes que no son navegador.
+  - **Star Perú:** su robots.txt y sus términos lo permitían y `Booking1` respondió por HTTP
+    simple. Una hora después respondió 403 con el desafío de Cloudflare ("Just a
+    moment..."). No se evade, así que solo queda como enlace.
+  - **LATAM:** bloqueo de Akamai.
+  - **Amadeus Self-Service:** se cerró el 17 jul 2026.
+  - **AviationStack:** el plan gratis no trae horarios futuros.
+  - **Airlabs:** solo cubre hasta 10 h adelante.
+  - **FlightAPI.io:** 20 llamadas en total.
+  - **Duffel:** cobra por reserva y no tiene SKY ni JetSMART.
+  - **Google Flights:** sus términos prohíben el scraping, así que solo se usa como enlace.
+- **Enlaces:** cada vuelo abre la búsqueda de su aerolínea para ese día (SKY y Star Perú).
+  Para LATAM, JetSMART y otras abre Google Flights con la ruta y la fecha.
+
 ### 18:31 · Cambio · Últimos arreglos de la revisión del rediseño
 
 - **Por qué:** la revisión de toda la rama encontró seis detalles antes de cerrar.
@@ -133,7 +169,6 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 - **Cómo se usa:** las mismas llamadas que hace su formulario en el navegador, sin captcha (el
   captcha del sitio solo protege el login de Puntos Linea), sin tokens ni cabeceras firmadas. No
   se entra a la selección de asientos ni se envían datos personales.
-
 
 ### 18:18 · Cambio · Las salidas en vivo dependen del modo de cada tramo, no solo del bus
 

@@ -51,8 +51,8 @@ interface Departure {
   arrives_at: string | null;
   price_pen: string | null;       // decimal as string, like Version prices
   seats_available: number | null;
-  booking_url: string;            // that departure's seat selection; only a seller without per-departure pages links to its list for that day
-  seller: string;                 // the domain that sells it, e.g. "movilbus.pe"
+  booking_url: string;            // that departure's seat selection; only a seller without per-departure pages links to its list for that day, and a flight links to its airline's search for that day
+  seller: string;                 // the domain that sells it, e.g. "movilbus.pe", or the flight data source, "aerodatabox.com"
 }
 
 interface LegSummary {

@@ -24,7 +24,10 @@ yasale.cuisangelo.com ──► Vercel (web estática de web/out)
 - **Salida a internet:** un NAT gateway, para que la función llegue a las APIs externas.
 - **Secretos:** las claves y el `DATABASE_URL` viven en SSM Parameter Store (`/ya-sale/*`,
   SecureString). `lambda.sh` los copia como variables de entorno de la función, que Lambda
-  guarda cifradas. Ningún script imprime un secreto.
+  guarda cifradas. Ningún script imprime un secreto. Las variables que exige el backend son
+  `ANTHROPIC_API_KEY`, `TAVILY_API_KEY`, `EXA_API_KEY`, `GOOGLE_MAPS_API_KEY`,
+  `AERODATABOX_API_KEY`, `DATABASE_URL`, `FINGERPRINT_SALT` y `TEAM_FINGERPRINTS` (lista en
+  `backend/.env.example`). Si falta una, el backend no arranca.
 - **Imagen:** ECR `ya-sale`, con escaneo al subir.
 - **CD:** GitHub Actions asume el rol `ya-sale-github-deploy` por OIDC, solo desde `main`. El
   rol solo puede subir a ECR y actualizar `ya-sale-api`. El job compara `main` con el commit
