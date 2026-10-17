@@ -7,6 +7,20 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 15:05 · Cambio · Web con las cuatro pantallas (delegada a Grok)
+
+- **Qué:** Next.js con export estático.
+  - Pantallas: inicio, itinerario en vivo por SSE, comparación y uso.
+  - Componentes: Franja, Logo, LegCard, StatusBadge, ModeIcon y LiveIndicator.
+  - Estilo: tokens del textil andino.
+- **Quién:** lo escribió Grok 4.7 por `cursor-agent`.
+- **Revisión:**
+  - usa exactamente los eventos y endpoints de `docs/API.md`;
+  - sin Tailwind, sin HTML inyectado, sin `localStorage` ni `console.log`;
+  - `pnpm vitest run` → 5 passed y `pnpm build` exporta las 4 páginas.
+- **Integración local:** el backend sirve la web y la API desde el mismo origen. `/`,
+  `/viaje/`, `/comparar/`, `/uso/`, `/api/health`, `/api/usage` y los SVG responden 200.
+
 ### 14:58 · Decisión · Dos sesiones paralelas de Claude
 
 - **`ca039a8c` · ya-sale-precios** (rama `feat/ya-sale-precios`): que más tramos vuelvan con

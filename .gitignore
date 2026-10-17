@@ -16,3 +16,4 @@ backend/.venv/
 web/out/
 web/.next/
 web/node_modules/
+backend/web/
