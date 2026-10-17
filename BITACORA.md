@@ -7,6 +7,21 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 17:44 · Cambio · Cada búsqueda guarda su destino resuelto y `GET /api/trips/recent` las lista
+
+- **Por qué:** la portada del rediseño mostrará las últimas búsquedas reales con una foto
+  tomada de las coordenadas del destino. El destino que escribe la persona suele ser distinto
+  del lugar donde el planificador termina la ruta, así que hay que guardar este último.
+- **Qué cambia:** `trips` suma `resolved_destination`, `destination_lat` y `destination_lng`.
+  Al llegar `TripMapped`, `create_trip` busca el punto del último tramo (el destino de
+  `TripStarted.hops[-1]`) y lo guarda con `UsageRepository.resolve_trip`. El nuevo
+  `GET /api/trips/recent` devuelve hasta 8 viajes con ruta y destino ubicado, sin huella,
+  uno por par origen/destino sin distinguir mayúsculas, los más nuevos primero, y excluye al equipo.
+- **Pruebas:** los 4 tests `-k recent` fallaron antes de implementar (columna inexistente).
+  Después, `docker compose run --rm backend uv run pytest -q` dio `134 passed`.
+  Mutación: sin `AND resolved_destination IS NOT NULL` en el SQL, falla
+  `test_recent_skips_trips_whose_last_stop_was_not_located` (1 failed, 3 passed); revertido.
+
 ### 17:32 · Cambio · El MCP devuelve las salidas en vivo con su enlace al asiento
 
 - **Por qué:** la identidad que sostiene Ya Sale frente a "ChatGPT ya lo busca" es el

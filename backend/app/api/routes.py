@@ -11,7 +11,7 @@ from app.departures.serialization import departure_json
 from app.legs.domain import LegKey, LegVersion, display_version, leg_status
 from app.legs.repository import AlreadyConfirmed, LegNotFound
 from app.legs.serialization import leg_summary_json, option_json, version_json
-from app.trips.events import LegDepartures, LegRefreshed, LegStored, TripEvent
+from app.trips.events import LegDepartures, LegRefreshed, LegStored, TripEvent, TripMapped, TripStarted
 
 router = APIRouter(prefix="/api")
 
@@ -76,10 +76,22 @@ async def create_trip(body: TripRequest, request: Request) -> StreamingResponse:
     trip_id = await services.usage.record_trip(body.origin, body.destination, visitor)
 
     async def stream():
+        last_stop = None
         async for event in services.planner.plan(body.origin, body.destination, body.date, trip_id=trip_id):
+            if isinstance(event, TripStarted):
+                last_stop = event.hops[-1].destination
+            elif isinstance(event, TripMapped):
+                point = next((p for p in event.points if p.name == last_stop), None)
+                if point:
+                    await services.usage.resolve_trip(trip_id, point.name, point.lat, point.lng)
             yield f"event: {_EVENT_NAMES[type(event).__name__]}\ndata: {json.dumps(_event_json(event))}\n\n"
 
     return StreamingResponse(stream(), media_type="text/event-stream", headers={"Cache-Control": "no-cache"})
+
+
+@router.get("/trips/recent")
+async def recent_trips(request: Request) -> list[dict]:
+    return await _services(request).usage.recent_trips()
 
 
 async def _leg_or_404(request: Request, leg_id: int) -> tuple[LegKey, list[LegVersion]]:
