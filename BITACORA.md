@@ -7,6 +7,14 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 13:44 · Cambio · Esqueleto del backend
+
+- **Qué:** FastAPI con configuración que falla si falta cualquier variable requerida (nombra
+  todas las que faltan), Postgres 16 en `compose.yaml` y el esquema con las tablas `legs`,
+  `leg_versions`, `confirmations` y `trips`.
+- **Prueba:** `docker compose run --rm backend uv run pytest -q` → 5 passed.
+- **Contrato:** el contrato entre backend y web quedó fijado en `docs/API.md`.
+
 ### 13:40 · Decisión · Spec del MVP, plan de implementación y deploy en AWS
 
 - **Plan:** `docs/superpowers/plans/2026-10-17-ya-sale-mvp.md`, en 10 tareas:

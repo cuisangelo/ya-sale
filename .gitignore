@@ -12,3 +12,7 @@ __pycache__/
 .idea/
 .vscode/
 .claude/worktrees/
+backend/.venv/
+web/out/
+web/.next/
+web/node_modules/

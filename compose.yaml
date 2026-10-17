@@ -1,0 +1,32 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: yasale
+      POSTGRES_PASSWORD: yasale
+      POSTGRES_DB: yasale
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U yasale"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+
+  backend:
+    image: ghcr.io/astral-sh/uv:python3.12-bookworm-slim
+    working_dir: /app
+    volumes:
+      - ./backend:/app
+      - uv-venv:/venv
+    environment:
+      UV_PROJECT_ENVIRONMENT: /venv
+      UV_LINK_MODE: copy
+      DATABASE_URL: postgresql://yasale:yasale@postgres:5432/yasale
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: ["uv", "run", "uvicorn", "--factory", "app.main:build_app", "--host", "0.0.0.0", "--port", "8080", "--reload"]
+    ports:
+      - "8080:8080"
+
+volumes:
+  uv-venv:
