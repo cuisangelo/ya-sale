@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ya Sale · Pitch</title>
+<link rel="icon" href="assets/logo-inti.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600&family=Bricolage+Grotesque:opsz,wght@12..96,800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cochinilla: #B5172F;
+    --purpura: #6E1F4F;
+    --qolle: #E8B419;
+    --qolle-oscuro: #8A6700;
+    --chillka: #4F6B2A;
+    --anil: #23356F;
+    --lana: #F4EBDA;
+    --lana-oscura: #2A1F1A;
+    --hilo: #CDBFA6;
+    --secundario: #6B5E52;
+    --marco: #E9DDC6;
+    --titulo: "Bricolage Grotesque", system-ui, sans-serif;
+    --texto: "Archivo", system-ui, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: var(--marco); overflow: hidden; }
+  body { font-family: var(--texto); color: var(--lana-oscura); }
+
+  /* Fixed 1280x720 design size, scaled from JS to fit the viewport. */
+  #stage {
+    position: absolute; left: 50%; top: 50%;
+    width: 1280px; height: 720px;
+    transform-origin: center center;
+  }
+  .slide {
+    position: absolute; inset: 0;
+    background: var(--lana);
+    padding: 66px 80px 60px;
+    display: flex; flex-direction: column; justify-content: center;
+    visibility: hidden;
+  }
+  .slide.actual { visibility: visible; }
+  .slide::before, .slide::after {
+    content: ""; position: absolute; left: 0; right: 0; height: 22px;
+    background: url(assets/franja.svg) repeat-x; background-size: auto 100%;
+  }
+  .slide::before { top: 0; }
+  .slide::after { bottom: 0; transform: scaleY(-1); }
+
+  h1, h2 { font-family: var(--titulo); font-weight: 800; letter-spacing: -0.02em; line-height: 1.05; }
+  h2 { font-size: 52px; color: var(--cochinilla); margin-bottom: 14px; }
+  .sub { font-size: 24px; color: var(--secundario); margin-bottom: 30px; }
+  .mono { font-family: var(--mono); }
+  .nota { font-family: var(--mono); font-size: 15px; color: var(--secundario); }
+  ul.lista { list-style: none; display: grid; gap: 12px; font-size: 22px; line-height: 1.35; }
+  ul.lista li { padding-left: 26px; position: relative; }
+  ul.lista li::before {
+    content: ""; position: absolute; left: 2px; top: 10px; width: 10px; height: 10px;
+    background: var(--cochinilla); transform: rotate(45deg);
+  }
+
+  /* 1 · Portada */
+  .portada { justify-content: center; }
+  .marca { display: flex; align-items: center; gap: 40px; }
+  .marca img { width: 180px; height: 180px; }
+  .marca h1 { font-size: 120px; color: var(--cochinilla); }
+  .lema { font-size: 34px; margin: 30px 0 40px; max-width: 900px; }
+  .modos { display: flex; gap: 26px; }
+  .modos img { width: 40px; height: 40px; }
+  .pie { position: absolute; left: 80px; bottom: 48px; }
+
+  /* 2 · Problema */
+  .cadena { display: flex; align-items: center; margin-bottom: 40px; }
+  .paso {
+    display: flex; align-items: center; gap: 12px;
+    background: #fff; border-radius: 6px; padding: 14px 16px; font-size: 19px; line-height: 1.25;
+    border-left: 6px solid var(--cochinilla); flex: 1;
+  }
+  .paso.agua { border-left-color: var(--anil); }
+  .paso img { width: 30px; height: 30px; flex: none; }
+  .paso b { display: block; }
+  .hebra { width: 28px; height: 2px; background: var(--hilo); flex: none; }
+  .dos { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; }
+  .dos h3 { font-family: var(--titulo); font-weight: 800; font-size: 28px; margin-bottom: 16px; }
+
+  /* Leg cards */
+  .tramo {
+    background: #fff; border-radius: 6px; border-left: 6px solid var(--c);
+    padding: 16px 20px; display: grid; grid-template-columns: 44px 1fr auto; gap: 4px 16px; align-items: start;
+  }
+  .circulo {
+    grid-row: span 4; width: 40px; height: 40px; border-radius: 50%;
+    border: 1.8px solid var(--c); display: grid; place-items: center;
+  }
+  .circulo img { width: 24px; height: 24px; }
+  .tramo .ruta { font-weight: 600; font-size: 21px; }
+  .tramo .dato { font-size: 17px; grid-column: 2 / 4; }
+  .tramo .compra { font-size: 16px; color: var(--anil); grid-column: 2 / 4; text-decoration: underline; }
+  .tramo .fuente { font-family: var(--mono); font-size: 14px; color: var(--secundario); grid-column: 2 / 4; }
+  .tierra { --c: var(--cochinilla); }
+  .riel { --c: var(--chillka); }
+
+  .estado {
+    display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+    font-size: 14px; font-weight: 600; padding: 4px 12px; border-radius: 999px;
+  }
+  .estado.extraido { border: 1.5px solid #8C847B; color: #5B544D; }
+  .estado.disputa { background: var(--qolle); color: var(--lana-oscura); }
+  .estado.confirmado { background: var(--chillka); color: var(--lana); }
+  .estado.confirmado svg { width: 14px; height: 14px; }
+
+  .zigzag { height: 38px; display: flex; align-items: center; gap: 12px; padding-left: 28px; }
+  .zigzag svg { flex: none; }
+  .transbordo { display: flex; align-items: center; gap: 8px; font-size: 16px; color: var(--anil); font-weight: 600; }
+  .transbordo img { width: 20px; height: 20px; }
+
+  /* 3 · Qué hace */
+  .que { display: grid; grid-template-columns: 380px 1fr; gap: 50px; align-items: start; }
+  .form { display: grid; gap: 12px; }
+  .campo {
+    background: #FBF7F0; border: 1.5px solid var(--hilo); border-radius: 6px;
+    padding: 12px 16px; font-size: 20px;
+  }
+  .campo small { display: block; font-size: 13px; color: var(--secundario); margin-bottom: 2px; }
+  .boton {
+    background: var(--cochinilla); color: var(--lana); border-radius: 6px;
+    padding: 14px; font-weight: 600; font-size: 20px; text-align: center; margin-top: 6px;
+  }
+
+  /* 4 · Cómo funciona */
+  .flujo { display: flex; align-items: stretch; gap: 0; margin: 10px 0 40px; }
+  .caja {
+    flex: 1; background: #fff; border-radius: 6px; padding: 22px 20px;
+    border-top: 6px solid var(--c, var(--cochinilla));
+  }
+  .caja .n { font-family: var(--mono); font-size: 15px; color: var(--secundario); }
+  .caja h3 { font-family: var(--titulo); font-weight: 800; font-size: 32px; margin: 4px 0 10px; }
+  .caja p { font-size: 19px; line-height: 1.35; }
+  .flecha { width: 40px; display: grid; place-items: center; color: var(--hilo); font-size: 28px; flex: none; }
+  .linea { font-size: 22px; line-height: 1.45; max-width: 1060px; }
+  .linea .mono { font-size: 19px; color: var(--anil); }
+
+  /* 5 · Confianza */
+  .tres { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-bottom: 36px; }
+  .tres > div { background: #fff; border-radius: 6px; padding: 24px; }
+  .tres .estado { font-size: 18px; padding: 6px 16px; margin-bottom: 16px; }
+  .tres .estado.confirmado svg { width: 18px; height: 18px; }
+  .tres p { font-size: 21px; line-height: 1.4; }
+  .regla {
+    border-top: 1.5px solid var(--hilo); padding-top: 18px;
+    font-family: var(--mono); font-size: 17px; color: var(--secundario);
+  }
+
+  /* 6 · Arquitectura */
+  .arq { display: grid; grid-template-columns: 520px 1fr; gap: 56px; align-items: start; }
+  .diagrama { display: grid; gap: 10px; justify-items: center; }
+  .nodo {
+    width: 100%; background: #fff; border: 1.5px solid var(--hilo); border-radius: 6px;
+    padding: 14px 18px; text-align: center; font-size: 19px;
+  }
+  .nodo b { display: block; font-family: var(--titulo); font-weight: 800; font-size: 22px; }
+  .nodo.app { border: 2px solid var(--cochinilla); }
+  .baja { color: var(--hilo); font-size: 22px; line-height: 1; }
+  .par { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; }
+  .arq ul.lista { font-size: 21px; }
+
+  /* 7 · Medido */
+  table { border-collapse: collapse; width: 100%; font-size: 21px; margin-bottom: 18px; background: #fff; border-radius: 6px; overflow: hidden; }
+  th, td { text-align: left; padding: 14px 20px; border-bottom: 1.5px solid var(--lana); }
+  th { font-size: 16px; color: var(--secundario); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+  td.mono { font-size: 20px; }
+  .precios { margin-top: 22px; font-size: 21px; }
+  .precios b { color: var(--chillka); font-size: 26px; margin-right: 10px; }
+  .fuera {
+    margin-top: 26px; border: 1.5px dashed var(--purpura); border-radius: 6px; padding: 16px 22px;
+    font-size: 20px;
+  }
+  .fuera b { color: var(--purpura); font-family: var(--titulo); font-weight: 800; margin-right: 12px; }
+
+  /* 8 · Pruébalo */
+  .url { font-family: var(--mono); font-weight: 600; font-size: 52px; color: var(--cochinilla); margin: 10px 0 40px; }
+  .rutas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .rutas > div { background: #fff; border-radius: 6px; padding: 20px 22px; border-left: 6px solid var(--anil); }
+  .rutas p { font-size: 19px; line-height: 1.35; margin-bottom: 10px; }
+  .rutas .mono { font-size: 17px; color: var(--anil); }
+  .firma { position: absolute; left: 80px; bottom: 46px; display: flex; align-items: center; gap: 14px; }
+  .firma img { width: 40px; height: 40px; }
+
+  #contador {
+    position: fixed; right: 16px; bottom: 12px; font-family: var(--mono); font-size: 13px;
+    color: var(--secundario); background: rgba(244, 235, 218, 0.85); padding: 2px 8px; border-radius: 4px;
+  }
+</style>
+</head>
+<body>
+<main id="stage">
+
+  <section class="slide portada" aria-label="Portada">
+    <div class="marca">
+      <img src="assets/logo-inti.svg" alt="">
+      <h1>Ya Sale</h1>
+    </div>
+    <p class="lema">Tu viaje por el Perú, tramo por tramo, con fuente y fecha.</p>
+    <div class="modos" aria-label="Bus, combi, colectivo, mototaxi, avión, tren y lancha">
+      <img src="assets/modo-bus.svg" alt="">
+      <img src="assets/modo-combi.svg" alt="">
+      <img src="assets/modo-colectivo.svg" alt="">
+      <img src="assets/modo-mototaxi.svg" alt="">
+      <img src="assets/modo-avion.svg" alt="">
+      <img src="assets/modo-tren.svg" alt="">
+      <img src="assets/modo-lancha.svg" alt="">
+    </div>
+    <p class="pie nota">Hack the Andes 2026 · Track Movilidad y Transporte · Cuisangelo</p>
+  </section>
+
+  <section class="slide" aria-label="El problema">
+    <h2>Llegar a la Laguna Azul sin tour</h2>
+    <p class="sub">Lima → Sauce (San Martín): cuatro tramos, cuatro fuentes distintas.</p>
+    <div class="cadena">
+      <div class="paso"><img src="assets/modo-bus.svg" alt=""><span><b>Bus o avión</b>Lima → Tarapoto</span></div>
+      <div class="hebra"></div>
+      <div class="paso"><img src="assets/modo-mototaxi.svg" alt=""><span><b>Mototaxi</b>al paradero</span></div>
+      <div class="hebra"></div>
+      <div class="paso"><img src="assets/modo-colectivo.svg" alt=""><span><b>Auto colectivo</b>Tarapoto → Sauce</span></div>
+      <div class="hebra"></div>
+      <div class="paso agua"><img src="assets/modo-lancha.svg" alt=""><span><b>Balsa o lancha</b>a la laguna</span></div>
+    </div>
+    <div class="dos">
+      <div>
+        <h3>Hoy se arma a mano</h3>
+        <ul class="lista">
+          <li>redBus o la web de la empresa para el bus</li>
+          <li>la aerolínea para el vuelo</li>
+          <li>preguntar en el paradero, o un blog de hace años, para el colectivo y la balsa</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Un chat solo</h3>
+        <ul class="lista">
+          <li>responde de memoria</li>
+          <li>sin fuente ni fecha</li>
+          <li>puede inventar paraderos o precios</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" aria-label="Qué hace Ya Sale">
+    <h2>Origen, destino y fecha.<br>El viaje completo, en orden.</h2>
+    <div class="que">
+      <div class="form" aria-hidden="true">
+        <div class="campo"><small>Desde</small>Cusco</div>
+        <div class="campo"><small>Hasta</small>Aguas Calientes</div>
+        <div class="boton">Armar mi viaje</div>
+      </div>
+      <div>
+        <div class="tramo tierra">
+          <div class="circulo"><img src="assets/modo-bus.svg" alt="Bus"></div>
+          <div class="ruta">Cusco → Ollantaytambo</div>
+          <span class="estado extraido">Extraído</span>
+          <div class="dato">125 min · primer bus 03:00, último 19:00</div>
+          <div class="compra">Comprar en redBus ↗</div>
+          <div class="fuente">redbus.pe · consultado en vivo</div>
+        </div>
+        <div class="zigzag">
+          <svg width="16" height="38" viewBox="0 0 16 38" aria-hidden="true"><polyline points="8,0 14,6 2,13 14,20 2,27 14,33 8,38" fill="none" stroke="#CDBFA6" stroke-width="2" stroke-linejoin="round"/></svg>
+          <span class="transbordo"><img src="assets/motivo-chakana.svg" alt="">Transbordo en Ollantaytambo</span>
+        </div>
+        <div class="tramo riel">
+          <div class="circulo"><img src="assets/modo-tren.svg" alt="Tren"></div>
+          <div class="ruta">Ollantaytambo → Aguas Calientes</div>
+          <span class="estado extraido">Extraído</span>
+          <div class="dato">Sale de la Estación de Ollantaytambo · 90 min</div>
+          <div class="fuente">cuscoperu.com · consultado en vivo</div>
+        </div>
+        <p class="nota" style="margin-top:16px">Primer viaje real de punta a punta, 17 de octubre. En producción, el mismo viaje ya trae el bus con precio (S/35).</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" aria-label="Cómo funciona">
+    <h2>Datos en vivo en cada consulta</h2>
+    <div class="flujo">
+      <div class="caja"><span class="n">1</span><h3>Busca</h3><p>Tavily y Exa en paralelo, páginas del Perú</p></div>
+      <div class="flecha" aria-hidden="true">→</div>
+      <div class="caja" style="--c: var(--qolle)"><span class="n">2</span><h3>Extrae</h3><p>Claude arma la cadena de tramos y la valida contra un esquema</p></div>
+      <div class="flecha" aria-hidden="true">→</div>
+      <div class="caja" style="--c: var(--chillka)"><span class="n">3</span><h3>Guarda</h3><p>Postgres con versiones: fuente y fecha en cada dato</p></div>
+      <div class="flecha" aria-hidden="true">→</div>
+      <div class="caja" style="--c: var(--anil)"><span class="n">4</span><h3>Transmite</h3><p>Cada tramo llega por streaming apenas se resuelve</p></div>
+    </div>
+    <p class="linea">Lo guardado se muestra primero y se refresca en vivo. Lo mismo por MCP desde ChatGPT o Claude: <span class="mono">plan_trip · get_leg · confirm_leg</span></p>
+  </section>
+
+  <section class="slide" aria-label="Confianza de cada tramo">
+    <h2>Nunca “confirmado” sin una persona</h2>
+    <p class="sub">Cada tramo muestra siempre su estado.</p>
+    <div class="tres">
+      <div><span class="estado extraido">Extraído</span><p>Según la fuente, con la fecha de consulta.</p></div>
+      <div><span class="estado confirmado"><svg viewBox="0 0 100 100" aria-hidden="true"><path fill="currentColor" d="M50 4 58.4 29.7 82.5 17.5 70.3 41.6 96 50 70.3 58.4 82.5 82.5 58.4 70.3 50 96 41.6 70.3 17.5 82.5 29.7 58.4 4 50 29.7 41.6 17.5 17.5 41.6 29.7z"/><path fill="#4F6B2A" d="M50 41 59 50 50 59 41 50z"/></svg>Confirmado</span><p>Alguien que hace la ruta confirmó esa versión exacta: paradero, precio y tiempo.</p></div>
+      <div><span class="estado disputa">En disputa</span><p>Llegó un dato distinto después de lo confirmado. Se guardan las dos versiones; la confirmada no se pisa.</p></div>
+    </div>
+    <p class="regla">Dato distinto = rangos de precio que no se tocan · duración que cambia más de 25% · otro paradero</p>
+  </section>
+
+  <section class="slide" aria-label="Arquitectura y seguridad">
+    <h2>Un contenedor, una base privada</h2>
+    <div class="arq">
+      <div class="diagrama">
+        <div class="nodo">Navegador / ChatGPT / Claude</div>
+        <div class="baja" aria-hidden="true">↓</div>
+        <div class="nodo app"><b>App Runner</b>FastAPI + MCP + web</div>
+        <div class="baja" aria-hidden="true">↓</div>
+        <div class="par">
+          <div class="nodo"><b>RDS</b>Postgres privado</div>
+          <div class="nodo"><b>NAT</b>Tavily · Exa · Claude</div>
+        </div>
+        <p class="nota" style="margin-top:6px">AWS us-east-1 · secretos en SSM</p>
+      </div>
+      <ul class="lista">
+        <li>Las claves viven solo en el servidor y se validan al arrancar</li>
+        <li>Las páginas leídas son datos no confiables: van cercadas y solo sale JSON validado</li>
+        <li>Tope de 8 búsquedas por viaje y 6 consultas por minuto por persona</li>
+        <li>Huella anónima, sin cuentas; la IP nunca se guarda ni se loguea</li>
+        <li>74 tests del backend y CI/CD: cada push a main con el CI en verde se despliega solo</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="slide" aria-label="Lo que medimos">
+    <h2>Medido con las claves reales</h2>
+    <table>
+      <thead><tr><th>Proveedor</th><th>Latencia</th><th>Resultados .pe</th><th>Con precio en soles</th></tr></thead>
+      <tbody>
+        <tr><td>Tavily</td><td class="mono">1,2–1,6 s</td><td class="mono">4 de 15</td><td class="mono">1 de 15</td></tr>
+        <tr><td>Exa</td><td class="mono">3,4–4,1 s</td><td class="mono">5 de 15</td><td class="mono">3 de 15</td></tr>
+        <tr><td>Claude Opus 5.5</td><td class="mono">6,4 s</td><td class="mono">—</td><td class="mono">1 tramo con precio</td></tr>
+      </tbody>
+    </table>
+    <p class="nota">3 viajes de prueba: Tarapoto → Sauce, Cusco → Aguas Calientes, Iquitos → Nauta. Por eso buscamos en los dos a la vez.</p>
+    <p class="precios"><b class="mono">5 de 12 → 10 de 11</b> tramos con precio en las 8 rutas de demo, después de que el planificador busca el precio cuando falta</p>
+    <p class="fuera"><b>Queda fuera</b>compra de pasajes · viaje de vuelta · cuentas · hoteles y tours · GPS en tiempo real</p>
+  </section>
+
+  <section class="slide" aria-label="Pruébalo">
+    <h2>Arma el viaje a tu pueblo<br>y confirma la última milla</h2>
+    <p class="url">yasale.cuisangelo.com</p>
+    <div class="rutas">
+      <div><p>Comparar: el mismo modelo con y sin Ya Sale</p><span class="mono">/comparar</span></div>
+      <div><p>Uso en vivo: viajes, destinos, personas y confirmaciones de la base</p><span class="mono">/uso</span></div>
+      <div><p>MCP para ChatGPT o Claude</p><span class="mono">/mcp</span></div>
+    </div>
+    <div class="firma"><img src="assets/logo-inti.svg" alt=""><span class="nota">github.com/cuisangelo/ya-sale</span></div>
+  </section>
+
+</main>
+<div id="contador" aria-live="polite"></div>
+<script>
+  const stage = document.getElementById("stage");
+  const slides = [...document.querySelectorAll(".slide")];
+  const counter = document.getElementById("contador");
+  let current = 0;
+
+  function fit() {
+    const scale = Math.min(innerWidth / 1280, innerHeight / 720);
+    stage.style.transform = `translate(-50%, -50%) scale(${scale})`;
+  }
+
+  function show(index) {
+    current = Math.max(0, Math.min(slides.length - 1, index));
+    slides.forEach((slide, i) => {
+      slide.classList.toggle("actual", i === current);
+      slide.setAttribute("aria-hidden", i === current ? "false" : "true");
+    });
+    counter.textContent = `${current + 1} / ${slides.length}`;
+    history.replaceState(null, "", `#${current + 1}`);
+  }
+
+  function fromHash() {
+    const n = parseInt(location.hash.slice(1), 10);
+    return Number.isInteger(n) ? n - 1 : 0;
+  }
+
+  addEventListener("keydown", (e) => {
+    if (["ArrowRight", "PageDown", " "].includes(e.key)) { e.preventDefault(); show(current + 1); }
+    else if (["ArrowLeft", "PageUp"].includes(e.key)) { e.preventDefault(); show(current - 1); }
+    else if (e.key === "Home") show(0);
+    else if (e.key === "End") show(slides.length - 1);
+    else if (e.key === "f") {
+      if (document.fullscreenElement) document.exitFullscreen();
+      else document.documentElement.requestFullscreen();
+    }
+  });
+
+  addEventListener("click", (e) => show(current + (e.clientX > innerWidth / 2 ? 1 : -1)));
+
+  let touchX = null;
+  addEventListener("touchstart", (e) => { touchX = e.touches[0].clientX; }, { passive: true });
+  addEventListener("touchend", (e) => {
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 40) show(current + (dx < 0 ? 1 : -1));
+  });
+
+  addEventListener("hashchange", () => show(fromHash()));
+  addEventListener("resize", fit);
+  fit();
+  show(fromHash());
+</script>
+</body>
+</html>
