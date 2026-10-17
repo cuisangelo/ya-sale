@@ -1,6 +1,6 @@
-# Kekero
+# Ya Sale
 
-Proyecto del equipo **Kekero** para [Hack the Andes](https://hacktheandes.com).
+Proyecto del equipo **Ya Sale** para [Hack the Andes](https://hacktheandes.com).
 
 - **Track:** Movilidad y Transporte (`transport`)
 - **Equipo:** Cuisangelo
@@ -8,7 +8,7 @@ Proyecto del equipo **Kekero** para [Hack the Andes](https://hacktheandes.com).
 
 ## Estado
 
-La idea está en [IDEA.md](IDEA.md): un viaje de Lima a Sauce (Laguna Azul), sin tour. Bus o avión hasta Tarapoto, y de ahí el auto local solo si alguien que lo toma lo confirmó.
+La idea está en [IDEA.md](IDEA.md): tu viaje de Lima a cualquier pueblo, tramo por tramo y con precios, armado con datos en vivo y confirmado por quienes hacen la ruta. Se usa desde la web o desde ChatGPT o Claude con nuestro MCP.
 
 Toda la información del evento (fechas, entrega, demo, rúbrica, créditos) está en [GUIDE.md](GUIDE.md).
 
@@ -18,7 +18,7 @@ La organización recibe el proyecto por la CLI, no por este README:
 
 ```bash
 andes project submit \
-  --github-url https://github.com/cuisangelo/Kekero \
+  --github-url https://github.com/cuisangelo/ya-sale \
   --description "..." \
   --deployment-url "..." \
   --presentation-url "..."

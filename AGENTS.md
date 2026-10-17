@@ -1,11 +1,11 @@
-# AGENTS.md — Kekero
+# AGENTS.md — Ya Sale
 
 Rules for any coding agent working in this repo. Event facts (schedule, submission, rubric,
 credits) live in [GUIDE.md](GUIDE.md); read it before planning work.
 
 ## Context
 
-- Hack the Andes, Lima, 17–18 Oct 2026. Team **Kekero**, solo (Cuisangelo), track
+- Hack the Andes, Lima, 17–18 Oct 2026. Team **Ya Sale**, solo (Cuisangelo), track
   **Movilidad y Transporte** (`transport`): Lima public transit (routes, connections, times,
   accessibility) and regional passenger, connectivity, cargo and distribution.
 - **Hard deadline: Sunday 18 Oct, 09:00 (America/Lima)** via `andes project submit`. When the
@@ -147,7 +147,7 @@ an afterthought.
   user test, a working demo or a blocker. Say what changed, why and what's next, using only
   verifiable facts. Don't narrate every commit.
 - `andes project submit` takes `--deployment-url`, `--presentation-url`,
-  `--github-url https://github.com/cuisangelo/Kekero` and `--description` or `--file`. Omitted
+  `--github-url https://github.com/cuisangelo/ya-sale` and `--description` or `--file`. Omitted
   fields keep their saved values. Submit early, then correct.
 - Show the user the exact payload and get an OK before the first `project submit` or any
   change to a submitted field. Routine `project update` posts and read-only commands need no OK.

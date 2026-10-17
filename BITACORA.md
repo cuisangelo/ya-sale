@@ -1,4 +1,4 @@
-# Bitácora — Kekero
+# Bitácora — Ya Sale
 
 Registro de cambios, decisiones, pruebas y bloqueos del proyecto, de más nuevo a más viejo.
 Horas en hora de Lima. Las reglas para escribir acá están en [AGENTS.md](AGENTS.md#bitácora).
@@ -6,6 +6,16 @@ Horas en hora de Lima. Las reglas para escribir acá están en [AGENTS.md](AGENT
 Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** · **Entrega**.
 
 ## 2026-10-17
+
+### 13:04 · Decisión · El producto se llama Ya Sale
+
+"Kekero" era temporal. "Ya Sale" es lo que grita el cobrador aunque la combi no salga: es
+jerga peruana, lo reconoce cualquiera y resume el tramo informal que resuelve el producto. La
+búsqueda no encontró ninguna app de transporte en Perú con ese nombre.
+
+- Equipo en Hack the Andes renombrado a "Ya Sale"; el track sigue siendo `transport`.
+- Repo de GitHub: `cuisangelo/Kekero` pasa a `cuisangelo/ya-sale`.
+- Docs actualizados. Las entradas anteriores de esta bitácora conservan el nombre viejo.
 
 ### 12:59 · Decisión · Rúbrica oficial confirmada
 

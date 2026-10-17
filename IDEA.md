@@ -88,7 +88,7 @@ en vivo, y cada confirmación queda registrada como evidencia de uso.
 ### 5. Página web (el deploy que ve el jurado)
 
 - **Comparación lado a lado:** a la izquierda el mismo modelo sin herramientas; a la derecha,
-  usando las herramientas de Kekero. Misma pregunta, mismo modelo, y se ve la diferencia en
+  usando las herramientas de Ya Sale. Misma pregunta, mismo modelo, y se ve la diferencia en
   precisión, fuentes y fechas.
 - **Vista del itinerario:** tramos en orden, estado de confianza y botón de confirmar o
   corregir.
@@ -107,7 +107,7 @@ en vivo, y cada confirmación queda registrada como evidencia de uso.
 | Tiempo | Qué se muestra |
 |---|---|
 | 0:00–0:30 | Problema: llegar a Sauce sin tour obliga a juntar tres tramos a mano |
-| 0:30–1:30 | Comparación lado a lado: el chat solo contra el chat con Kekero, la misma pregunta |
+| 0:30–1:30 | Comparación lado a lado: el chat solo contra el chat con Ya Sale, la misma pregunta |
 | 1:30–2:15 | Un destino que pida el jurado o alguien del público, generado en vivo |
 | 2:15–2:30 | Alguien confirma o corrige un tramo y el estado cambia en vivo |
 | 2:30–3:00 | Arquitectura: motor, conectores, confianza, MCP; y los números de la página de uso |

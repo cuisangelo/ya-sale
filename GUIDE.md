@@ -1,4 +1,4 @@
-# Guía de Hack the Andes — equipo Kekero
+# Guía de Hack the Andes — equipo Ya Sale
 
 Todo lo que sabemos del evento en un solo lugar. Fuentes: el
 [deck de onboarding](https://hacktheandes.com/deck/onboarding), la
@@ -13,11 +13,11 @@ manda el servidor.
 
 | | |
 |---|---|
-| Equipo / proyecto | **Kekero** (el proyecto usa el nombre del equipo) |
+| Equipo / proyecto | **Ya Sale** (el proyecto usa el nombre del equipo) |
 | Integrantes | Cuisangelo (solo) |
 | Track | Movilidad y Transporte (`transport`) — cupo lleno, 7/7 |
 | Check-in | Confirmado |
-| Repo | https://github.com/cuisangelo/Kekero |
+| Repo | https://github.com/cuisangelo/ya-sale |
 | Idea del producto | Por definir |
 
 ## Fechas clave
@@ -67,7 +67,7 @@ Los cuatro son obligatorios:
 
 1. **URL de deploy** pública y funcionando.
 2. **URL de la presentación** (Canva, Google Slides o hecha con código).
-3. **URL del repo de GitHub**: https://github.com/cuisangelo/Kekero
+3. **URL del repo de GitHub**: https://github.com/cuisangelo/ya-sale
 4. **Descripción en Markdown**: el problema, para quién es, cómo funciona y sus limitaciones.
 
 **No cuenta:** localhost, solo slides o pitch, mockups, video grabado.
@@ -84,7 +84,7 @@ Prepará un recorrido de demo que funcione solo con esos links.
 andes --output json project submit \
   --deployment-url https://... \
   --presentation-url https://... \
-  --github-url https://github.com/cuisangelo/Kekero \
+  --github-url https://github.com/cuisangelo/ya-sale \
   --file ./proyecto.md
 
 andes --output json project submit --presentation-url https://...   # actualiza un solo campo
