@@ -19,21 +19,26 @@ aws iam get-open-id-connect-provider --open-id-connect-provider-arn "$PROVIDER" 
     --client-id-list sts.amazonaws.com --tags Key=Project,Value="$APP" >/dev/null
 
 echo "== deploy role, assumable only from $REPO main"
-if ! aws iam get-role --role-name "$ROLE" >/dev/null 2>&1; then
-  aws iam create-role --role-name "$ROLE" --tags Key=Project,Value="$APP" --assume-role-policy-document "{
-    \"Version\": \"2012-10-17\",
-    \"Statement\": [{
-      \"Effect\": \"Allow\",
-      \"Principal\": {\"Federated\": \"$PROVIDER\"},
-      \"Action\": \"sts:AssumeRoleWithWebIdentity\",
-      \"Condition\": {
-        \"StringEquals\": {
-          \"token.actions.githubusercontent.com:aud\": \"sts.amazonaws.com\",
-          \"token.actions.githubusercontent.com:sub\": \"repo:$REPO:ref:refs/heads/main\"
-        }
+# The repo uses GitHub's immutable subject (owner and repo ids), so a rename cannot spoof it.
+SUB_PREFIX=$(gh api "repos/$REPO/actions/oidc/customization/sub" --jq .sub_claim_prefix)
+TRUST="{
+  \"Version\": \"2012-10-17\",
+  \"Statement\": [{
+    \"Effect\": \"Allow\",
+    \"Principal\": {\"Federated\": \"$PROVIDER\"},
+    \"Action\": \"sts:AssumeRoleWithWebIdentity\",
+    \"Condition\": {
+      \"StringEquals\": {
+        \"token.actions.githubusercontent.com:aud\": \"sts.amazonaws.com\",
+        \"token.actions.githubusercontent.com:sub\": \"$SUB_PREFIX:ref:refs/heads/main\"
       }
-    }]
-  }" >/dev/null
+    }
+  }]
+}"
+if aws iam get-role --role-name "$ROLE" >/dev/null 2>&1; then
+  aws iam update-assume-role-policy --role-name "$ROLE" --policy-document "$TRUST"
+else
+  aws iam create-role --role-name "$ROLE" --tags Key=Project,Value="$APP" --assume-role-policy-document "$TRUST" >/dev/null
 fi
 
 aws iam put-role-policy --role-name "$ROLE" --policy-name deploy-ya-sale --policy-document "{
