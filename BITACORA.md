@@ -7,6 +7,22 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 13:45 · Decisión · Estilo final: tejido vectorial con toques de hilo
+
+- **Pixel art descartado:** a Cuiso no le gustó.
+- **Variantes modernas comparadas:**
+  - D, tejido vectorial;
+  - A, geometría plana;
+  - B, hilo;
+  - C, bloques.
+- **Elegida:** D con toques de B.
+  - De D: inti escalonado como logo, franjas de manta y barra lateral del color de cada medio.
+  - De B: el zigzag del mayu une los tramos, los íconos van en círculo de contorno y las
+    fuentes en monoespaciado.
+- **En el repo:** los SVG pixelados y su generador se reemplazan por los vectoriales en
+  `design/textil/`. El README tiene la paleta, los estados y la anatomía de la tarjeta de
+  tramo.
+
 ### 13:30 · Cambio · Recursos de la identidad textil
 
 - **Qué:** `design/textil/` con 4 motivos (inti, chakana, ch'aska y mayu), una franja tejida y
