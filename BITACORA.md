@@ -7,6 +7,18 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 14:10 · Decisión · Logo final: inti de franjas, hecho a mano
+
+- **Descartado:** el tawa inti qocha de centro en cuatro ("se ve raro, muy perfecto").
+- **Elegido:** el rombo de hebras original, con acabado artesanal:
+  - bordes con temblor;
+  - hebras variables;
+  - textura de fibra (filtro SVG).
+- **Respaldo:** en los tejidos Q'ero el inti se teje como franjas en rombo (Bard Graduate
+  Center).
+- **En el repo:** `design/textil/logo-inti.svg` y `franja.svg`. Con esto se cierra la identidad
+  y se pasa a las pantallas.
+
 ### 14:00 · Decisión · Logo tawa inti qocha y franja de urdimbre
 
 - **Por qué:** el inti escalonado y la franja de crucecitas seguían leyéndose como pixeles a

@@ -1,9 +1,16 @@
 # Identidad textil andina
 
-Estilo de Ya Sale: **rombo de hebras con toques de hilo**. Motivos del tejido andino dibujados
-en vector limpio (sin pixel art), rellenos con hebras verticales de urdimbre, y líneas finas que
-unen los tramos como un hilo. Los motivos son diseños propios inspirados en el pallay; no copian el de ninguna
-comunidad. Los significados del pallay cambian de comunidad en comunidad, y abajo está la
+Estilo de Ya Sale: **rombo de hebras, hecho a mano, con toques de hilo**. Son motivos del tejido
+andino en vector, sin pixel art:
+
+- rellenos con hebras de grosor y tono variables;
+- con un leve temblor en los bordes y textura de fibra, para que no se vean "demasiado
+  perfectos";
+- unidos por líneas finas que conectan los tramos como un hilo.
+
+El acabado artesanal es el filtro SVG `feTurbulence` + `feDisplacementMap` que traen `logo-inti.svg`
+y `franja.svg`. Los motivos son diseños propios inspirados en el pallay y no copian el de
+ninguna comunidad. Los significados del pallay cambian de comunidad en comunidad, y abajo está la
 lectura que les damos dentro del producto.
 
 ## Paleta (tintes naturales)
@@ -25,23 +32,22 @@ lectura que les damos dentro del producto.
 
 | Archivo | Motivo | En Ya Sale |
 |---|---|---|
-| `logo-tawa-inti.svg` | Tawa inti qocha: rombo con el centro dividido en cuatro, relleno de hebras verticales | Logo y destino |
+| `logo-inti.svg` | Inti: franjas en rombo (cochinilla, q'olle y añil) con hebras en diagonal, hecho a mano | Logo y destino |
 | `motivo-chakana.svg` | Chakana, cruz escalonada | Transbordo entre transportes |
 | `motivo-chaska.svg` | Ch'aska, estrella | Tramo confirmado por alguien que lo hace |
 | `motivo-mayu.svg` | Mayu, zigzag del río | El hilo que une los tramos, girado en vertical |
-| `franja.svg` | Franja de urdimbre con triángulos qocha y un rombo en cuatro | Borde superior e inferior, como el de una manta |
+| `franja.svg` | Franja de hebras con dientes en zigzag y rombos, hecha a mano | Borde superior e inferior, como el de una manta |
 
 ### Por qué son peruanos
 
-- **El rombo en cuatro (*tawa inti qocha*, "cuatro-sol-lago") existe en el Perú desde Nazca,
-  Wari, Tiahuanaco e Inca hasta hoy.** Es central en los tejidos Q'ero del Cusco, donde "inti"
-  (sol) es un rombo. Fuente: Gail Silverman-Proust, *Anthropologica* (PUCP), y *Tejido Q'ero,
-  una ventana a la sabiduría inca* (Cultura Cusco, 2020).
-- **El tejido andino de telar de cintura es de cara de urdimbre.** El color visible es el de
-  los hilos verticales, por eso la textura de hebras es vertical.
-- **Los triángulos alternos junto al inti se llaman *qocha* (lago)** en los tejidos Q'ero.
-- **Lo que evitamos:** los anillos concéntricos sin división, para no confundirlo con el
-  "ojo de Dios" mexicano.
+- **En los tejidos Q'ero del Cusco, el inti (sol) se teje como franjas en forma de rombo.**
+  Fuente: Bard Graduate Center, análisis de una bolsa de coca Q'ero.
+- **El rombo es un motivo peruano continuo desde Nazca, Wari, Tiahuanaco e Inca hasta hoy.**
+  Fuente: Gail Silverman-Proust, *Anthropologica* (PUCP), y *Tejido Q'ero, una ventana a la
+  sabiduría inca* (Cultura Cusco, 2020).
+- **Los colores son los de los tintes naturales andinos:** cochinilla, q'olle y añil.
+- **Para no confundirlo con el "ojo de Dios" mexicano:** tejido de hebras, paleta de tintes
+  andinos y centro añil.
 
 ## Íconos de transporte
 
