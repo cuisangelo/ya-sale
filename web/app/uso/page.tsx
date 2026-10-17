@@ -37,10 +37,10 @@ export default function UsagePage() {
       {usage ? (
         <>
           <div className="stats-grid">
-            <Stat tone="land" value={usage.trips} label="viajes armados" />
-            <Stat tone="air" value={usage.destinations} label="destinos distintos" />
-            <Stat tone="water" value={usage.people} label="personas distintas" />
-            <Stat tone="rail" value={usage.confirmed_legs} label="tramos confirmados" />
+            <Stat value={usage.trips} label="viajes armados" />
+            <Stat value={usage.destinations} label="destinos distintos" />
+            <Stat value={usage.people} label="personas distintas" />
+            <Stat value={usage.confirmed_legs} label="tramos confirmados" />
           </div>
           <section className="panel">
             <b>Últimas confirmaciones y correcciones</b>
@@ -68,9 +68,9 @@ export default function UsagePage() {
   );
 }
 
-function Stat({ tone, value, label }: { tone: "land" | "air" | "rail" | "water"; value: number; label: string }) {
+function Stat({ value, label }: { value: number; label: string }) {
   return (
-    <article className={`stat bar-${tone}`}>
+    <article className="stat">
       <div className="stat-value">{formatCount(value)}</div>
       <div className="stat-label">{label}</div>
     </article>

@@ -4,7 +4,7 @@ import { FormEvent, useState } from "react";
 import { Logo } from "../../components/Logo";
 import { StatusBadge } from "../../components/StatusBadge";
 import { compareQuestion, errorText, type CompareResult } from "../../lib/api";
-import { columnCounter, legFactParts, modeLabel, modeTone, summarySourceLine } from "../../lib/format";
+import { columnCounter, legFactParts, modeLabel, summarySourceLine } from "../../lib/format";
 
 export default function ComparePage() {
   const [question, setQuestion] = useState("");
@@ -72,7 +72,7 @@ export default function ComparePage() {
                 {result.with_tools.legs.map((leg) => {
                   const facts = legFactParts(leg.version);
                   return (
-                    <div key={leg.leg_id} className={`compare-leg bar-${modeTone(leg.mode)}`}>
+                    <div key={leg.leg_id} className="compare-leg">
                       <div className="compare-leg-head">
                         <strong>
                           {modeLabel(leg.mode)} · {leg.origin} → {leg.destination}

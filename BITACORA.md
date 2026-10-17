@@ -7,6 +7,18 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 18:20 · Cambio · Comparar y uso con la identidad nueva, e imagen para compartir
+
+- **Por qué:** al compartir el enlace se veía la imagen vieja, y `/comparar` y `/uso`
+  arrastraban clases de color por modo que ya no tienen estilos.
+- **Qué cambia:** `/comparar` y `/uso` heredan los colores nuevos sin rediseño; se quitaron
+  las clases `bar-*` que ya no hacían nada. La imagen para compartir (1200×630) pasa a degradado
+  carmín a tinta, logo blanco y "¿De dónde a dónde vas?".
+- **Pruebas:** capturas de Playwright de ambas páginas a 1280 y 390 px con datos simulados:
+  sin desbordes ni errores de consola, y el número de 40 px cabe en las cuatro tarjetas.
+  `tsc`, `pnpm test` (54 passed), `next build`, la búsqueda de tamaños de letra (vacía) y
+  `pytest` del backend (134 passed) pasan.
+
 ### 18:13 · Cambio · Vista de viaje nueva: foto del destino y los números útiles arriba
 
 - **Por qué:** quien abre un viaje quiere saber primero cuánto cuesta, cuánto demora y cuándo
