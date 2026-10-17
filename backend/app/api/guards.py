@@ -1,7 +1,6 @@
 import hashlib
-import time
-from collections import defaultdict, deque
 
+from psycopg_pool import AsyncConnectionPool
 from starlette.requests import Request
 
 WINDOW_SECONDS = 60.0
@@ -16,18 +15,22 @@ def fingerprint(request: Request, salt: str) -> str:
 
 
 class RateLimiter:
-    """In-memory sliding window; correct only while the service runs a single instance."""
+    """Sliding window kept in Postgres, so it holds however many instances serve the API."""
 
-    def __init__(self, per_minute: int):
+    def __init__(self, pool: AsyncConnectionPool, per_minute: int):
+        self._pool = pool
         self._per_minute = per_minute
-        self._hits: dict[str, deque[float]] = defaultdict(deque)
 
-    def allow(self, key: str) -> bool:
-        now = time.monotonic()
-        hits = self._hits[key]
-        while hits and now - hits[0] > WINDOW_SECONDS:
-            hits.popleft()
-        if len(hits) >= self._per_minute:
-            return False
-        hits.append(now)
-        return True
+    async def allow(self, key: str) -> bool:
+        async with self._pool.connection() as conn, conn.transaction():
+            # Serializes one visitor's requests so a burst cannot all read the same count.
+            await conn.execute("SELECT pg_advisory_xact_lock(hashtextextended(%s, 0))", (key,))
+            await conn.execute(
+                "DELETE FROM rate_events WHERE fingerprint = %s AND created_at <= now() - make_interval(secs => %s)",
+                (key, WINDOW_SECONDS),
+            )
+            row = await (await conn.execute("SELECT count(*) FROM rate_events WHERE fingerprint = %s", (key,))).fetchone()
+            if row[0] >= self._per_minute:
+                return False
+            await conn.execute("INSERT INTO rate_events (fingerprint) VALUES (%s)", (key,))
+            return True

@@ -45,7 +45,7 @@ async def api(pool, settings):
         planner=FakePlanner(legs),
         legs=legs,
         usage=UsageRepository(pool, settings.team_fingerprints),
-        limiter=RateLimiter(per_minute=6),
+        limiter=RateLimiter(pool, per_minute=6),
         compare=None,
     )
     async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
@@ -132,6 +132,13 @@ async def test_rate_limit_returns_429_after_6_trips_per_minute(api):
     statuses = [(await api.post("/api/trips", json=BODY, headers=headers())).status_code for _ in range(7)]
     assert statuses[:6] == [200] * 6
     assert statuses[6] == 429
+
+
+async def test_compare_spends_the_same_budget_as_trips(api):
+    for _ in range(6):
+        await api.post("/api/trips", json=BODY, headers=headers())
+    response = await api.post("/api/compare", json={"question": "Lima a Sauce sin tour"}, headers=headers())
+    assert response.status_code == 429
 
 
 async def test_raw_ip_never_logged(api, caplog):

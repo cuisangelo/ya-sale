@@ -44,3 +44,11 @@ CREATE TABLE IF NOT EXISTS places (
     lng        DOUBLE PRECISION,
     fetched_at TIMESTAMPTZ NOT NULL
 );
+
+-- One row per rate-limited request, shared by every instance; rows older than the window are pruned.
+CREATE TABLE IF NOT EXISTS rate_events (
+    fingerprint TEXT NOT NULL,
+    created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS rate_events_fingerprint ON rate_events (fingerprint, created_at);
