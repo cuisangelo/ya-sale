@@ -7,6 +7,16 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 14:58 · Decisión · Dos sesiones paralelas de Claude
+
+- **`ca039a8c` · ya-sale-precios** (rama `feat/ya-sale-precios`): que más tramos vuelvan con
+  precio, más un script que precarga 8 rutas de demo.
+- **`76acd583` · ya-sale-pitch** (rama `docs/ya-sale-pitch`): `proyecto.md` para la entrega,
+  guion de demo de 3 minutos, slides en estilo textil y post de LinkedIn.
+- **Reglas comunes:** cada sesión delega lo mecánico a Grok, abre un PR a `main` y no toca la
+  bitácora, para evitar conflictos; sus avances se registran acá al mergear. Esta sesión
+  revisa la web de Grok y hace el deploy.
+
 ### 14:50 · Prueba · Primer viaje real de punta a punta (local)
 
 - **Consulta:** `POST /api/trips` Cusco → Aguas Calientes, con Tavily, Exa y Claude reales,
