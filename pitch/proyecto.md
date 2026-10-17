@@ -83,7 +83,10 @@ las herramientas `plan_trip(origin, destination, date)`, `get_leg(leg_id)` y
 Navegador / ChatGPT / Claude
         │
         ▼
-AWS App Runner ── un contenedor: FastAPI (API + SSE) + servidor MCP + web estática (Next.js)
+Vercel ── web estática (Next.js) y slides; reenvía /api y /mcp a App Runner
+        │
+        ▼
+AWS App Runner ── FastAPI (API + SSE) + servidor MCP
         │ conector VPC
         ├──► RDS Postgres 16 privado: tramos, versiones, confirmaciones, viajes
         └──► NAT gateway ──► Tavily · Exa · Claude
@@ -96,12 +99,14 @@ AWS App Runner ── un contenedor: FastAPI (API + SSE) + servidor MCP + web es
   extractor con Claude Opus 5.5 que solo devuelve salida estructurada validada con Pydantic.
 - **Persistencia por versiones:** un dato equivalente solo actualiza la fecha de consulta; un
   cambio material crea una versión nueva y la versión confirmada nunca se sobrescribe.
-- **Web:** Next.js exportada como sitio estático y servida por el mismo backend, con la
-  identidad textil andina del proyecto (`design/textil/`).
+- **Web:** Next.js exportada como sitio estático y servida por Vercel, que reenvía `/api` y
+  `/mcp` al backend en App Runner. Usa la identidad textil andina del proyecto
+  (`design/textil/`).
 - **Tests:** 74 tests con `pytest` sobre el dominio, la persistencia, el extractor, el
   planificador, la API y el MCP, más los tests y el build de la web (`vitest`).
 - **CI/CD:** GitHub Actions corre los tests del backend (con Postgres) y de la web en cada push
-  y PR. Cada push a `main` con el CI en verde construye la imagen y la despliega en App Runner.
+  y PR. Cuando un push a `main` cambia el backend y el CI está en verde, se construye la imagen
+  y se despliega en App Runner; la web se despliega en Vercel desde su integración con GitHub.
   GitHub no guarda claves de AWS: el deploy asume un rol por OIDC que solo puede subir esa
   imagen y actualizar ese servicio.
 
