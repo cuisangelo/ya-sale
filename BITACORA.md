@@ -7,6 +7,18 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 17:50 · Cambio · Adaptador que busca una foto con crédito de cada destino en Wikipedia
+
+- **Por qué:** el rediseño muestra una foto real del destino en portada y viaje, y cada foto
+  debe llevar autor, licencia y enlace a Commons.
+- **Qué cambia:** `web/lib/photos.ts` busca primero el artículo por título (y por
+  `<nombre> (Perú)`), aceptándolo solo si sus coordenadas caen a menos de 25 km; si no, toma
+  la página más cercana en 10 km cuya imagen sea una foto (no mapa, escudo ni bandera). Pide
+  el crédito a Commons y guarda el resultado en memoria y en `localStorage`. Sin foto devuelve
+  `null`; un error de red o HTTP rechaza la promesa.
+- **Pruebas:** 11 pruebas nuevas con `fetch` simulado, sin red real; `tsc` y `pnpm test`
+  (46 passed) pasan.
+
 ### 17:50 · Cambio · Base visual de la web: carmín, Inter en tres tamaños y logo propio
 
 - **Por qué:** el rediseño necesita una identidad propia y sin motivos textiles; esta tarea
