@@ -91,6 +91,29 @@ Ask one concrete question only when the ambiguity affects the product's core flo
 model or anything irreversible (deletes, deploys, renames of public resources). For internal
 details, pick the simplest option, state the assumption in one line and keep going.
 
+## Bitácora
+
+[BITACORA.md](BITACORA.md) is the project log. Keeping it current is part of every task, not
+an afterthought.
+
+- **When:** append an entry as each step lands:
+  - a code change worth noting;
+  - a decision and its alternatives;
+  - a test or experiment and its result, including failures;
+  - a blocker;
+  - a deploy;
+  - an `andes project` submission or update.
+
+  Don't log every trivial commit.
+- **Format:** newest first, under the day's `## YYYY-MM-DD` heading:
+  `### HH:MM · <Tipo> · <title>`, using Lima time and one of Cambio, Decisión, Prueba,
+  Bloqueo, Deploy or Entrega. The body says what, why and evidence (commit SHA, command and
+  its real output, URL). Write it in Spanish.
+- **Facts only:** record what actually ran and what it returned. A failed test is logged as
+  failed. Never log secrets, credit codes or personal data.
+- Commit the entry together with the change it describes. It is the raw material for
+  `andes project update` posts and for the pitch.
+
 ## Git
 
 - Work in a worktree (`.claude/worktrees/<slug>`, ignored by git), never in the main checkout.

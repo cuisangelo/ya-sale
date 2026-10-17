@@ -72,6 +72,13 @@ Cada tramo tiene uno de estos estados, y la página lo muestra siempre:
 - **Confirmado:** "confirmado por <nombre> el <fecha>".
 - **En disputa:** alguien lo corrigió y hay versiones distintas; se muestran las dos.
 
+Una confirmación se aplica a **una versión concreta de los datos del tramo** (paradero, precio
+y tiempo), no al tramo en general. Si una consulta posterior trae valores distintos, se guarda
+como versión nueva y el tramo pasa a "en disputa", mostrando la versión confirmada (con quién y
+cuándo) junto a la nueva (con su fuente y fecha). Basta una confirmación para pasar a
+"confirmado"; una corrección se guarda como versión nueva. Así la regla "nunca confirmado sin
+una persona" se cumple aunque los datos cambien. *(Mi decisión.)*
+
 ### 4. Confirmación en vivo
 
 En cada tramo, quien lo conoce puede confirmarlo o corregirlo (paradero, precio, tiempo), con
@@ -117,7 +124,8 @@ en vivo, y cada confirmación queda registrada como evidencia de uso.
 
 ## Qué queda fuera
 
-Cuentas de usuario, compra o reserva de pasajes, hoteles y tours, el GPS de los buses, la
+El viaje de vuelta (solo ida, con fecha de salida; *mi decisión*), cuentas de usuario, compra o
+reserva de pasajes, hoteles y tours, el GPS de los buses, la
 tarjeta única y el Metropolitano. El tramo dentro de Lima hasta el terminal o el aeropuerto
 queda como link a Maps.
 
