@@ -7,6 +7,22 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 14:40 · Prueba · Créditos de los sponsors: configurados y útiles
+
+- **Probado:** `scripts/probe_providers.py` con las claves reales, sobre tres viajes (Tarapoto
+  → Sauce, Cusco → Aguas Calientes, Iquitos → Nauta). Exit 0.
+
+| Proveedor | Latencia | Resultados .pe | Con precio en soles |
+|---|---|---|---|
+| Tavily | 1,2–1,6 s | 4 de 15 | 1 de 15 |
+| Exa | 3,4–4,1 s | 5 de 15 | 3 de 15 |
+| Claude Opus 5.5 | 6,4 s | — | extrajo 1 tramo con precio (Tarapoto → Sauce) |
+
+- **Conclusión:** Exa trae más páginas con precio, así que conviene buscar en los dos en
+  paralelo en vez de usar Exa solo de respaldo.
+- **Secretos:** las claves quedaron en SSM (`/ya-sale/*`) con `infra/secrets.sh`, junto al
+  `DATABASE_URL` de la base privada, que ya está `available`.
+
 ### 14:12 · Decisión · Infraestructura AWS: base privada con NAT
 
 - **Pedido:** Cuiso pidió toda la infraestructura en AWS, con la mejor relación

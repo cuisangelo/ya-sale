@@ -1,3 +1,4 @@
+import asyncio
 import logging
 
 from exa_py import AsyncExa
@@ -68,18 +69,26 @@ class ExaConnector:
         ]
 
 
-class FallbackSearch:
-    def __init__(self, primary: Connector, secondary: Connector) -> None:
-        self._primary = primary
-        self._secondary = secondary
+class AllSourcesFailed(RuntimeError):
+    pass
+
+
+class CombinedSearch:
+    """Queries every source concurrently and merges hits by URL, keeping source order."""
+
+    def __init__(self, *sources: Connector) -> None:
+        self._sources = sources
 
     async def search(self, query: str, max_results: int) -> list[SearchHit]:
-        # An empty or failed primary must still yield the secondary source.
-        try:
-            hits = await self._primary.search(query, max_results)
-        except Exception as exc:
-            logger.warning("primary search failed (%s); using secondary", type(exc).__name__)
-            hits = []
-        if not hits:
-            hits = await self._secondary.search(query, max_results)
-        return [_hit(hit.url, hit.title, hit.content) for hit in hits]
+        results = await asyncio.gather(*(s.search(query, max_results) for s in self._sources), return_exceptions=True)
+        failures = [r for r in results if isinstance(r, BaseException)]
+        for failure in failures:
+            logger.warning("search source failed (%s)", type(failure).__name__)
+        if len(failures) == len(results):
+            raise AllSourcesFailed(query)
+        merged: dict[str, SearchHit] = {}
+        for hits in results:
+            if not isinstance(hits, BaseException):
+                for hit in hits:
+                    merged.setdefault(hit.url, _hit(hit.url, hit.title, hit.content))
+        return list(merged.values())

@@ -2,8 +2,9 @@ import pytest
 
 from app.connectors.base import SearchHit
 from app.connectors.web_search import (
+    AllSourcesFailed,
     BudgetExhausted,
-    FallbackSearch,
+    CombinedSearch,
     SearchBudget,
     TavilyConnector,
 )
@@ -16,11 +17,6 @@ class _Raising:
         raise RuntimeError("primary down")
 
 
-class _Empty:
-    async def search(self, query: str, max_results: int) -> list[SearchHit]:
-        return []
-
-
 class _Fixed:
     def __init__(self, hits: list[SearchHit]) -> None:
         self.hits = hits
@@ -31,31 +27,21 @@ class _Fixed:
         return self.hits
 
 
-async def test_fallback_used_when_primary_fails():
-    secondary = _Fixed([HIT])
-    hits = await FallbackSearch(_Raising(), secondary).search("lima cusco", 3)
+async def test_combined_search_merges_both_sources_without_duplicates():
+    other = SearchHit(url="https://example.pe/b", title="Sauce", content="S/ 15")
+    hits = await CombinedSearch(_Fixed([HIT]), _Fixed([HIT, other])).search("q", 5)
+    assert [h.url for h in hits] == [HIT.url, other.url]
+
+
+async def test_combined_search_survives_one_failing_source(caplog):
+    hits = await CombinedSearch(_Raising(), _Fixed([HIT])).search("q", 5)
     assert hits == [HIT]
-    assert secondary.calls == 1
+    assert "search source failed" in caplog.text
 
 
-async def test_primary_failure_is_logged_not_swallowed(caplog):
-    await FallbackSearch(_Raising(), _Fixed([HIT])).search("lima cusco", 3)
-    assert "primary search failed" in caplog.text
-    assert "RuntimeError" in caplog.text
-
-
-async def test_fallback_used_when_primary_returns_nothing():
-    secondary = _Fixed([HIT])
-    hits = await FallbackSearch(_Empty(), secondary).search("lima cusco", 3)
-    assert hits == [HIT]
-    assert secondary.calls == 1
-
-
-async def test_fallback_not_called_when_primary_has_results():
-    secondary = _Fixed([SearchHit(url="https://other.pe", title="Other", content="no")])
-    hits = await FallbackSearch(_Fixed([HIT]), secondary).search("lima cusco", 3)
-    assert hits == [HIT]
-    assert secondary.calls == 0
+async def test_combined_search_fails_loud_when_both_fail():
+    with pytest.raises(AllSourcesFailed):
+        await CombinedSearch(_Raising(), _Raising()).search("q", 5)
 
 
 def test_budget_stops_at_limit():

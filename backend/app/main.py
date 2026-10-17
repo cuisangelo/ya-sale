@@ -13,7 +13,7 @@ from app.api.routes import router
 from app.compare.service import CompareService
 from app.config import Settings, load_settings
 from app.connectors.extractor import LegExtractor
-from app.connectors.web_search import ExaConnector, FallbackSearch, SearchBudget, TavilyConnector
+from app.connectors.web_search import CombinedSearch, ExaConnector, SearchBudget, TavilyConnector
 from app.db import bootstrap_schema, create_pool
 from app.legs.repository import LegRepository
 from app.mcp_server import build_mcp
@@ -36,7 +36,7 @@ class Services:
 def build_services(settings: Settings, pool) -> Services:
     client = anthropic.AsyncAnthropic(api_key=settings.anthropic_api_key)
     legs = LegRepository(pool)
-    search = FallbackSearch(TavilyConnector(settings.tavily_api_key), ExaConnector(settings.exa_api_key))
+    search = CombinedSearch(TavilyConnector(settings.tavily_api_key), ExaConnector(settings.exa_api_key))
     planner = TripPlanner(legs, LegExtractor(client), search, lambda: SearchBudget(MAX_SEARCHES_PER_TRIP))
     return Services(
         planner=planner,
