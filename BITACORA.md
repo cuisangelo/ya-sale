@@ -7,6 +7,16 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 14:02 · Cambio · Conectores de búsqueda (delegado a Grok)
+
+- **Qué:** Tavily como fuente principal (`country=peru`, contenido completo) y Exa de respaldo
+  si Tavily falla o no trae nada. Tope de búsquedas por viaje (`SearchBudget`) y contenido
+  recortado a 12 000 caracteres por página.
+- **Quién:** lo escribió Grok 4.7 por `cursor-agent`. Yo revisé el código y agregué que la
+  falla de la fuente principal se registre en el log en vez de tragarse en silencio, con un
+  test que primero falló.
+- **Prueba:** `pytest -q` → 35 passed.
+
 ### 13:58 · Cambio · Extractor de tramos con Claude
 
 - **Qué:** `LegExtractor` con Claude Opus 5.5 (`messages.parse` y salida validada con
