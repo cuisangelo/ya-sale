@@ -7,6 +7,25 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 16:52 · Cambio · Contrato de salidas concretas: `Departure` y evento `leg_departures`
+
+- **Por qué:** hoy cada opción de bus dice "Salidas 5:00 a.m. – 7:30 p.m. · S/20", algo que
+  cualquier IA responde. Lo que nos diferencia es llevar al pasaje exacto: una salida concreta
+  (empresa, hora, precio, asientos) con el enlace a su selección de asiento.
+- **Qué:** `app/departures/domain.py` define `Departure` y el puerto `DepartureSource`; cada
+  vendedor será un adaptador nuevo cableado en `build_services` (por ahora no hay ninguno).
+  `TripPlanner` consulta las fuentes en paralelo por cada tramo con bus y emite
+  `leg_departures` `{index, mode, departures}` ordenado por hora. Si una fuente falla, tarda más
+  de 15 s o no encuentra nada, se registra un warning con el vendedor y el motivo, y el viaje
+  sigue igual. Una fecha que no es `YYYY-MM-DD` (MCP, `/compare`) omite las salidas sin
+  romper el viaje. Documentado en `docs/API.md`.
+- **Pruebas:** 109/109 en verde contra Postgres local. Mutación: con el `except Exception`
+  cambiado por `except ZeroDivisionError`, fallan los tests de fuente rota y fuente lenta (2);
+  revertido, pasan.
+- **kupos.pe:** su API de disponibilidad (`api.kupos.pe/api/v3/scheduled_services`) exige
+  tokens firmados en el cliente y responde cifrada. No la vamos a eludir; queda solo como
+  búsqueda prellenada con la fecha del viaje.
+
 ### 16:28 · Cambio · El logo de cada opción es el del sitio al que lleva el clic
 
 - **Problema que vio Cuiso:** en Lima → Barranca la fila "Movil Tours" mostraba el logo de

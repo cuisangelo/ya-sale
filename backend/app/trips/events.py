@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+from app.departures.domain import Departure
 from app.legs.domain import LegOption, LegStatus, LegVersion, Mode
 from app.places.domain import MapPoint
 from app.trips.domain import PlannedHop
@@ -46,6 +47,13 @@ class LegError:
 
 
 @dataclass(frozen=True)
+class LegDepartures:
+    index: int
+    mode: Mode
+    departures: tuple[Departure, ...]
+
+
+@dataclass(frozen=True)
 class TripMapped:
     points: tuple[MapPoint, ...]
 
@@ -60,4 +68,4 @@ class TripDone:
     legs: int
 
 
-TripEvent = TripStarted | LegStored | LegRefreshed | LegError | TripMapped | NoRoute | TripDone
+TripEvent = TripStarted | LegStored | LegRefreshed | LegError | LegDepartures | TripMapped | NoRoute | TripDone

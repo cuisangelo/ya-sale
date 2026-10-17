@@ -1,4 +1,6 @@
-from datetime import UTC, datetime
+import asyncio
+import logging
+from datetime import UTC, date, datetime
 from decimal import Decimal
 
 import pytest
@@ -6,11 +8,13 @@ import pytest
 from app.connectors.base import SearchHit
 from app.connectors.extractor import ExtractedLeg
 from app.connectors.web_search import SearchBudget
+from app.departures.domain import LIMA, Departure
 from app.legs.domain import LegData, LegKey
 from app.places.domain import GeocodingFailed, Point
 from app.legs.repository import LegRepository
 from app.trips.domain import PlannedHop
-from app.trips.events import LegError, LegRefreshed, LegStored, NoRoute, TripDone, TripMapped, TripStarted
+from app.trips.events import LegDepartures, LegError, LegRefreshed, LegStored, NoRoute, TripDone, TripMapped, TripStarted
+from app.trips import planner as planner_module
 from app.trips.planner import TripPlanner
 
 DATE = "2026-10-25"
@@ -79,6 +83,26 @@ class FakeLocator:
         return self._places.get(name)
 
 
+def departure(hour: int, seller: str) -> Departure:
+    return Departure("Movil Bus", datetime(2026, 10, 25, hour, 0, tzinfo=LIMA), None, Decimal(35), 12, f"https://{seller}/{hour}", seller)
+
+
+class FakeDepartureSource:
+    def __init__(self, seller: str, hours=(), error: Exception | None = None, delay: float = 0):
+        self.seller = seller
+        self.calls: list[tuple[str, str, date]] = []
+        self._hours = hours
+        self._error = error
+        self._delay = delay
+
+    async def departures(self, origin, destination, travel_date):
+        self.calls.append((origin, destination, travel_date))
+        await asyncio.sleep(self._delay)
+        if self._error:
+            raise self._error
+        return [departure(hour, self.seller) for hour in self._hours]
+
+
 def unpriced() -> LegData:
     return LegData("Terminal", None, None, None, 120, None, None)
 
@@ -92,9 +116,14 @@ def repo(pool):
     return LegRepository(pool)
 
 
-def planner(repo, chain, search=None, extractor=None, budget=8, locator=None):
+def planner(repo, chain, search=None, extractor=None, budget=8, locator=None, sources=()):
     return TripPlanner(
-        repo, extractor or FakeExtractor(chain), search or FakeSearch(), lambda: SearchBudget(budget), locator or FakeLocator()
+        repo,
+        extractor or FakeExtractor(chain),
+        search or FakeSearch(),
+        lambda: SearchBudget(budget),
+        locator or FakeLocator(),
+        sources,
     )
 
 
@@ -228,3 +257,56 @@ async def test_a_geocoding_failure_drops_that_place_and_keeps_the_trip(repo):
     mapped = next(e for e in events if isinstance(e, TripMapped))
     assert [p.name for p in mapped.points] == ["Ollantaytambo"]
     assert len(refreshed(events)) == 2
+
+
+def departures_events(events) -> list[LegDepartures]:
+    return [e for e in events if isinstance(e, LegDepartures)]
+
+
+async def test_bus_hop_gets_the_departures_of_every_source_earliest_first(repo):
+    sources = (FakeDepartureSource("a.pe", hours=(19, 7)), FakeDepartureSource("b.pe", hours=(13,)))
+    events = await collect(planner(repo, BUS_OR_PLANE, sources=sources), "Lima", "Sauce")
+    [found] = departures_events(events)
+    assert (found.index, found.mode) == (0, "bus")
+    assert [(d.departs_at.hour, d.seller) for d in found.departures] == [(7, "a.pe"), (13, "b.pe"), (19, "a.pe")]
+    assert sources[0].calls == [("Lima", "Tarapoto", date(2026, 10, 25))]
+    assert isinstance(events[-1], TripDone)
+
+
+async def test_hops_without_a_bus_never_query_the_sources(repo):
+    source = FakeDepartureSource("a.pe", hours=(7,))
+    events = await collect(planner(repo, TWO_HOPS, sources=(source,)), "Cusco", "Aguas Calientes")
+    assert source.calls == []
+    assert departures_events(events) == []
+
+
+async def test_a_failing_source_is_logged_and_leaves_the_trip_and_other_sources_intact(repo, caplog):
+    caplog.set_level(logging.WARNING)
+    sources = (FakeDepartureSource("roto.pe", error=RuntimeError("403 Forbidden")), FakeDepartureSource("b.pe", hours=(13,)))
+    events = await collect(planner(repo, BUS_OR_PLANE, sources=sources), "Lima", "Sauce")
+    [found] = departures_events(events)
+    assert [d.seller for d in found.departures] == ["b.pe"]
+    assert sorted((e.index, e.mode) for e in refreshed(events)) == [(0, "avion"), (0, "bus"), (1, "colectivo")]
+    assert "roto.pe" in caplog.text and "403 Forbidden" in caplog.text
+
+
+async def test_no_departures_emits_nothing(repo):
+    events = await collect(planner(repo, BUS_OR_PLANE, sources=(FakeDepartureSource("a.pe"),)), "Lima", "Sauce")
+    assert departures_events(events) == []
+    assert isinstance(events[-1], TripDone)
+
+
+async def test_a_slow_source_is_dropped_without_holding_the_trip(repo, monkeypatch, caplog):
+    monkeypatch.setattr(planner_module, "DEPARTURES_TIMEOUT_S", 0.01)
+    caplog.set_level(logging.WARNING)
+    source = FakeDepartureSource("lento.pe", hours=(7,), delay=1)
+    events = await collect(planner(repo, BUS_OR_PLANE, sources=(source,)), "Lima", "Sauce")
+    assert departures_events(events) == []
+    assert "lento.pe" in caplog.text
+
+
+async def test_a_date_that_is_not_a_day_skips_departures_but_keeps_the_trip(repo):
+    source = FakeDepartureSource("a.pe", hours=(7,))
+    events = [e async for e in planner(repo, BUS_OR_PLANE, sources=(source,)).plan("Lima", "Sauce", "el sábado", trip_id=1)]
+    assert source.calls == []
+    assert isinstance(events[-1], TripDone) and len(refreshed(events)) == 3

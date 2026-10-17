@@ -43,7 +43,8 @@ def build_services(settings: Settings, pool) -> Services:
     legs = LegRepository(pool)
     search = CombinedSearch(TavilyConnector(settings.tavily_api_key), ExaConnector(settings.exa_api_key))
     locator = PlaceLocator(PlaceRepository(pool), GoogleGeocoder(settings.google_maps_api_key, httpx.AsyncClient(timeout=10)))
-    planner = TripPlanner(legs, LegExtractor(client), search, lambda: SearchBudget(MAX_SEARCHES_PER_TRIP), locator)
+    departure_sources = ()
+    planner = TripPlanner(legs, LegExtractor(client), search, lambda: SearchBudget(MAX_SEARCHES_PER_TRIP), locator, departure_sources)
     return Services(
         planner=planner,
         legs=legs,

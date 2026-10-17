@@ -45,6 +45,16 @@ interface Hop {
 
 interface MapPoint { name: string; lat: number; lng: number; }
 
+interface Departure {
+  operator: string;
+  departs_at: string;             // ISO 8601 in Lima time, e.g. "2026-10-25T19:30:00-05:00"
+  arrives_at: string | null;
+  price_pen: string | null;       // decimal as string, like Version prices
+  seats_available: number | null;
+  booking_url: string;            // that departure's own page (seat selection), not a home page or a results list
+  seller: string;                 // the domain that sells it, e.g. "movilbus.pe"
+}
+
 interface LegSummary {
   leg_id: number;
   mode: Mode;
@@ -66,6 +76,7 @@ Response: `text/event-stream`; each message is `event: <name>\ndata: <json>\n\n`
 | `leg_stored` | `{index} & LegSummary & {options: Option[]}` | a saved version, shown immediately ("guardado [fecha] · refrescando…") |
 | `leg_refreshed` | `{index} & LegSummary & {options: Option[]}` | live data arrived ("actualizado hace N s"); replaces the same `index` and `mode` |
 | `leg_error` | `{index, mode, message}` | live refresh of that mode failed; keep the stored leg if any |
+| `leg_departures` | `{index, mode, departures: Departure[]}` | concrete departures on sale for the trip `date` on a bus hop, earliest first; only sent when a seller found some, so the scraped `options` stay as the fallback |
 | `trip_mapped` | `{points: MapPoint[]}` | the places of `hops` that were found on the map; a missing place is left out, never guessed |
 | `no_route` | `{message}` | the only event; show `message` (Spanish) and no legs |
 | `trip_done` | `{legs}` | always last |
