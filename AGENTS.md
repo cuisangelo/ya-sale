@@ -39,8 +39,51 @@ and offer the minimal variant.
 - **Dependencies:** don't add one if under ~50 lines of direct code would do.
 - **Tooling:** `pnpm` for JS/TS and `uv` for Python, never npm, yarn or raw pip. If the repo
   gets a `Dockerfile` or `compose.yaml`, run commands inside the container.
-- **Language:** code, identifiers, comments and commits in English. Human-facing docs
-  (GUIDE.md, README, pitch, `andes project` updates and description) in Spanish.
+- **Language:** all code, identifiers, comments, docstrings, log messages and commits are in
+  English, always, even when the user writes in Spanish. Spanish is only for human-facing docs
+  (GUIDE.md, README, pitch, `andes project` updates and description) and end-user UI copy.
+
+## Architecture and code quality
+
+The jury reviews this repo, so its structure is part of the score. Keep it simple, but keep it
+clean.
+
+- **Repo structure:** organize code by feature or domain (e.g. `routes/`, `stops/`, `trips/`),
+  not by file type. Inside each one, keep these apart:
+  - **domain:** pure logic, no I/O;
+  - **application:** use cases that orchestrate the domain;
+  - **infrastructure:** HTTP handlers, DB, external APIs, LLM calls.
+
+  Shared config, env loading and logging live in one place each.
+- **Dependencies point inward.** Domain code never imports frameworks, SDKs or the DB client.
+  Infrastructure depends on the domain, never the reverse.
+- **SOLID, applied pragmatically:**
+  - **Single responsibility:** one reason to change per module or function. No god files.
+  - **Open/closed:** add a new data source or provider by adding a module, not by editing
+    `if` chains spread across the code.
+  - **Liskov:** every implementation of an interface honors its contract and raises the same
+    error types.
+  - **Interface segregation:** small interfaces that expose only what the caller uses.
+  - **Dependency inversion:** inject dependencies through constructors or function parameters,
+    with no hidden globals or singletons, so tests can swap them.
+- **Patterns only where they earn their place:**
+  - **Adapter:** one per external data source or API (GTFS, transit APIs, maps, WhatsApp/Zavu,
+    LLM providers), behind a domain-level interface.
+  - **Repository:** for persistence, so use cases never build queries.
+  - **Strategy:** only once there are two or more real interchangeable algorithms (e.g. route
+    ranking).
+  - **Factory or composition root:** a single place that wires concrete implementations.
+
+  No pattern for a single implementation with no external boundary. Three similar lines beat
+  a premature abstraction.
+- **Typed boundaries:** validate input at the edges (request schemas, env, external responses)
+  with typed models, and pass typed objects inside, not raw dicts or `any`.
+- **Errors:** domain-specific error types, mapped to HTTP status codes in one place. Never
+  swallow exceptions.
+- **Tests:** cover the domain and use-case logic with fast unit tests that use fake adapters.
+  Write integration tests only for the critical demo flow.
+- **README:** keep a short Spanish run section: requirements, env vars (names only), how to
+  run, how to deploy and the live URL.
 
 ## Ask vs. decide
 
