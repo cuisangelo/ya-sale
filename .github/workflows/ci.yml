@@ -3,7 +3,6 @@ name: CI/CD
 on:
   push:
     branches: [main]
-    paths-ignore: ["**.md", "docs/**", "design/**"]
   pull_request:
     paths-ignore: ["**.md", "docs/**", "design/**"]
 
@@ -60,26 +59,11 @@ jobs:
       - run: pnpm vitest run
       - run: pnpm build
 
-  changes:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    outputs:
-      backend: ${{ steps.filter.outputs.backend }}
-    steps:
-      - uses: actions/checkout@v4
-      - id: filter
-        uses: dorny/paths-filter@v3
-        with:
-          filters: |
-            backend:
-              - backend/**
-              - Dockerfile
-              - infra/**
-
-  # The web deploys through Vercel's GitHub integration; only backend changes ship a new image.
+  # The web deploys through Vercel's GitHub integration. The backend ships whenever main differs from
+  # the image that is live, so a cancelled run never leaves a backend change undeployed.
   deploy:
-    needs: [backend, web, changes]
-    if: needs.changes.outputs.backend == 'true'
+    needs: [backend, web]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     concurrency:
       group: deploy-production
@@ -91,14 +75,32 @@ jobs:
       AWS_REGION: us-east-1
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::850995576375:role/ya-sale-github-deploy
           aws-region: us-east-1
-      - id: ecr
+      - id: live
+        name: Compare main with the image that is live
+        run: |
+          service=$(aws apprunner list-services --query "ServiceSummaryList[?ServiceName=='ya-sale'].ServiceArn | [0]" --output text)
+          image=$(aws apprunner describe-service --service-arn "$service" --query Service.SourceConfiguration.ImageRepository.ImageIdentifier --output text)
+          live_sha="${image##*:}"
+          if git cat-file -e "$live_sha^{commit}" 2>/dev/null && git diff --quiet "$live_sha" HEAD -- backend Dockerfile infra; then
+            echo "Backend unchanged since live image $live_sha"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Backend differs from live image $live_sha"
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+      - if: steps.live.outputs.changed == 'true'
+        id: ecr
         uses: aws-actions/amazon-ecr-login@v2
-      - uses: docker/setup-buildx-action@v3
-      - uses: docker/build-push-action@v6
+      - if: steps.live.outputs.changed == 'true'
+        uses: docker/setup-buildx-action@v3
+      - if: steps.live.outputs.changed == 'true'
+        uses: docker/build-push-action@v6
         with:
           context: .
           platforms: linux/amd64
@@ -106,4 +108,5 @@ jobs:
           tags: ${{ steps.ecr.outputs.registry }}/ya-sale:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-      - run: bash infra/release.sh "${{ steps.ecr.outputs.registry }}/ya-sale:${{ github.sha }}"
+      - if: steps.live.outputs.changed == 'true'
+        run: bash infra/release.sh "${{ steps.ecr.outputs.registry }}/ya-sale:${{ github.sha }}"
