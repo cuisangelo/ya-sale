@@ -7,6 +7,17 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 17:20 · Prueba · El extractor con Sonnet 5.5 funciona en producción
+
+- **Deploy:** el run 39074400710 (`4104e11`) quedó cancelado sin jobs, porque el merge del
+  PR #14 entró mientras esperaba. El run 39074527537 (`295ece1`, que incluye `4104e11`) salió
+  verde, y Lambda corre `ya-sale:295ece1…`.
+- **Viaje real:** `POST /api/trips` Lima → Trujillo 2026-10-24. Eventos: `trip_started`,
+  `leg_stored` ×2, `trip_mapped`, `leg_departures`, `leg_refreshed` ×2, `trip_done`, sin
+  `leg_error`. Los dos tramos se refrescaron en vivo con Sonnet: bus S/44–55 en 500 min y
+  avión (Sky, LATAM) desde S/83 en 70 min. `leg_departures` trajo 16 salidas de Cruz del Sur
+  y 7 de Oltursa.
+
 ### 17:16 · Cambio · Segundo vendedor de salidas: Oltursa
 
 - **Qué:** `app/connectors/oltursa.py` lee la página pública del día
