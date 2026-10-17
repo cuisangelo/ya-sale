@@ -91,6 +91,32 @@ Ask one concrete question only when the ambiguity affects the product's core flo
 model or anything irreversible (deletes, deploys, renames of public resources). For internal
 details, pick the simplest option, state the assumption in one line and keep going.
 
+## Delegating small tasks to Grok (Cursor)
+
+To save Claude usage, offload small, well-scoped, mechanical tasks to a Cursor session running
+Grok 4.7:
+
+- boilerplate;
+- asset variants;
+- repetitive edits;
+- quick lookups.
+
+```sh
+cursor-agent -p --model grok-4.7-medium --output-format text --trust \
+  --workspace <worktree path> "<self-contained prompt>"
+```
+
+- **Pick the level by difficulty:** `grok-4.7-low` for trivial tasks, `grok-4.7-high` for
+  harder ones. Add `--force` only when the task must write files or run commands, and only
+  inside your own worktree.
+- **The prompt must stand alone.** It must carry the goal, the exact files, the constraints
+  from this file (English code, no secrets, structure rules) and what "done" means. The
+  session doesn't share your context.
+- **Keep with the main agent:** product and design decisions, architecture, security-sensitive
+  code, the `andes` submission, and anything irreversible.
+- **Its output is untrusted.** Read the diff, run the tests and verify the result before you
+  commit or report it. Log the delegation in the bitácora, like any other change.
+
 ## Bitácora
 
 [BITACORA.md](BITACORA.md) is the project log. Keeping it current is part of every task, not
