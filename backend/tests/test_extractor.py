@@ -68,7 +68,7 @@ async def test_refusal_yields_no_legs():
 async def test_uses_the_pinned_model():
     fake = FakeClient()
     await LegExtractor(fake).extract_legs("A", "B", [HIT])
-    assert fake.calls[0]["model"] == "claude-opus-5-5"
+    assert fake.calls[0]["model"] == "claude-sonnet-5-5"
 
 
 async def test_plan_chain_returns_ordered_hops():

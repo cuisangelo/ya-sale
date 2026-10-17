@@ -66,7 +66,7 @@ async def test_plain_side_gets_no_tools():
 async def test_both_sides_use_the_same_model():
     client = FakeClient()
     await CompareService(client, FakePlanner(TWO_LEGS_ONE_CONFIRMED)).compare(Q)
-    assert {c["model"] for c in client.calls} == {"claude-opus-5-5"}
+    assert {c["model"] for c in client.calls} == {"claude-sonnet-5-5"}
 
 
 async def test_with_tools_counts_come_from_legs_not_text():

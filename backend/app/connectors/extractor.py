@@ -9,7 +9,7 @@ from app.connectors.base import SearchHit
 from app.legs.domain import LegData, Mode
 from app.trips.domain import PlannedHop
 
-MODEL = "claude-opus-5-5"
+MODEL = "claude-sonnet-5-5"
 MAX_PRICE_PEN = Decimal("5000")
 MAX_DURATION_MIN = 4320
 

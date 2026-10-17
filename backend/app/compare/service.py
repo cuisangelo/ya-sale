@@ -6,7 +6,7 @@ import anthropic
 from app.legs.serialization import leg_summary_json
 from app.trips.events import LegRefreshed, LegStored
 
-MODEL = "claude-opus-5-5"
+MODEL = "claude-sonnet-5-5"
 MAX_TOOL_ROUNDS = 3
 
 _SYSTEM = "Eres un asistente de viajes en el Perú. Responde en español, breve y concreto."

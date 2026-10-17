@@ -7,6 +7,19 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 17:16 · Decisión · El extractor y la comparación pasan de Opus 5.5 a Sonnet 5.5
+
+- **Por qué:** la consola de la API marcó USD 11,82 en Claude Opus 5.5 el 17 de octubre. Cada
+  tramo y modo manda a Claude hasta 5 páginas de 12 000 caracteres (~15–20 mil tokens de
+  entrada), y un viaje hace hasta 12 búsquedas. Opus se eligió por defecto, sin medir si hacía
+  falta. Cuiso decidió usar Sonnet 5.5, que cuesta la mitad (USD 2 / 10 por millón de tokens,
+  contra 4 / 20).
+- **Qué cambia:** `MODEL` en `backend/app/connectors/extractor.py` y en
+  `backend/app/compare/service.py`. El resto del código ya cumplía lo que exige Sonnet 5.5:
+  no apaga el thinking, no fuerza `tool_choice` y fija `effort: low` explícito.
+- **Pruebas:** los tests que fijan el modelo fallaron (2) antes del cambio y después pasaron.
+  Suite del backend 119/119, corrida en `docker compose`.
+
 ### 17:12 · Prueba · Cruz del Sur funciona desde Lambda: salidas exactas en producción
 
 - **Deploy:** PR #12 mergeado como `845c592`; el run 39073700273 de CI/CD terminó con
