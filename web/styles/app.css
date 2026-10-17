@@ -1168,3 +1168,94 @@ a.option-row:hover .option-what strong {
     font-size: 18px;
   }
 }
+
+.dest-hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  background: linear-gradient(135deg, #c8102e, #111114);
+  color: #fff;
+}
+
+.dest-hero-home {
+  height: 420px;
+}
+
+.dest-hero-trip {
+  height: 260px;
+}
+
+.dest-hero-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+}
+
+.dest-hero-photo.is-loaded {
+  opacity: 1;
+  transition: opacity 600ms ease;
+  animation: dest-hero-zoom 16s ease-out both;
+}
+
+@keyframes dest-hero-zoom {
+  from {
+    transform: scale(1.15);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+/* The gradient keeps white text legible over any photo. */
+.dest-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.05) 40%, rgba(0, 0, 0, 0.75));
+}
+
+.dest-hero-nav,
+.dest-hero-content {
+  position: relative;
+  z-index: 1;
+  padding-inline: 16px;
+}
+
+.dest-hero-nav {
+  padding-top: 16px;
+}
+
+.dest-hero-content {
+  padding-bottom: 48px;
+}
+
+.dest-hero-credit {
+  position: absolute;
+  z-index: 1;
+  right: 16px;
+  bottom: 16px;
+  font-size: 14px;
+  color: #fff;
+  opacity: 0.7;
+}
+
+@media (max-width: 860px) {
+  .dest-hero-home {
+    height: 360px;
+  }
+
+  .dest-hero-trip {
+    height: 220px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dest-hero-photo.is-loaded {
+    transition: none;
+    animation: none;
+  }
+}

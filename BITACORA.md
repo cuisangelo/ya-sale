@@ -7,6 +7,18 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 17:52 · Cambio · Portada de destino compartida: foto con crédito, degradado y respaldo
+
+- **Por qué:** portada y viaje muestran la misma cabecera fotográfica; un solo componente evita
+  duplicar la lógica de la foto y su crédito.
+- **Qué cambia:** `web/components/DestinationHero.tsx` busca la foto del destino, la muestra
+  con fundido de 600 ms y zoom lento, y pone el crédito enlazado a Commons. Sin lugar, sin foto
+  o con error de red (registrado con `console.error`) queda el degradado rojo a negro. Ignora
+  resultados que llegan tras desmontar o cambiar de destino. Con movimiento reducido no hay
+  fundido ni zoom.
+- **Pruebas:** `tsc` y `pnpm test` (46 passed) pasan; la revisión visual se hace al usarlo en
+  portada y viaje.
+
 ### 17:50 · Cambio · Adaptador que busca una foto con crédito de cada destino en Wikipedia
 
 - **Por qué:** el rediseño muestra una foto real del destino en portada y viaje, y cada foto
