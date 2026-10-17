@@ -7,6 +7,22 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 17:16 · Cambio · Segundo vendedor de salidas: Oltursa
+
+- **Qué:** `app/connectors/oltursa.py` lee la página pública del día
+  (`oltursa.pe/es/viajes/{origen}/{destino}/{AAAA-MM-DD}`), que trae todas las salidas en su
+  `__NEXT_DATA__`: hora de salida y llegada, precio "Desde" (`nprecio_desde`), asientos libres
+  y tipo de servicio. Los slugs salen de `api.oltursa.com.pe/ws-tienda/api/v1/cities`.
+- **Enlace:** la selección de asiento de Oltursa no tiene URL propia (vive en el
+  `sessionStorage`), así que cada fila lleva a la lista de ese día. Hora, precio y asientos
+  son exactos. `docs/API.md` lo aclara en `booking_url`.
+- **Fallar fuerte:** si la página deja de traer `__NEXT_DATA__`, se lanza `OltursaPageChanged`
+  y el planner lo registra como fallo de la fuente, en lugar de devolver una lista vacía.
+- **Pruebas:** 10 tests contra páginas grabadas (con llegada al día siguiente y cruce de año
+  nuevo). Mutación: sin el ajuste de año, falla el test de año nuevo; revertido, pasa. Backend
+  127/127, web 33/33. En vivo desde la laptop: Lima → Trujillo el 23-10, 7 salidas; Lima →
+  Arequipa, 10.
+
 ### 17:16 · Decisión · El extractor y la comparación pasan de Opus 5.5 a Sonnet 5.5
 
 - **Por qué:** la consola de la API marcó USD 11,82 en Claude Opus 5.5 el 17 de octubre. Cada

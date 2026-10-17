@@ -186,10 +186,11 @@ function DepartureList({ departures, date }: { departures: Departure[]; date: st
     <section className="departures" aria-label={heading}>
       <h3>{heading}</h3>
       <ul>
-        {departures.map((departure) => {
+        {departures.map((departure, position) => {
           const seats = seatsLabel(departure.seats_available);
           return (
-            <li key={departure.booking_url}>
+            // A seller without per-departure pages links every departure of the day to the same list.
+            <li key={`${departure.booking_url}-${position}`}>
               <a className="option-row" href={departure.booking_url} target="_blank" rel="noreferrer">
                 <OptionLogo operator={departure.operator} link={departure.booking_url} />
                 <div className="option-what">

@@ -17,6 +17,7 @@ from app.config import Settings, load_settings
 from app.connectors.cruzdelsur import CruzDelSurSource
 from app.connectors.extractor import LegExtractor
 from app.connectors.geocoding import GoogleGeocoder
+from app.connectors.oltursa import OltursaSource
 from app.connectors.web_search import CombinedSearch, ExaConnector, SearchBudget, TavilyConnector
 from app.db import bootstrap_schema, create_pool
 from app.legs.repository import LegRepository
@@ -44,7 +45,10 @@ def build_services(settings: Settings, pool) -> Services:
     legs = LegRepository(pool)
     search = CombinedSearch(TavilyConnector(settings.tavily_api_key), ExaConnector(settings.exa_api_key))
     locator = PlaceLocator(PlaceRepository(pool), GoogleGeocoder(settings.google_maps_api_key, httpx.AsyncClient(timeout=10)))
-    departure_sources = (CruzDelSurSource(httpx.AsyncClient(timeout=10), poll_interval_s=1),)
+    departure_sources = (
+        CruzDelSurSource(httpx.AsyncClient(timeout=10), poll_interval_s=1),
+        OltursaSource(httpx.AsyncClient(timeout=10)),
+    )
     planner = TripPlanner(legs, LegExtractor(client), search, lambda: SearchBudget(MAX_SEARCHES_PER_TRIP), locator, departure_sources)
     return Services(
         planner=planner,
