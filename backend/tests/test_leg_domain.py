@@ -1,7 +1,10 @@
+from dataclasses import replace
 from datetime import UTC, datetime
 from decimal import Decimal
 
-from app.legs.domain import LegData, LegVersion, display_version, leg_status, material_change, normalize_place
+from app.legs.domain import (
+    LegData, LegVersion, completeness, display_version, has_price, leg_status, material_change, normalize_place,
+)
 
 T0 = datetime(2026, 10, 17, tzinfo=UTC)
 
@@ -84,3 +87,17 @@ def test_display_version_shows_newest_when_disputed():
 def test_normalize_place():
     assert normalize_place("  Aguas  Calientes ") == normalize_place("aguas calientes")
     assert normalize_place("Ñaña") == "nana"
+
+
+def test_a_price_on_either_bound_counts_as_priced():
+    assert has_price(replace(data(), price_min_pen=Decimal("35")))
+    assert not has_price(data(duration=90, point="Terminal"))
+
+
+def test_a_priced_leg_ranks_above_an_unpriced_one_with_more_fields():
+    assert completeness(data(price=(10, 15))) > completeness(data(duration=90, point="Terminal"))
+
+
+def test_among_priced_legs_more_filled_fields_rank_higher():
+    assert completeness(data(price=(10, 15), duration=90)) > completeness(data(price=(10, 15)))
+

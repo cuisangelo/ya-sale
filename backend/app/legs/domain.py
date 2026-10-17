@@ -52,6 +52,16 @@ class LegVersion:
     confirmations: int
 
 
+def has_price(data: LegData) -> bool:
+    return data.price_min_pen is not None or data.price_max_pen is not None
+
+
+def completeness(data: LegData) -> tuple[bool, int]:
+    """Ranks candidates for the same leg: a price first, then how many other fields are known."""
+    others = (data.departure_point, data.operator, data.duration_min, data.schedule_note, data.purchase_url)
+    return has_price(data), sum(value is not None for value in others)
+
+
 def _price_change(a: LegData, b: LegData) -> bool:
     if None in (a.price_min_pen, a.price_max_pen, b.price_min_pen, b.price_max_pen):
         return False
