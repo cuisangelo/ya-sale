@@ -7,6 +7,20 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 14:18 · Cambio · API en vivo, confirmaciones y uso
+
+- **Viajes en vivo:** `POST /api/trips` transmite el viaje por SSE (`trip_started`,
+  `leg_stored`, `leg_refreshed`, `leg_error`, `no_route`, `trip_done`).
+- **Confirmar y corregir:** `POST /api/legs/{id}/confirmations` responde 409 "Ya confirmaste
+  este tramo." si repetís; `POST /api/legs/{id}/corrections` crea una versión confirmada.
+- **Uso:** `GET /api/usage` cuenta viajes, destinos, personas y tramos confirmados desde la
+  base, sin contar las huellas del equipo.
+- **Guardas:**
+  - huella anónima: sha256 con sal de la IP y el user-agent, recortado a 16 caracteres;
+  - 6 viajes por minuto por persona;
+  - la IP nunca se loguea.
+- **Prueba:** `pytest -q` → 52 passed.
+
 ### 14:10 · Cambio · Planificador de viajes: primero lo guardado, después en vivo
 
 - **Qué:** `TripPlanner`.

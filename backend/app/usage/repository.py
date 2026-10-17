@@ -1,0 +1,54 @@
+from psycopg_pool import AsyncConnectionPool
+
+RECENT_LIMIT = 10
+
+_SUMMARY_SQL = """
+    SELECT
+        (SELECT count(*) FROM trips WHERE fingerprint <> ALL(%(team)s)),
+        (SELECT count(DISTINCT lower(destination)) FROM trips WHERE fingerprint <> ALL(%(team)s)),
+        (SELECT count(DISTINCT fingerprint) FROM (
+            SELECT fingerprint FROM trips UNION SELECT fingerprint FROM confirmations
+         ) people WHERE fingerprint <> ALL(%(team)s)),
+        (SELECT count(DISTINCT v.leg_id) FROM confirmations c JOIN leg_versions v ON v.id = c.version_id
+         WHERE c.fingerprint <> ALL(%(team)s))
+"""
+
+_RECENT_SQL = """
+    SELECT c.kind, c.display_name, l.mode, l.origin, l.destination, c.created_at
+    FROM confirmations c
+    JOIN leg_versions v ON v.id = c.version_id
+    JOIN legs l ON l.id = v.leg_id
+    WHERE c.fingerprint <> ALL(%(team)s)
+    ORDER BY c.created_at DESC
+    LIMIT %(limit)s
+"""
+
+
+class UsageRepository:
+    def __init__(self, pool: AsyncConnectionPool, team_fingerprints: frozenset[str]):
+        self._pool = pool
+        self._team = list(team_fingerprints)
+
+    async def record_trip(self, origin: str, destination: str, fingerprint: str) -> int:
+        async with self._pool.connection() as conn:
+            row = await (await conn.execute(
+                "INSERT INTO trips (origin, destination, fingerprint) VALUES (%s, %s, %s) RETURNING id",
+                (origin, destination, fingerprint),
+            )).fetchone()
+        return row[0]
+
+    async def summary(self) -> dict:
+        params = {"team": self._team, "limit": RECENT_LIMIT}
+        async with self._pool.connection() as conn:
+            trips, destinations, people, confirmed_legs = await (await conn.execute(_SUMMARY_SQL, params)).fetchone()
+            recent = await (await conn.execute(_RECENT_SQL, params)).fetchall()
+        return {
+            "trips": trips,
+            "destinations": destinations,
+            "people": people,
+            "confirmed_legs": confirmed_legs,
+            "recent": [
+                {"kind": kind, "display_name": name, "mode": mode, "origin": origin, "destination": destination, "at": at.isoformat()}
+                for kind, name, mode, origin, destination, at in recent
+            ],
+        }
