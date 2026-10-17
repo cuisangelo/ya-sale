@@ -9,13 +9,14 @@ FULL_ENV = {
     "DATABASE_URL": "postgresql://x",
     "FINGERPRINT_SALT": "s",
     "TEAM_FINGERPRINTS": "fp1,fp2",
+    "GOOGLE_MAPS_API_KEY": "g",
 }
 
 
 def test_missing_vars_are_all_named():
     with pytest.raises(ConfigError) as exc:
         load_settings({"ANTHROPIC_API_KEY": "x"})
-    for name in ("TAVILY_API_KEY", "EXA_API_KEY", "DATABASE_URL", "FINGERPRINT_SALT", "TEAM_FINGERPRINTS"):
+    for name in ("TAVILY_API_KEY", "EXA_API_KEY", "DATABASE_URL", "FINGERPRINT_SALT", "TEAM_FINGERPRINTS", "GOOGLE_MAPS_API_KEY"):
         assert name in str(exc.value)
 
 
@@ -39,4 +40,4 @@ async def test_schema_bootstrap_creates_tables(pool):
             "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'"
         )
         tables = {row[0] for row in await rows.fetchall()}
-    assert {"legs", "leg_versions", "confirmations", "trips"} <= tables
+    assert {"legs", "leg_versions", "confirmations", "trips", "places"} <= tables

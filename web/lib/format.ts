@@ -1,4 +1,4 @@
-import type { LegSlot, LegSummary, Mode, Version } from "./api";
+import type { LegSlot, LegSummary, Mode, Option, Version } from "./api";
 
 const MODE_LABELS: Record<Mode, string> = {
   bus: "Bus",
@@ -176,17 +176,14 @@ function liveSourceLine(summary: LegSummary, saved: string, now: number): string
   return `según ${sourceLabel(version.source_url)} · actualizado hace ${secondsAgo(version.fetched_at, now)} s`;
 }
 
-export function itineraryMeta(legs: LegSlot[], legsPlanned: number, done: boolean): string {
-  const count = legsPlanned > 0 ? legsPlanned : legs.length;
-  if (count === 0) return "";
-  const label = `${count} ${count === 1 ? "tramo" : "tramos"}`;
-  if (!done) return label;
-  const parts = [label];
-  const duration = totalDuration(legs);
-  const price = totalPrice(legs);
-  if (duration) parts.push(duration);
-  if (price) parts.push(price);
-  return parts.join(" · ");
+export interface ItineraryTotals {
+  price: string | null;
+  duration: string | null;
+}
+
+/** Totals over one leg per hop; unknown as soon as one leg lacks the value, never a partial sum. */
+export function itineraryTotals(legs: LegSlot[]): ItineraryTotals {
+  return { price: totalPrice(legs), duration: totalDuration(legs) };
 }
 
 function totalDuration(legs: LegSlot[]): string | null {
@@ -214,6 +211,22 @@ function totalPrice(legs: LegSlot[]): string | null {
     max += high ?? low ?? 0;
   }
   return formatPrice(fromCents(min), min === max ? null : fromCents(max));
+}
+
+export function priceFloor(version: Version, options: Option[]): string | null {
+  const cents = [version, ...options]
+    .flatMap((offer) => [offer.price_min_pen, offer.price_max_pen])
+    .map((value) => (value == null ? null : toCents(value)))
+    .filter((value): value is number => value != null);
+  if (cents.length === 0) return null;
+  return `desde S/${fromCents(Math.min(...cents))}`;
+}
+
+export function mapsDirectionsUrl(place: string, town: string): string {
+  const url = new URL("https://www.google.com/maps/dir/");
+  url.searchParams.set("api", "1");
+  url.searchParams.set("destination", `${place}, ${town}, Perú`);
+  return url.href;
 }
 
 export function columnCounter(sources: number, dated: number): string {

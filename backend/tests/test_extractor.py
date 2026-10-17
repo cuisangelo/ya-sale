@@ -3,6 +3,7 @@ from types import SimpleNamespace
 
 from app.connectors.base import SearchHit
 from app.connectors.extractor import ChainOut, Hop, LegExtractor, LegOut, LegsOut
+from app.trips.domain import PlannedHop
 
 HIT = SearchHit(url="https://tarapoto.net/laguna-azul", title="Laguna Azul", content="Colectivo S/12 a S/15")
 
@@ -71,9 +72,12 @@ async def test_uses_the_pinned_model():
 
 
 async def test_plan_chain_returns_ordered_hops():
-    hops = [Hop(origin="Lima", destination="Tarapoto", mode="bus"), Hop(origin="Tarapoto", destination="Sauce", mode="colectivo")]
+    hops = [
+        Hop(origin="Lima", destination="Tarapoto", mode="bus", alternatives=["avion"]),
+        Hop(origin="Tarapoto", destination="Sauce", mode="colectivo", alternatives=[]),
+    ]
     chain = await LegExtractor(FakeClient(hops=hops)).plan_chain("Lima", "Sauce", [HIT])
-    assert chain == [("Lima", "Tarapoto", "bus"), ("Tarapoto", "Sauce", "colectivo")]
+    assert chain == [PlannedHop("Lima", "Tarapoto", ("bus", "avion")), PlannedHop("Tarapoto", "Sauce", ("colectivo",))]
 
 
 async def test_plan_chain_without_pages_does_not_call_the_model():

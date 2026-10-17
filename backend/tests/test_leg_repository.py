@@ -4,7 +4,7 @@ from decimal import Decimal
 
 import pytest
 
-from app.legs.domain import LegData, LegKey, leg_status
+from app.legs.domain import LegData, LegKey, LegOption, leg_status
 from app.legs.repository import AlreadyConfirmed, LegRepository
 
 KEY = LegKey.of("Tarapoto", "Sauce", "colectivo")
@@ -88,3 +88,11 @@ async def test_get_returns_key_and_versions(repo):
 
 async def test_versions_of_unknown_leg_is_empty(repo):
     assert await repo.versions(LegKey.of("Nowhere", "Else", "bus")) == []
+
+
+async def test_options_are_replaced_on_each_refresh_and_keep_their_source(repo):
+    assert await repo.options(KEY) == ()
+    await repo.save_options(KEY, (LegOption(data(price=(10, 15)), "https://a.pe", T0),))
+    newest = (LegOption(data(price=(12, 14)), "https://b.pe", T1), LegOption(data(price=(20, 22)), "https://c.pe", T1))
+    await repo.save_options(KEY, newest)
+    assert await repo.options(KEY) == newest

@@ -8,6 +8,7 @@ REQUIRED_VARS = (
     "DATABASE_URL",
     "FINGERPRINT_SALT",
     "TEAM_FINGERPRINTS",
+    "GOOGLE_MAPS_API_KEY",
 )
 
 
@@ -23,6 +24,7 @@ class Settings:
     database_url: str
     fingerprint_salt: str
     team_fingerprints: frozenset[str]
+    google_maps_api_key: str
 
 
 def load_settings(env: Mapping[str, str]) -> Settings:
@@ -37,4 +39,5 @@ def load_settings(env: Mapping[str, str]) -> Settings:
         database_url=env["DATABASE_URL"],
         fingerprint_salt=env["FINGERPRINT_SALT"],
         team_fingerprints=frozenset(fp.strip() for fp in env["TEAM_FINGERPRINTS"].split(",") if fp.strip()),
+        google_maps_api_key=env["GOOGLE_MAPS_API_KEY"],
     )

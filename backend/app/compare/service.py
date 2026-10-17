@@ -63,10 +63,10 @@ class CompareService:
         return await self._client.messages.create(**kwargs)
 
     async def _plan_trip(self, origin: str, destination: str, date: str) -> list[dict]:
-        latest: dict[int, dict] = {}
+        latest: dict[tuple[int, str], dict] = {}
         async for event in self._planner.plan(origin, destination, date, trip_id=0):
             if isinstance(event, (LegStored, LegRefreshed)):
-                latest[event.index] = leg_summary_json(event.leg_id, event.mode, event.origin, event.destination, event.status, event.version)
+                latest[(event.index, event.mode)] = leg_summary_json(event.leg_id, event.mode, event.origin, event.destination, event.status, event.version)
         return [latest[i] for i in sorted(latest)]
 
     async def _with_tools(self, question: str) -> tuple[str, list[dict]]:

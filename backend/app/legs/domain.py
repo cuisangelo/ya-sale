@@ -13,6 +13,8 @@ LegStatus = Literal["extracted", "confirmed", "disputed"]
 
 # Live sources rarely repeat the exact same minutes; smaller swings are the same trip.
 DURATION_TOLERANCE = 0.25
+# Enough to show every departure a page lists without letting a noisy page flood the view.
+MAX_OPTIONS = 10
 
 
 def normalize_place(text: str) -> str:
@@ -52,6 +54,13 @@ class LegVersion:
     confirmations: int
 
 
+@dataclass(frozen=True)
+class LegOption:
+    data: LegData
+    source_url: str
+    fetched_at: datetime
+
+
 def has_price(data: LegData) -> bool:
     return data.price_min_pen is not None or data.price_max_pen is not None
 
@@ -60,6 +69,19 @@ def completeness(data: LegData) -> tuple[bool, int]:
     """Ranks candidates for the same leg: a price first, then how many other fields are known."""
     others = (data.departure_point, data.operator, data.duration_min, data.schedule_note, data.purchase_url)
     return has_price(data), sum(value is not None for value in others)
+
+
+def distinct_options(options: list[LegOption]) -> tuple[LegOption, ...]:
+    """Every distinct offer found for a leg, cheapest priced first and unpriced last."""
+    unique: dict[tuple[LegData, str], LegOption] = {}
+    for option in options:
+        unique.setdefault((option.data, option.source_url), option)
+    ranked = sorted(unique.values(), key=lambda option: (not has_price(option.data), _lowest_price(option.data)))
+    return tuple(ranked[:MAX_OPTIONS])
+
+
+def _lowest_price(data: LegData) -> Decimal:
+    return min((p for p in (data.price_min_pen, data.price_max_pen) if p is not None), default=Decimal(0))
 
 
 def _price_change(a: LegData, b: LegData) -> bool:

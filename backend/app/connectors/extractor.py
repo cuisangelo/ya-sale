@@ -7,6 +7,7 @@ from pydantic import BaseModel
 
 from app.connectors.base import SearchHit
 from app.legs.domain import LegData, Mode
+from app.trips.domain import PlannedHop
 
 MODEL = "claude-opus-5-5"
 MAX_PRICE_PEN = Decimal("5000")
@@ -42,6 +43,7 @@ class Hop(BaseModel):
     origin: str
     destination: str
     mode: Mode
+    alternatives: list[Mode]
 
 
 class ChainOut(BaseModel):
@@ -116,15 +118,17 @@ class LegExtractor:
         given_urls = {page.url for page in pages}
         return [_to_extracted(leg) for leg in parsed.legs if leg.source_url in given_urls and _within_bounds(leg)]
 
-    async def plan_chain(self, origin: str, destination: str, pages: list[SearchHit]) -> list[tuple[str, str, Mode]]:
+    async def plan_chain(self, origin: str, destination: str, pages: list[SearchHit]) -> list[PlannedHop]:
         if not pages:
             return []
         parsed = await self._parse(
             f"List, in travel order, the hops needed to go from {origin} to {destination} using public or shared "
-            "transport, as the pages describe them. Return no hops if the pages do not describe this trip.",
+            "transport, as the pages describe them. For each hop, list in alternatives the other modes the pages "
+            "say also cover that same hop (for example avion for a long bus hop), or none. "
+            "Return no hops if the pages do not describe this trip.",
             pages,
             ChainOut,
         )
         if parsed is None:
             return []
-        return [(hop.origin, hop.destination, hop.mode) for hop in parsed.hops]
+        return [PlannedHop.of(hop.origin, hop.destination, hop.mode, hop.alternatives) for hop in parsed.hops]

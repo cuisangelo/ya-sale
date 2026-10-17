@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { FormEvent, Fragment, useEffect, useState } from "react";
-import { LegCard } from "../../components/LegCard";
+import { HopCard } from "../../components/HopCard";
 import { LiveIndicator } from "../../components/LiveIndicator";
 import { Logo } from "../../components/Logo";
+import { TripMap } from "../../components/TripMap";
 import {
   confirmLeg,
   correctLeg,
@@ -13,11 +14,14 @@ import {
   initialTripState,
   isAbortError,
   reduceTrip,
+  slotFor,
   streamTrip,
   type CorrectionInput,
+  type LegSlot,
+  type Mode,
   type TripState,
 } from "../../lib/api";
-import { itineraryMeta, modeLabel } from "../../lib/format";
+import { itineraryTotals, modeLabel } from "../../lib/format";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -42,10 +46,14 @@ export function TripScreen() {
   const [actionError, setActionError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [chosenModes, setChosenModes] = useState<Record<number, Mode>>({});
+  const [activeHop, setActiveHop] = useState<number | null>(null);
 
   useEffect(() => {
     setStreamError(null);
     setState(initialTripState);
+    setChosenModes({});
+    setActiveHop(null);
     if (!ready) return;
     let ignore = false;
     const handle = streamTrip({ origin, destination, date }, (event) => {
@@ -78,8 +86,12 @@ export function TripScreen() {
     );
   }
 
-  const meta = itineraryMeta(state.legs, state.legsPlanned, state.done);
-  const legsWithSummary = state.legs.filter((leg) => leg.summary);
+  const selectedModes = state.hops.map((hop, index) => chosenModes[index] ?? hop.modes[0]);
+  const selectedSlots = selectedModes
+    .map((mode, index) => slotFor(state, index, mode))
+    .filter((slot): slot is LegSlot => slot !== undefined);
+  const totals = state.done && selectedSlots.length === state.hops.length ? itineraryTotals(selectedSlots) : null;
+  const legsWithSummary = selectedSlots.filter((leg) => leg.summary);
   const selected = selectedLeg || (legsWithSummary[0] ? String(legsWithSummary[0].summary?.leg_id) : "");
 
   async function confirmRoute() {
@@ -99,7 +111,7 @@ export function TripScreen() {
         try {
           const updated = await confirmLeg(summary.leg_id, summary.version.id, name);
           setState((current) =>
-            reduceTrip(current, { event: "leg_refreshed", data: { index: slot.index, ...updated } }),
+            reduceTrip(current, { event: "leg_refreshed", data: { index: slot.index, options: slot.options, ...updated } }),
           );
         } catch (error) {
           failures.push(error instanceof Error ? error.message : "No se pudo confirmar.");
@@ -117,7 +129,7 @@ export function TripScreen() {
     setActionError(null);
     setNotice(null);
     const legId = Number(selected);
-    const slot = state.legs.find((leg) => leg.summary?.leg_id === legId);
+    const slot = legsWithSummary.find((leg) => leg.summary?.leg_id === legId);
     if (!slot?.summary) {
       setActionError("Elige el tramo que quieres corregir.");
       return;
@@ -140,7 +152,7 @@ export function TripScreen() {
     try {
       const updated = await correctLeg(slot.summary.leg_id, input);
       setState((current) =>
-        reduceTrip(current, { event: "leg_refreshed", data: { index: slot.index, ...updated } }),
+        reduceTrip(current, { event: "leg_refreshed", data: { index: slot.index, options: slot.options, ...updated } }),
       );
       setNotice("Corrección guardada.");
       setCorrecting(false);
@@ -176,15 +188,29 @@ export function TripScreen() {
   }
 
   return (
-    <main className="shell shell-narrow">
+    <main className="shell shell-trip">
       <Logo size={36} compact />
       <div className="itinerary-head">
         <div>
-          <div className="eyebrow">Tu viaje</div>
           <h1 className="trip-title">
             {origin} → {destination}
           </h1>
-          {meta ? <div className="mono meta">{meta}</div> : null}
+          {state.hops.length > 0 ? (
+            <dl className="trip-totals">
+              <div>
+                <dt>Tramos</dt>
+                <dd>{state.hops.length}</dd>
+              </div>
+              <div>
+                <dt>Pasajes</dt>
+                <dd>{totals ? (totals.price ?? "sin dato") : "calculando…"}</dd>
+              </div>
+              <div>
+                <dt>En camino</dt>
+                <dd>{totals ? (totals.duration ?? "sin dato") : "calculando…"}</dd>
+              </div>
+            </dl>
+          ) : null}
         </div>
         {state.legsPlanned > 0 && !state.noRouteMessage ? (
           <LiveIndicator current={state.progress.done} planned={state.progress.planned} live={!state.done} />
@@ -197,30 +223,51 @@ export function TripScreen() {
         <p className="loading">Armando tu viaje…</p>
       ) : null}
 
-      {state.legs.map((slot, position) => {
-        const previous = position > 0 ? state.legs[position - 1] : null;
-        const modeChanged = Boolean(
-          previous?.summary && slot.summary && previous.summary.mode !== slot.summary.mode,
-        );
-        return (
-          <Fragment key={slot.index}>
-            {previous ? (
-              <div className="join">
-                <span className="mayu" aria-hidden="true" />
-                {modeChanged && previous.summary ? (
-                  <>
-                    <img src="/textil/motivo-chakana.svg" alt="" width={18} height={18} />
-                    <span>Transbordo en {previous.summary.destination}</span>
-                  </>
-                ) : null}
-              </div>
-            ) : null}
-            <LegCard slot={slot} now={now} />
-          </Fragment>
-        );
-      })}
+      {state.hops.length > 0 ? (
+        <div className="trip-layout">
+          <div className="trip-map-column">
+            <TripMap hops={state.hops} points={state.points} selected={selectedModes} active={activeHop} />
+          </div>
+          <div className="trip-hops">
+            {state.hops.map((hop, index) => {
+              const modeChanged = index > 0 && selectedModes[index - 1] !== selectedModes[index];
+              const slots = Object.fromEntries(
+                hop.modes.map((mode) => [mode, slotFor(state, index, mode)]).filter(([, slot]) => slot),
+              );
+              return (
+                <Fragment key={index}>
+                  {index > 0 ? (
+                    <div className="join">
+                      <span className="mayu" aria-hidden="true" />
+                      {modeChanged ? (
+                        <>
+                          <img src="/textil/motivo-chakana.svg" alt="" width={18} height={18} />
+                          <span>Transbordo en {state.hops[index - 1].destination}</span>
+                        </>
+                      ) : null}
+                    </div>
+                  ) : null}
+                  <HopCard
+                    index={index}
+                    hop={hop}
+                    slots={slots}
+                    selected={selectedModes[index]}
+                    active={activeHop === index}
+                    now={now}
+                    onSelect={(mode) => {
+                      setChosenModes((current) => ({ ...current, [index]: mode }));
+                      setActiveHop(index);
+                    }}
+                    onFocus={() => setActiveHop(index)}
+                  />
+                </Fragment>
+              );
+            })}
+          </div>
+        </div>
+      ) : null}
 
-      {state.legs.length > 0 ? (
+      {legsWithSummary.length > 0 ? (
         <div className="actions">
           <label className="field field-name">
             Tu nombre (opcional)

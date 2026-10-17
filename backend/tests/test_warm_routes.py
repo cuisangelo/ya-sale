@@ -28,11 +28,11 @@ def version(price=None) -> LegVersion:
 
 def test_counts_refreshed_prices_and_ignores_stored():
     events = [
-        TripStarted(trip_id=0, origin="Lima", destination="Sauce", legs_planned=3),
-        LegRefreshed(0, 1, "bus", "Lima", "Sauce", "extracted", version(price=(10, 15))),
-        LegRefreshed(1, 2, "combi", "Lima", "Sauce", "extracted", version()),
-        LegStored(2, 3, "bus", "Lima", "Sauce", "extracted", version(price=(40, 50))),
-        LegError(index=3, message="timeout"),
+        TripStarted(trip_id=0, origin="Lima", destination="Sauce", legs_planned=3, hops=()),
+        LegRefreshed(0, 1, "bus", "Lima", "Sauce", "extracted", version(price=(10, 15)), ()),
+        LegRefreshed(1, 2, "combi", "Lima", "Sauce", "extracted", version(), ()),
+        LegStored(2, 3, "bus", "Lima", "Sauce", "extracted", version(price=(40, 50)), ()),
+        LegError(index=3, mode="bus", message="timeout"),
     ]
     summary = summarize("Lima", "Sauce", events)
     assert (summary.legs, summary.refreshed, summary.priced, summary.no_route) == (3, 2, 1, False)

@@ -3,7 +3,7 @@ from datetime import UTC, datetime
 from decimal import Decimal
 
 from app.legs.domain import (
-    LegData, LegVersion, completeness, display_version, has_price, is_new_version, leg_status, material_change, normalize_place,
+    LegData, LegOption, LegVersion, completeness, distinct_options, display_version, has_price, is_new_version, leg_status, material_change, normalize_place,
 )
 
 T0 = datetime(2026, 10, 17, tzinfo=UTC)
@@ -108,3 +108,21 @@ def test_a_price_found_for_an_unpriced_leg_is_a_new_version():
 
 def test_losing_the_price_is_not_a_new_version():
     assert not is_new_version(data(price=(10, 15), duration=90), data(duration=90))
+
+
+def option(price=None, source="https://a.pe") -> LegOption:
+    return LegOption(data(price=price), source, T0)
+
+
+def test_options_drop_exact_duplicates_and_put_the_cheapest_priced_first():
+    found = [option(), option(price=(30, 35)), option(price=(12, 15)), option(price=(30, 35))]
+    assert [o.data.price_min_pen for o in distinct_options(found)] == [Decimal(12), Decimal(30), None]
+
+
+def test_the_same_offer_from_two_sources_stays_twice():
+    assert len(distinct_options([option(price=(10, 10)), option(price=(10, 10), source="https://b.pe")])) == 2
+
+
+def test_options_are_capped():
+    found = [option(price=(p, p)) for p in range(1, 30)]
+    assert len(distinct_options(found)) == 10

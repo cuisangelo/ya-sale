@@ -14,11 +14,14 @@ class FakePlanner:
         self._repo = repo
 
     async def plan(self, origin, destination, date, trip_id):
-        yield TripStarted(trip_id, origin, destination, 1)
+        yield TripStarted(trip_id, origin, destination, 1, ())
         key = LegKey.of(origin, destination, "bus")
         data = LegData("Terminal", None, Decimal(80), Decimal(120), 1500, None, None)
         version = await self._repo.record_version(key, data, "https://a.pe", datetime.now(UTC))
-        yield LegRefreshed(0, await self._repo.leg_id_of(key), "bus", origin, destination, "extracted", version)
+        yield LegRefreshed(0, await self._repo.leg_id_of(key), "bus", origin, destination, "extracted", version, ())
+        plane = LegKey.of(origin, destination, "avion")
+        version = await self._repo.record_version(plane, data, "https://b.pe", datetime.now(UTC))
+        yield LegRefreshed(0, await self._repo.leg_id_of(plane), "avion", origin, destination, "extracted", version, ())
         yield TripDone(1)
 
 
@@ -36,7 +39,7 @@ async def test_plan_trip_tool_returns_legs_with_sources(pool):
     server = build_mcp(lambda: services)
     result = await server.call_tool("plan_trip", {"origin": "Lima", "destination": "Tarapoto", "date": "2026-10-25"})
     text = str(result)
-    assert "https://a.pe" in text
+    assert "https://a.pe" in text and "https://b.pe" in text
     assert "extracted" in text
 
 
