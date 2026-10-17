@@ -1,0 +1,6 @@
+# Refuse packages published less than a day ago (supply-chain safety), on every pnpm version.
+minimumReleaseAge: 1440
+
+overrides:
+  # 4.64.8 and 4.64.9 were published on 2026-10-17, inside the release-age window.
+  rollup: 4.64.7

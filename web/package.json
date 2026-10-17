@@ -1,6 +1,7 @@
 {
   "name": "ya-sale-web",
   "private": true,
+  "packageManager": "pnpm@10.29.3",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
