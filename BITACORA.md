@@ -7,6 +7,29 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 14:00 · Decisión · Logo tawa inti qocha y franja de urdimbre
+
+- **Por qué:** el inti escalonado y la franja de crucecitas seguían leyéndose como pixeles a
+  tamaño chico.
+- **Variantes comparadas:** hebras, puntada y faja. Cuiso elige "rombo de hebras" y pide
+  asegurar que sea peruano.
+- **Verificación en fuentes:**
+  - El rombo dividido en cuatro (tawa inti qocha) es un motivo peruano desde Nazca y Wari
+    hasta los Q'ero de hoy (Silverman-Proust, *Anthropologica* PUCP).
+  - El tejido andino es de cara de urdimbre.
+- **Ajustes:**
+  - centro del rombo en cuatro cuartos (q'olle y añil);
+  - hebras verticales;
+  - triángulos qocha en la franja.
+- **En el repo:** `design/textil/logo-tawa-inti.svg` y `franja.svg`.
+
+### 13:55 · Decisión · Tareas chicas a Grok 4.7 por Cursor
+
+Para ahorrar uso de Claude, las tareas mecánicas se delegan con
+`cursor-agent -p --model grok-4.7-medium`. Las decisiones, la arquitectura y la seguridad quedan
+en el agente principal, y lo que devuelva Grok se verifica antes de commitear. Queda en
+`AGENTS.md`.
+
 ### 13:45 · Decisión · Estilo final: tejido vectorial con toques de hilo
 
 - **Pixel art descartado:** a Cuiso no le gustó.
