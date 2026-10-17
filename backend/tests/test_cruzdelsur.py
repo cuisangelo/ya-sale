@@ -21,10 +21,11 @@ def fixture(name: str) -> dict | list:
 class FakeCruzDelSur:
     """Answers like one-api.cruzdelsur.com.pe did for Lima -> Trujillo on 22 Oct 2026."""
 
-    def __init__(self, results=None, status=200):
+    def __init__(self, results=None, status=200, rejected_searches=0):
         self.requests: list[httpx.Request] = []
         self._results = list(results or [fixture("search_result")])
         self._status = status
+        self._rejected_searches = rejected_searches
 
     def __call__(self, request: httpx.Request) -> httpx.Response:
         self.requests.append(request)
@@ -36,6 +37,9 @@ class FakeCruzDelSur:
         if path == "/places":
             return httpx.Response(200, json=fixture("places"))
         if path == "/search" and request.method == "POST":
+            if self._rejected_searches:
+                self._rejected_searches -= 1
+                return httpx.Response(401, json={"error": "invalid token"})
             return httpx.Response(200, json=fixture("search_post"))
         if path.startswith("/search/"):
             return httpx.Response(200, json=self._results.pop(0) if len(self._results) > 1 else self._results[0])
@@ -127,3 +131,14 @@ async def test_config_and_places_are_fetched_once_per_instance():
     await cds.departures("Lima", "Trujillo", DAY)
     await cds.departures("Lima", "Trujillo", DAY)
     assert sum(r.url.path in ("/api/v2/config", "/api/v2/places") for r in fake.requests) == 2
+
+
+async def test_a_rotated_key_is_read_again_and_the_search_retried_once():
+    fake = FakeCruzDelSur(rejected_searches=1)
+    assert len(await source(fake).departures("Lima", "Trujillo", DAY)) == 3
+    assert sum(r.url.path == "/api/v2/config" for r in fake.requests) == 2
+
+
+async def test_a_key_rejected_twice_raises():
+    with pytest.raises(httpx.HTTPStatusError):
+        await source(FakeCruzDelSur(rejected_searches=2)).departures("Lima", "Trujillo", DAY)
