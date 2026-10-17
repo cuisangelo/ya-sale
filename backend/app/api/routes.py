@@ -1,4 +1,5 @@
 import json
+import logging
 from dataclasses import asdict, replace
 from decimal import Decimal
 
@@ -12,6 +13,8 @@ from app.legs.domain import LegKey, LegVersion, display_version, leg_status
 from app.legs.repository import AlreadyConfirmed, LegNotFound
 from app.legs.serialization import leg_summary_json, option_json, version_json
 from app.trips.events import LegDepartures, LegRefreshed, LegStored, TripEvent, TripMapped, TripStarted
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api")
 
@@ -83,7 +86,11 @@ async def create_trip(body: TripRequest, request: Request) -> StreamingResponse:
             elif isinstance(event, TripMapped):
                 point = next((p for p in event.points if p.name == last_stop), None)
                 if point:
-                    await services.usage.resolve_trip(trip_id, point.name, point.lat, point.lng)
+                    # Analytics only: a failed write must not cost the visitor the legs still streaming.
+                    try:
+                        await services.usage.resolve_trip(trip_id, point.name, point.lat, point.lng)
+                    except Exception:
+                        logger.exception("resolving trip %d failed", trip_id)
             yield f"event: {_EVENT_NAMES[type(event).__name__]}\ndata: {json.dumps(_event_json(event))}\n\n"
 
     return StreamingResponse(stream(), media_type="text/event-stream", headers={"Cache-Control": "no-cache"})

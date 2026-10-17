@@ -238,3 +238,15 @@ async def test_recent_dedupes_case_insensitively_keeps_newest_and_caps_at_8(api,
 async def test_recent_excludes_team_fingerprints(api, pool):
     await insert_routed_trip(pool, "Lima", "Cusco", datetime(2026, 10, 1, tzinfo=UTC), fingerprint="team-fp")
     assert (await api.get("/api/trips/recent")).json() == []
+
+
+async def test_trip_stream_survives_a_failing_trip_resolution(api, monkeypatch, caplog):
+    async def boom(*args):
+        raise RuntimeError("pool timeout")
+
+    monkeypatch.setattr(UsageRepository, "resolve_trip", boom)
+    response = await api.post("/api/trips", json=BODY, headers=headers())
+    assert [name for name, _ in sse_events(response.text)] == [
+        "trip_started", "leg_refreshed", "leg_departures", "trip_mapped", "trip_done",
+    ]
+    assert "resolving trip" in caplog.text
