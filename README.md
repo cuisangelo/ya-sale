@@ -10,6 +10,8 @@ Proyecto del equipo **Kekero** para [Hack the Andes](https://hacktheandes.com).
 
 Repositorio recién creado. La idea del producto todavía no está definida.
 
+Toda la información del evento (fechas, entrega, demo, rúbrica, créditos) está en [GUIDE.md](GUIDE.md).
+
 ## Entrega
 
 La organización recibe el proyecto por la CLI, no por este README:
