@@ -7,10 +7,12 @@ import httpx
 import pytest
 
 from app.api.guards import RateLimiter
-from app.legs.domain import LegData, LegKey
+from app.legs.domain import LegData, LegKey, LegOption
 from app.legs.repository import LegRepository
 from app.main import Services, create_app
-from app.trips.events import LegRefreshed, TripDone, TripStarted
+from app.places.domain import MapPoint
+from app.trips.domain import PlannedHop
+from app.trips.events import LegRefreshed, TripDone, TripMapped, TripStarted
 from app.usage.repository import UsageRepository
 
 BODY = {"origin": "Cusco", "destination": "Aguas Calientes", "date": "2026-10-25"}
@@ -26,10 +28,12 @@ class FakePlanner:
         self._repo = repo
 
     async def plan(self, origin, destination, date, trip_id):
-        yield TripStarted(trip_id, origin, destination, 1)
+        yield TripStarted(trip_id, origin, destination, 1, (PlannedHop("Cusco", "Ollantaytambo", ("combi",)),))
         version = await self._repo.record_version(KEY, leg_data(), "https://a.pe", datetime.now(UTC))
         leg_id = await self._repo.leg_id_of(KEY)
-        yield LegRefreshed(0, leg_id, "combi", "Cusco", "Ollantaytambo", "extracted", version)
+        option = LegOption(leg_data(price=(12, 12)), "https://b.pe", datetime.now(UTC))
+        yield LegRefreshed(0, leg_id, "combi", "Cusco", "Ollantaytambo", "extracted", version, (option,))
+        yield TripMapped((MapPoint("Cusco", -13.53, -71.97),))
         yield TripDone(1)
 
 
@@ -64,8 +68,15 @@ async def test_trip_stream_events(api):
     response = await api.post("/api/trips", json=BODY, headers=headers())
     assert response.headers["content-type"].startswith("text/event-stream")
     events = sse_events(response.text)
-    assert [name for name, _ in events] == ["trip_started", "leg_refreshed", "trip_done"]
+    assert [name for name, _ in events] == ["trip_started", "leg_refreshed", "trip_mapped", "trip_done"]
+    assert events[0][1]["hops"] == [{"origin": "Cusco", "destination": "Ollantaytambo", "modes": ["combi"]}]
+    assert events[2][1] == {"points": [{"name": "Cusco", "lat": -13.53, "lng": -71.97}]}
     leg = events[1][1]
+    assert leg["options"] == [{
+        "departure_point": "Paradero", "operator": None, "price_min_pen": "12", "price_max_pen": "12",
+        "duration_min": 90, "schedule_note": None, "purchase_url": None,
+        "source_url": "https://b.pe", "fetched_at": leg["options"][0]["fetched_at"],
+    }]
     assert leg["version"]["source_url"] == "https://a.pe"
     assert leg["version"]["fetched_at"]
     assert leg["version"]["price_min_pen"] == "10"

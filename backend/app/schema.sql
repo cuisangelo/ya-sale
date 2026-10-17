@@ -34,3 +34,13 @@ CREATE TABLE IF NOT EXISTS trips (
     fingerprint TEXT NOT NULL,
     created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+-- Every offer the last refresh found for a leg, each with its own source; replaced on each refresh.
+ALTER TABLE legs ADD COLUMN IF NOT EXISTS options JSONB NOT NULL DEFAULT '[]';
+
+CREATE TABLE IF NOT EXISTS places (
+    key        TEXT PRIMARY KEY,
+    lat        DOUBLE PRECISION,
+    lng        DOUBLE PRECISION,
+    fetched_at TIMESTAMPTZ NOT NULL
+);

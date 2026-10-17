@@ -21,15 +21,15 @@ class FakePlanner:
 
     async def plan(self, origin, destination, date, trip_id):
         self.calls.append((origin, destination, date))
-        yield TripStarted(trip_id, origin, destination, len(self._legs))
+        yield TripStarted(trip_id, origin, destination, len(self._legs), ())
         for event in self._legs:
             yield event
         yield TripDone(len(self._legs))
 
 
 TWO_LEGS_ONE_CONFIRMED = [
-    LegRefreshed(0, 1, "bus", "Lima", "Tarapoto", "extracted", version()),
-    LegRefreshed(1, 2, "colectivo", "Tarapoto", "Sauce", "confirmed", version(confirmations=1, version_id=2)),
+    LegRefreshed(0, 1, "bus", "Lima", "Tarapoto", "extracted", version(), ()),
+    LegRefreshed(1, 2, "colectivo", "Tarapoto", "Sauce", "confirmed", version(confirmations=1, version_id=2), ()),
 ]
 
 

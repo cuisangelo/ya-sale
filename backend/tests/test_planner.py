@@ -7,13 +7,17 @@ from app.connectors.base import SearchHit
 from app.connectors.extractor import ExtractedLeg
 from app.connectors.web_search import SearchBudget
 from app.legs.domain import LegData, LegKey
+from app.places.domain import GeocodingFailed, Point
 from app.legs.repository import LegRepository
-from app.trips.events import LegError, LegRefreshed, LegStored, NoRoute, TripDone, TripStarted
+from app.trips.domain import PlannedHop
+from app.trips.events import LegError, LegRefreshed, LegStored, NoRoute, TripDone, TripMapped, TripStarted
 from app.trips.planner import TripPlanner
 
 DATE = "2026-10-25"
-TWO_HOPS = [("Cusco", "Ollantaytambo", "combi"), ("Ollantaytambo", "Aguas Calientes", "tren")]
-MANY_HOPS = [(f"P{i}", f"P{i + 1}", "bus") for i in range(10)]
+TWO_HOPS = [PlannedHop("Cusco", "Ollantaytambo", ("combi",)), PlannedHop("Ollantaytambo", "Aguas Calientes", ("tren",))]
+MANY_HOPS = [PlannedHop(f"P{i}", f"P{i + 1}", ("bus",)) for i in range(10)]
+BUS_OR_PLANE = [PlannedHop("Lima", "Tarapoto", ("bus", "avion")), PlannedHop("Tarapoto", "Sauce", ("colectivo",))]
+PLACES = {"Cusco": Point(-13.53, -71.97), "Ollantaytambo": Point(-13.26, -72.26)}
 
 
 def leg_data(price=(10, 15)) -> LegData:
@@ -42,9 +46,11 @@ class FakeExtractor:
     async def plan_chain(self, origin, destination, pages):
         return list(self._chain)
 
+    def modes(self, origin, destination):
+        return next(hop.modes for hop in self._chain if (hop.origin, hop.destination) == (origin, destination))
+
     async def extract_legs(self, origin, destination, pages):
-        mode = next(m for a, b, m in self._chain if a == origin and b == destination)
-        return [ExtractedLeg(origin, destination, mode, leg_data(), pages[0].url)]
+        return [ExtractedLeg(origin, destination, mode, leg_data(), pages[0].url) for mode in self.modes(origin, destination)]
 
 
 class PerQueryExtractor(FakeExtractor):
@@ -55,8 +61,22 @@ class PerQueryExtractor(FakeExtractor):
         self._candidates = candidates
 
     async def extract_legs(self, origin, destination, pages):
-        mode = next(m for a, b, m in self._chain if a == origin and b == destination)
-        return [ExtractedLeg(origin, destination, mode, data, pages[0].url) for data in self._candidates(pages[0].title)]
+        return [
+            ExtractedLeg(origin, destination, mode, data, pages[0].url)
+            for mode in self.modes(origin, destination)
+            for data in self._candidates(pages[0].title)
+        ]
+
+
+class FakeLocator:
+    def __init__(self, places=None, failing=()):
+        self._places = PLACES if places is None else places
+        self._failing = failing
+
+    async def locate(self, name):
+        if name in self._failing:
+            raise GeocodingFailed("OVER_QUERY_LIMIT")
+        return self._places.get(name)
 
 
 def unpriced() -> LegData:
@@ -72,8 +92,10 @@ def repo(pool):
     return LegRepository(pool)
 
 
-def planner(repo, chain, search=None, extractor=None, budget=8):
-    return TripPlanner(repo, extractor or FakeExtractor(chain), search or FakeSearch(), lambda: SearchBudget(budget))
+def planner(repo, chain, search=None, extractor=None, budget=8, locator=None):
+    return TripPlanner(
+        repo, extractor or FakeExtractor(chain), search or FakeSearch(), lambda: SearchBudget(budget), locator or FakeLocator()
+    )
 
 
 async def collect(p, origin, destination):
@@ -164,4 +186,45 @@ async def test_exhausted_budget_keeps_the_unpriced_leg_instead_of_failing(repo):
     extractor = PerQueryExtractor(TWO_HOPS, lambda query: [unpriced()])
     events = await collect(planner(repo, TWO_HOPS, search, extractor, budget=3), "Cusco", "Aguas Calientes")
     assert search.calls == 3
+    assert len(refreshed(events)) == 2
+
+
+async def test_every_mode_of_a_hop_is_refreshed_as_its_own_leg(repo):
+    events = await collect(planner(repo, BUS_OR_PLANE), "Lima", "Sauce")
+    assert events[0].hops == tuple(BUS_OR_PLANE)
+    assert sorted((e.index, e.mode) for e in refreshed(events)) == [(0, "avion"), (0, "bus"), (1, "colectivo")]
+
+
+async def test_alternatives_never_take_the_search_of_a_main_mode(repo):
+    search = FakeSearch()
+    events = await collect(planner(repo, BUS_OR_PLANE, search, budget=3), "Lima", "Sauce")
+    assert sorted((e.index, e.mode) for e in refreshed(events)) == [(0, "bus"), (1, "colectivo")]
+    assert [(e.index, e.mode) for e in events if isinstance(e, LegError)] == [(0, "avion")]
+
+
+async def test_refreshed_leg_carries_every_distinct_option_with_its_source(repo):
+    extractor = PerQueryExtractor(TWO_HOPS, lambda query: [unpriced(), leg_data(), leg_data(price=(20, 25))])
+    events = await collect(planner(repo, TWO_HOPS, extractor=extractor), "Cusco", "Aguas Calientes")
+    options = refreshed(events)[0].options
+    assert [o.data.price_min_pen for o in options] == [Decimal(10), Decimal(20), None]
+    assert all(o.source_url.startswith("https://ejemplo.pe/") and o.fetched_at for o in options)
+
+
+async def test_stored_leg_comes_back_with_its_stored_options(repo):
+    await collect(planner(repo, TWO_HOPS), "Cusco", "Aguas Calientes")
+    events = await collect(planner(repo, TWO_HOPS, search=FakeSearch(failing_query_part="precio horario")), "Cusco", "Aguas Calientes")
+    stored = [e for e in events if isinstance(e, LegStored)]
+    assert len(stored) == 2 and all(len(e.options) == 1 for e in stored)
+
+
+async def test_map_has_only_the_places_that_were_located(repo):
+    events = await collect(planner(repo, TWO_HOPS), "Cusco", "Aguas Calientes")
+    mapped = next(e for e in events if isinstance(e, TripMapped))
+    assert [(p.name, p.lat, p.lng) for p in mapped.points] == [("Cusco", -13.53, -71.97), ("Ollantaytambo", -13.26, -72.26)]
+
+
+async def test_a_geocoding_failure_drops_that_place_and_keeps_the_trip(repo):
+    events = await collect(planner(repo, TWO_HOPS, locator=FakeLocator(failing={"Cusco"})), "Cusco", "Aguas Calientes")
+    mapped = next(e for e in events if isinstance(e, TripMapped))
+    assert [p.name for p in mapped.points] == ["Ollantaytambo"]
     assert len(refreshed(events)) == 2

@@ -25,6 +25,26 @@ interface Version {
   confirmations: number;
 }
 
+interface Option {                // one offer a page lists for the leg; read-only, never confirmed
+  departure_point: string | null;
+  operator: string | null;
+  price_min_pen: string | null;
+  price_max_pen: string | null;
+  duration_min: number | null;
+  schedule_note: string | null;
+  purchase_url: string | null;
+  source_url: string;
+  fetched_at: string;
+}
+
+interface Hop {
+  origin: string;
+  destination: string;
+  modes: Mode[];                  // modes[0] is the main way; the rest are alternatives the pages name (max 2 in total)
+}
+
+interface MapPoint { name: string; lat: number; lng: number; }
+
 interface LegSummary {
   leg_id: number;
   mode: Mode;
@@ -42,15 +62,17 @@ Response: `text/event-stream`; each message is `event: <name>\ndata: <json>\n\n`
 
 | event | data | meaning |
 |---|---|---|
-| `trip_started` | `{trip_id, origin, destination, legs_planned}` | always first, unless `no_route` |
-| `leg_stored` | `{index} & LegSummary` | a saved version, shown immediately ("guardado [fecha] · refrescando…") |
-| `leg_refreshed` | `{index} & LegSummary` | live data arrived ("actualizado hace N s"); replaces the same `index` |
-| `leg_error` | `{index, message}` | live refresh failed; keep the stored leg if any |
+| `trip_started` | `{trip_id, origin, destination, legs_planned, hops: Hop[]}` | always first, unless `no_route` |
+| `leg_stored` | `{index} & LegSummary & {options: Option[]}` | a saved version, shown immediately ("guardado [fecha] · refrescando…") |
+| `leg_refreshed` | `{index} & LegSummary & {options: Option[]}` | live data arrived ("actualizado hace N s"); replaces the same `index` and `mode` |
+| `leg_error` | `{index, mode, message}` | live refresh of that mode failed; keep the stored leg if any |
+| `trip_mapped` | `{points: MapPoint[]}` | the places of `hops` that were found on the map; a missing place is left out, never guessed |
 | `no_route` | `{message}` | the only event; show `message` (Spanish) and no legs |
 | `trip_done` | `{legs}` | always last |
 
-`index` is the 0-based position of the leg in the trip. Progress = refreshed or errored legs
-out of `legs_planned`. Errors: `422` invalid body, `429 {"detail": "..."}` rate limit.
+`index` is the 0-based position of the hop in the trip; a hop has one leg per mode in `hops[index].modes`.
+`legs_planned` counts hops. Progress = refreshed or errored `(index, mode)` legs out of all modes of all
+hops. `options` are sorted cheapest priced first, at most 10. Errors: `422` invalid body, `429 {"detail": "..."}` rate limit.
 
 ## `GET /api/legs/{leg_id}`
 

@@ -14,6 +14,7 @@ TEST_ENV = {
     "DATABASE_URL": os.environ["DATABASE_URL"],
     "FINGERPRINT_SALT": "test-salt",
     "TEAM_FINGERPRINTS": "team-fp",
+    "GOOGLE_MAPS_API_KEY": "test",
 }
 
 
@@ -34,7 +35,7 @@ async def _session_pool(settings):
 @pytest.fixture
 async def pool(_session_pool):
     async with _session_pool.connection() as conn:
-        await conn.execute("TRUNCATE legs, leg_versions, confirmations, trips RESTART IDENTITY CASCADE")
+        await conn.execute("TRUNCATE legs, leg_versions, confirmations, trips, places RESTART IDENTITY CASCADE")
     return _session_pool
 
 

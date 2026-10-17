@@ -6,7 +6,7 @@ from psycopg.errors import UniqueViolation
 from psycopg.types.json import Jsonb
 from psycopg_pool import AsyncConnectionPool
 
-from app.legs.domain import LegData, LegKey, LegVersion, is_new_version
+from app.legs.domain import LegData, LegKey, LegOption, LegVersion, is_new_version
 
 CONFIRMATION_SOURCE = "ya-sale:confirmation"
 
@@ -43,6 +43,14 @@ def _from_json(raw: dict) -> LegData:
     )
 
 
+def _option_to_json(option: LegOption) -> dict:
+    return {**_to_json(option.data), "source_url": option.source_url, "fetched_at": option.fetched_at.isoformat()}
+
+
+def _option_from_json(raw: dict) -> LegOption:
+    return LegOption(_from_json(raw), raw["source_url"], datetime.fromisoformat(raw["fetched_at"]))
+
+
 def _version(row) -> LegVersion:
     return LegVersion(id=row[0], data=_from_json(row[1]), source_url=row[2], fetched_at=row[3], confirmations=row[4])
 
@@ -75,6 +83,21 @@ class LegRepository:
                 (key.origin, key.destination, key.mode),
             )).fetchone()
         return [] if row is None else await self._versions_by_id(row[0])
+
+    async def save_options(self, key: LegKey, options: tuple[LegOption, ...]) -> None:
+        leg_id = await self.leg_id_of(key)
+        async with self._pool.connection() as conn:
+            await conn.execute(
+                "UPDATE legs SET options = %s WHERE id = %s", (Jsonb([_option_to_json(o) for o in options]), leg_id)
+            )
+
+    async def options(self, key: LegKey) -> tuple[LegOption, ...]:
+        async with self._pool.connection() as conn:
+            row = await (await conn.execute(
+                "SELECT options FROM legs WHERE origin = %s AND destination = %s AND mode = %s",
+                (key.origin, key.destination, key.mode),
+            )).fetchone()
+        return () if row is None else tuple(_option_from_json(raw) for raw in row[0])
 
     async def get(self, leg_id: int) -> tuple[LegKey, list[LegVersion]]:
         async with self._pool.connection() as conn:

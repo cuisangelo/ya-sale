@@ -22,11 +22,11 @@ def build_mcp(services: Callable[[], object]) -> MCPServer:
     @server.tool()
     async def plan_trip(origin: str, destination: str, date: str) -> dict:
         """Plan a trip in Peru leg by leg (bus, plane, train, colectivo, combi, mototaxi, boat), with sources."""
-        latest: dict[int, dict] = {}
+        latest: dict[tuple[int, str], dict] = {}
         notes: list[str] = []
         async for event in services().planner.plan(origin, destination, date, trip_id=0):
             if isinstance(event, (LegStored, LegRefreshed)):
-                latest[event.index] = leg_summary_json(event.leg_id, event.mode, event.origin, event.destination, event.status, event.version)
+                latest[(event.index, event.mode)] = leg_summary_json(event.leg_id, event.mode, event.origin, event.destination, event.status, event.version)
             elif isinstance(event, (LegError, NoRoute)):
                 notes.append(event.message)
         return {"legs": [latest[i] for i in sorted(latest)], "notes": notes}

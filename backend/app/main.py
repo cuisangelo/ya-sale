@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Any
 
 import anthropic
+import httpx
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
@@ -13,10 +14,13 @@ from app.api.routes import router
 from app.compare.service import CompareService
 from app.config import Settings, load_settings
 from app.connectors.extractor import LegExtractor
+from app.connectors.geocoding import GoogleGeocoder
 from app.connectors.web_search import CombinedSearch, ExaConnector, SearchBudget, TavilyConnector
 from app.db import bootstrap_schema, create_pool
 from app.legs.repository import LegRepository
 from app.mcp_server import build_mcp
+from app.places.locator import PlaceLocator
+from app.places.repository import PlaceRepository
 from app.trips.planner import MAX_SEARCHES_PER_TRIP, TripPlanner
 from app.usage.repository import UsageRepository
 
@@ -37,7 +41,8 @@ def build_services(settings: Settings, pool) -> Services:
     client = anthropic.AsyncAnthropic(api_key=settings.anthropic_api_key)
     legs = LegRepository(pool)
     search = CombinedSearch(TavilyConnector(settings.tavily_api_key), ExaConnector(settings.exa_api_key))
-    planner = TripPlanner(legs, LegExtractor(client), search, lambda: SearchBudget(MAX_SEARCHES_PER_TRIP))
+    locator = PlaceLocator(PlaceRepository(pool), GoogleGeocoder(settings.google_maps_api_key, httpx.AsyncClient(timeout=10)))
+    planner = TripPlanner(legs, LegExtractor(client), search, lambda: SearchBudget(MAX_SEARCHES_PER_TRIP), locator)
     return Services(
         planner=planner,
         legs=legs,
