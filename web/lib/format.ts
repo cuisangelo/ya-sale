@@ -192,6 +192,52 @@ export function optionLink(option: Pick<Option, "operator" | "purchase_url" | "s
   return purchaseUrl(option.purchase_url) ?? operatorSite(option.operator) ?? purchaseUrl(option.source_url);
 }
 
+export interface TripDay {
+  origin: string;
+  destination: string;
+  date: string; // YYYY-MM-DD
+}
+
+// Airports SKY flies to in Peru; a town without its own airport keeps the plain link.
+const AIRPORTS: Record<string, string> = {
+  lima: "LIM",
+  arequipa: "AQP",
+  cusco: "CUZ",
+  trujillo: "TRU",
+  piura: "PIU",
+  chiclayo: "CIX",
+  iquitos: "IQT",
+  tarapoto: "TPP",
+  juliaca: "JUL",
+  tacna: "TCQ",
+  "puerto maldonado": "PEM",
+  pucallpa: "PCL",
+  cajamarca: "CJA",
+  tumbes: "TBP",
+  ayacucho: "AYP",
+};
+
+function kuposCity(name: string): string {
+  return `${words(name).trim().replace(/ /g, "-")},peru`;
+}
+
+// kupos and Civa (which runs on kupos) open a filled search from the URL, and SKY a flight search.
+export function datedLink(link: string | null, trip: TripDay): string | null {
+  if (!link) return null;
+  const host = new URL(link).host.replace(/^www\./, "");
+  const [year, month, day] = trip.date.split("-");
+  if (host === "kupos.pe" || host === "civa.com.pe") {
+    const site = host === "kupos.pe" ? "https://kupos.pe" : "https://www.civa.com.pe";
+    return `${site}/es/pasajes-bus/${kuposCity(trip.origin)}/${kuposCity(trip.destination)}?date_onward=${day}-${month}-${year}`;
+  }
+  const from = AIRPORTS[words(trip.origin).trim()];
+  const to = AIRPORTS[words(trip.destination).trim()];
+  if (host.endsWith("skyairline.com") && from && to) {
+    return `https://initial-sale.skyairline.com/es/peru?origin=${from}&destination=${to}&departureDate=${trip.date}&arrivalDate=${trip.date}&flightType=OW&ADT=1`;
+  }
+  return link;
+}
+
 // The logo always names the site the link opens, so the row never promises one site and opens another.
 export function logoDomain(link: string | null): string | null {
   if (!link) return null;
