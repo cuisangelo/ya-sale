@@ -7,6 +7,24 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 18:00 · Cambio · Inicio nuevo: foto del último destino buscado y búsquedas reales
+
+- **Por qué:** el inicio es lo primero que ve el jurado; pasa a mostrar la foto del último
+  destino que alguien buscó de verdad y la lista de búsquedas recientes, en vez de rutas de
+  ejemplo fijas.
+- **Qué cambia:** el inicio queda con cinco partes: la cabecera con foto y menú (Comparar, Uso
+  real, Para agentes), el buscador flotante (Desde ⇄ Hasta · Cuándo · "Armar viaje"), la
+  sección "Lo último que la gente buscó" (4/2/1 columnas, foto con crédito o degradado), la
+  sección "Para agentes" con la URL del MCP y un pie con el enlace a GitHub. El formulario se
+  precarga con `?o=&d=&f=`. Si `/api/trips/recent` falla o viene vacío, la cabecera se queda
+  en el degradado y la sección no aparece. Se borran `RouteCards`, `SampleTrip`,
+  `UsageProof`, `useOpenTrip`, `public/landing/` y su CSS. El crédito de la cabecera solo
+  aparece si la foto carga.
+- **Pruebas:** 2 pruebas nuevas de `parseRecentTrips`; `tsc` y `pnpm test` (48 passed)
+  pasan. Capturas de Playwright a 1280 y 390 px contra un servidor simulado con 6 búsquedas
+  reales y fotos de Commons: sin errores de consola. Con el endpoint en 500 queda el
+  degradado sin la sección y el error en consola.
+
 ### 17:52 · Cambio · Portada de destino compartida: foto con crédito, degradado y respaldo
 
 - **Por qué:** portada y viaje muestran la misma cabecera fotográfica; un solo componente evita

@@ -1,199 +1,339 @@
 /* Mobile first: most visitors arrive on a phone, so the base rules are the small screen. */
 
-.landing {
-  width: min(1120px, 100%);
-  padding-top: 20px;
-  gap: 40px;
+.home {
+  --gutter: 16px;
+  --content: 1136px;
+  padding-bottom: 32px;
+  font-size: 14px;
 }
 
-.top {
+/* The hero is full-bleed, so its nav and claim are padded onto the same column as the sections below. */
+.home :global(.dest-hero-nav),
+.home :global(.dest-hero-content) {
+  padding-inline: max(var(--gutter), calc((100% - var(--content)) / 2));
+}
+
+.home :global(.dest-hero-content) {
+  padding-bottom: 84px;
+}
+
+.home :global(.dest-hero-credit) {
+  bottom: 52px;
+}
+
+.column {
+  width: min(var(--content), calc(100% - 2 * var(--gutter)));
+  margin-inline: auto;
+}
+
+.nav {
   display: flex;
-  flex-direction: column;
-  gap: 28px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px 16px;
 }
 
-.hero,
-.section {
+.navLinks {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  font-size: 14px;
 }
 
-.hero {
-  gap: 14px;
+.nav a {
+  color: #fff;
 }
 
-.landing .promise {
-  font-size: 40px;
-  line-height: 1.05;
-  max-width: 760px;
+.navLinks a {
+  opacity: 0.9;
+  text-decoration: none;
 }
 
-.modes {
-  font-size: 18px;
-  color: var(--mute);
+.navLinks a:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+.nav a:focus-visible {
+  outline-color: #fff;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+  padding: 6px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(8px);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.pillDot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--acc);
+  box-shadow: 0 0 0 2px #fff;
+}
+
+.pillText {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.claim {
   max-width: 620px;
+  margin-top: 14px;
+  letter-spacing: -0.03em;
 }
 
-.landing .form {
-  grid-template-columns: 1fr 1fr;
-  padding: 14px;
+.lede {
+  max-width: 620px;
+  margin-top: 10px;
+  font-size: 14px;
+  opacity: 0.9;
 }
 
-.landing .form > label:nth-of-type(-n + 2) {
-  grid-column: 1 / -1;
+.searchWrap {
+  position: relative;
+  z-index: 2;
+  margin-top: -40px;
 }
 
-.routes {
-  list-style: none;
-  margin: 0 -16px;
-  padding: 0 16px 6px;
+/* Desde and Hasta stack on a phone with the swap button beside them. */
+.search {
   display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 68%;
-  gap: 12px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-}
-
-.route {
-  margin: 0;
-  display: flex;
-  flex-direction: column;
+  grid-template-columns: minmax(0, 1fr) 44px;
+  grid-template-areas:
+    "from swap"
+    "to swap"
+    "when when"
+    "go go"
+    "error error";
   gap: 4px;
-  scroll-snap-align: start;
+  padding: 8px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 16px 44px rgba(17, 17, 20, 0.16);
+  animation: search-in 400ms ease-out both;
 }
 
-.routeButton {
+@keyframes search-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+.searchField {
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  color: var(--mute);
+}
+
+.searchField:focus-within {
+  background: var(--soft);
+}
+
+.searchField input {
   width: 100%;
+  min-width: 0;
   padding: 0;
   border: none;
-  border-radius: 8px;
-  overflow: hidden;
-  background: #fff;
-  text-align: left;
+  background: transparent;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.searchField input:focus-visible {
+  outline: none;
+}
+
+.searchField input::placeholder {
+  color: #a0a0aa;
+}
+
+.from {
+  grid-area: from;
+}
+
+.to {
+  grid-area: to;
+}
+
+.when {
+  grid-area: when;
+}
+
+.swap {
+  grid-area: swap;
+  align-self: center;
+  justify-self: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  font-size: 18px;
+  color: var(--mute);
   cursor: pointer;
 }
 
-.routeButton img {
-  display: block;
-  width: 100%;
-  height: auto;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-}
-
-.routeName {
-  padding: 10px 12px 0;
-  font-family: var(--font-inter), system-ui, sans-serif;
-  font-weight: 800;
-  font-size: 18px;
-  line-height: 1.15;
-}
-
-.routeCta {
-  padding: 4px 12px 12px;
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--acc);
-}
-
-.credit {
-  font-size: 14px;
-  color: var(--mute);
-}
-
-.credit a {
-  color: inherit;
-}
-
-.sample {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+.swap:hover {
   background: var(--soft);
-  border: 1.5px solid var(--line);
-  border-radius: 10px;
-  padding: 12px;
+  color: var(--ink);
 }
 
-.sampleCta {
-  align-self: flex-start;
-  margin-top: 6px;
+.go {
+  grid-area: go;
+  min-height: 52px;
+  padding: 0 26px;
+  border: none;
+  border-radius: 12px;
+  background: var(--acc);
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 .formError {
+  grid-area: error;
+  padding: 4px 14px 6px;
   color: var(--acc);
   font-size: 14px;
   font-weight: 700;
 }
 
 .heading {
-  font-family: var(--font-inter), system-ui, sans-serif;
-  font-weight: 800;
-  font-size: 40px;
-  line-height: 1.1;
+  font-size: 18px;
+  font-weight: 700;
 }
 
-.landing .stats {
-  grid-template-columns: 1fr 1fr;
+.note {
+  color: var(--mute);
 }
 
-.steps {
+.recent {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 36px;
+}
+
+.recentHead {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 4px 16px;
+}
+
+.recentGrid {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  gap: 12px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
 }
 
-.step {
-  background: #fff;
-  border-radius: 8px;
-  padding: 16px;
+.recentCard {
   display: flex;
-  gap: 14px;
-  align-items: flex-start;
-  font-size: 14px;
-}
-
-.stepTitle {
-  margin: 0 0 4px;
-  font-size: 18px;
-  font-weight: 800;
-}
-
-.lastMile {
-  position: relative;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  border-radius: 14px;
   overflow: hidden;
-  background: var(--ink);
-  color: var(--bg);
-  border-radius: 10px;
-  padding: 38px 18px 22px;
-  font-size: 14px;
+  background: #fff;
+  transition: transform 200ms, box-shadow 200ms;
 }
 
-.lastMileButton {
-  align-self: flex-start;
-  background: var(--acc);
-  color: #fff;
-  font-weight: 800;
+.recentCard:hover,
+.recentCard:focus-within {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 26px rgba(17, 17, 20, 0.1);
+}
+
+.recentLink {
+  display: flex;
+  flex-direction: column;
+  color: var(--ink);
   text-decoration: none;
 }
 
-.lastMile .lastMileButton:focus-visible {
-  outline-color: #fff;
+.recentLink:focus-visible {
+  outline-offset: -2px;
 }
 
-.howTo {
-  margin: 0;
-  padding-left: 22px;
+.recentPhoto {
+  position: relative;
+  display: block;
+  height: 128px;
+  background: linear-gradient(135deg, var(--acc), var(--ink));
+}
+
+.recentPhoto img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 400ms ease;
+}
+
+.recentPhoto img.isLoaded {
+  opacity: 1;
+}
+
+.recentBody {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  font-size: 14px;
+  gap: 2px;
+  padding: 12px 14px 8px;
+}
+
+.recentTitle {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-weight: 700;
+}
+
+.recentCredit {
+  padding: 0 14px 12px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--mute);
+}
+
+.agents {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 56px;
+}
+
+.agents p {
+  max-width: 720px;
+}
+
+.footer {
+  margin-top: 40px;
 }
 
 .mcpUrl {
@@ -207,6 +347,7 @@
 .mcpUrl code {
   font-size: 14px;
   padding: 8px 10px;
+  background: var(--soft);
   word-break: break-all;
 }
 
@@ -215,84 +356,54 @@
   font-size: 14px;
 }
 
-@media (min-width: 720px) {
-  .landing {
-    padding-top: 36px;
-    gap: 52px;
-  }
-
-  .modes {
-    font-size: 18px;
-  }
-
-  .heading {
-    font-size: 40px;
-  }
-
-  .landing .form > label:nth-of-type(-n + 2) {
-    grid-column: auto;
-  }
-
-  .routes {
-    margin: 0;
-    padding: 0;
-    grid-auto-flow: row;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    overflow: visible;
-  }
-
-  .sample {
-    padding: 16px;
-  }
-
-  .routeButton:hover img {
-    filter: saturate(1.15);
-  }
-
-  .landing .stats {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-
-  .steps {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .step {
-    flex-direction: column;
-  }
-
-  .lastMile {
-    padding: 44px 32px 30px;
-    font-size: 18px;
+@media (min-width: 640px) {
+  .recentGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-@media (min-width: 960px) {
-  .top {
-    display: grid;
-    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+@media (min-width: 720px) {
+  .home {
+    --gutter: 32px;
+  }
+
+  .search {
+    grid-template-columns: minmax(0, 1fr) 36px minmax(0, 1fr) 180px auto;
     grid-template-areas:
-      "hero sample"
-      "routes routes";
-    gap: 36px 40px;
-    align-items: start;
+      "from swap to when go"
+      "error error error error error";
   }
+}
 
-  .areaHero {
-    grid-area: hero;
-  }
-
-  .areaSample {
-    grid-area: sample;
-  }
-
-  .areaRoutes {
-    grid-area: routes;
+@media (min-width: 1024px) {
+  .recentGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 640px) {
-  .landing .promise {
+  .claim {
     font-size: 32px;
+  }
+
+  /* The credit wraps to two lines on a phone; the claim sits above it instead of under it. */
+  .home :global(.dest-hero-content) {
+    padding-bottom: 108px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .search {
+    animation: none;
+  }
+
+  .recentCard,
+  .recentPhoto img {
+    transition: none;
+  }
+
+  .recentCard:hover,
+  .recentCard:focus-within {
+    transform: none;
   }
 }

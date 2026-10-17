@@ -2,6 +2,7 @@ import { expect, test } from "vitest";
 import {
   departuresFor,
   initialTripState,
+  parseRecentTrips,
   parseSse,
   reduceTrip,
   slotFor,
@@ -265,4 +266,22 @@ test("parseSse reads a leg_departures frame", () => {
   const data = { index: 0, mode: "bus", departures: [departure("07:00")] };
   const { events } = parseSse(`event: leg_departures\ndata: ${JSON.stringify(data)}\n\n`);
   expect(events).toEqual([{ event: "leg_departures", data }]);
+});
+
+const recentTrip = {
+  origin: "Lima",
+  destination: "Kuélap",
+  place: "Kuélap",
+  at: "2026-10-17T14:02:00Z",
+  lat: -6.42,
+  lng: -77.92,
+};
+
+test("parseRecentTrips reads the recent searches as the API sends them", () => {
+  expect(parseRecentTrips([recentTrip])).toEqual([recentTrip]);
+  expect(parseRecentTrips([])).toEqual([]);
+});
+
+test("parseRecentTrips rejects a trip whose latitude is not a number", () => {
+  expect(() => parseRecentTrips([{ ...recentTrip, lat: "-6.42" }])).toThrow("Invalid lat");
 });

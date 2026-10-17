@@ -145,6 +145,16 @@ export interface Usage {
   recent: UsageEvent[];
 }
 
+// origin/destination are what the person typed; place, lat and lng are the destination as resolved.
+export interface RecentTrip {
+  origin: string;
+  destination: string;
+  place: string;
+  at: string;
+  lat: number;
+  lng: number;
+}
+
 export interface CorrectionInput {
   departure_point?: string;
   price_min_pen?: string;
@@ -422,6 +432,10 @@ export function fetchUsage(): Promise<Usage> {
   return getJson("/api/usage", parseUsage);
 }
 
+export function fetchRecentTrips(): Promise<RecentTrip[]> {
+  return getJson("/api/trips/recent", parseRecentTrips);
+}
+
 async function postJson<T>(path: string, body: unknown, parse: (value: unknown) => T): Promise<T> {
   const response = await fetch(path, {
     method: "POST",
@@ -588,4 +602,19 @@ function parseUsageEvent(value: unknown): UsageEvent {
     destination: reqString(record, "destination"),
     at: reqString(record, "at"),
   };
+}
+
+export function parseRecentTrips(value: unknown): RecentTrip[] {
+  if (!Array.isArray(value)) throw new Error("Invalid recent trips");
+  return value.map((item) => {
+    const record = asRecord(item, "recent trip");
+    return {
+      origin: reqString(record, "origin"),
+      destination: reqString(record, "destination"),
+      place: reqString(record, "place"),
+      at: reqString(record, "at"),
+      lat: reqNumber(record, "lat"),
+      lng: reqNumber(record, "lng"),
+    };
+  });
 }

@@ -13,11 +13,14 @@ export function TripForm() {
   const [today, setToday] = useState("");
   const [error, setError] = useState<string | null>(null);
 
-  // The page is a static export, so today's date must come from the visitor's clock, not the build.
+  // The page is a static export, so today's date and the "Cambiar" prefill must be read in the browser.
   useEffect(() => {
     const now = limaToday(new Date());
+    const query = new URLSearchParams(window.location.search);
     setToday(now);
-    setDate(now);
+    setOrigin(query.get("o") ?? "");
+    setDestination(query.get("d") ?? "");
+    setDate(query.get("f") ?? now);
   }, []);
 
   function onSubmit(event: FormEvent<HTMLFormElement>) {
@@ -31,33 +34,41 @@ export function TripForm() {
     router.push(result.href);
   }
 
+  function swap() {
+    setOrigin(destination);
+    setDestination(origin);
+  }
+
   return (
-    <form className={`trip-form ${styles.form}`} action="/viaje/" method="get" onSubmit={onSubmit} noValidate>
-      <label className="field">
-        Origen
+    <form className={styles.search} action="/viaje/" method="get" onSubmit={onSubmit} noValidate>
+      <label className={`${styles.searchField} ${styles.from}`}>
+        Desde
         <input
           id="origen"
           name="o"
           value={origin}
           onChange={(event) => setOrigin(event.target.value)}
-          placeholder="Lima, Miraflores"
+          placeholder="Lima"
           autoComplete="off"
           required
         />
       </label>
-      <label className="field">
-        Destino
+      <button className={styles.swap} type="button" onClick={swap} aria-label="Intercambiar origen y destino">
+        ⇄
+      </button>
+      <label className={`${styles.searchField} ${styles.to}`}>
+        Hasta
         <input
           name="d"
           value={destination}
           onChange={(event) => setDestination(event.target.value)}
-          placeholder="Sauce, San Martín"
+          placeholder="Kuélap, Máncora, Uros…"
           autoComplete="off"
           required
         />
       </label>
-      <label className="field">
-        Fecha de salida <span className="field-hint">(solo ida)</span>
+      <label className={`${styles.searchField} ${styles.when}`}>
+        Cuándo
         <input
           name="f"
           type="date"
@@ -67,11 +78,11 @@ export function TripForm() {
           required
         />
       </label>
-      <button className="btn btn-primary" type="submit">
-        Armar mi viaje
+      <button className={styles.go} type="submit">
+        Armar viaje
       </button>
       {error ? (
-        <p className={`${styles.formError} wide`} role="alert">
+        <p className={styles.formError} role="alert">
           {error}
         </p>
       ) : null}

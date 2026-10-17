@@ -43,12 +43,16 @@ export function DestinationHero({ place, point, height, nav, children }: Destina
           alt=""
           referrerPolicy="no-referrer"
           onLoad={() => setLoaded(true)}
+          onError={() => {
+            console.error("Destination photo failed to load", photo.url);
+            setPhoto(null);
+          }}
         />
       )}
       <div className="dest-hero-overlay" />
       <div className="dest-hero-nav">{nav}</div>
       <div className="dest-hero-content">{children}</div>
-      {photo && (
+      {photo && loaded && (
         <a className="dest-hero-credit" href={photo.page} target="_blank" rel="noreferrer">
           Foto: {photo.author} · {photo.license} · Wikimedia Commons
         </a>
