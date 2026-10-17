@@ -7,6 +7,17 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 14:25 · Decisión · Pantallas del MVP aprobadas
+
+- **Aprobadas:** inicio, itinerario con refresco en vivo, comparación lado a lado y uso en
+  vivo.
+- **Único cambio pedido:** los inputs del inicio se veían oscuros. Pasan a fondo claro con
+  borde color hilo.
+- **En el repo:**
+  - descripción de cada pantalla en `design/PANTALLAS.md`;
+  - mockup de referencia en `design/pantallas-mockup.html`.
+- **Siguiente paso:** plan de implementación.
+
 ### 14:10 · Decisión · Logo final: inti de franjas, hecho a mano
 
 - **Descartado:** el tawa inti qocha de centro en cuatro ("se ve raro, muy perfecto").
