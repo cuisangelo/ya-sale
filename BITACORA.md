@@ -7,6 +7,24 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 16:22 · Cambio · Las opciones llevan directo a la ruta y muestran el logo de quien vende
+
+- **Pedido de Cuiso:** al hacer clic en una opción, llegar directo a la compra de esa ruta, y
+  poner logos de las empresas o páginas para que la lista no se vea vacía.
+- **Clic:** toda la fila es un enlace al `purchase_url` de la opción o, si no hay, a la
+  página de la ruta de donde se leyó. Antes solo el dominio chico era clicable. Con datos
+  reales de Lima → Tarapoto las fuentes ya son páginas de la ruta, por ejemplo
+  `checkmybus.pe/lima-lp/tarapoto-sm` y `kupos.pe/es/pasajes-bus/lima,peru/tarapoto,peru`.
+- **Logos:** se muestra el de la empresa cuando la conocemos (LATAM, SKY, JetSMART, Star
+  Perú, Cruz del Sur, Oltursa, Civa, Movil Bus, PeruRail, Inca Rail); si no, el del sitio que
+  vende. Si no hay logo, salen las iniciales.
+- **Decisión:** Cuiso pidió guardarlos de nuestro lado ("en un S3 o algo"). Quedan como
+  archivos estáticos en `web/public/logos/` y los sirve el CDN de Vercel: no hace falta
+  bucket, IAM ni código de backend. `web/scripts/fetch-logos.mjs` los descarga una vez del
+  servicio de favicons de Google y salta los que no existen (404). Bajó 21 de 21.
+- **Pruebas:** 4 tests nuevos en `web/lib/format.test.ts`. Fallaron antes de implementar y
+  después pasaron; la web suma 28/28. `tsc` y `pnpm build` en verde.
+
 ### 15:54 · Deploy · Primer CD a Lambda medido; App Runner pausado; el pull del adaptador falla
 
 - **CD medido:** el run 39068229128 (`5ad2523`) salió verde. Build 18 s con caché,

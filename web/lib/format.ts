@@ -137,6 +137,52 @@ export function sourceLabel(sourceUrl: string): string {
   return sourceUrl;
 }
 
+export function optionLink(option: Pick<Option, "purchase_url" | "source_url">): string | null {
+  return purchaseUrl(option.purchase_url) ?? purchaseUrl(option.source_url);
+}
+
+// Operators whose own site has a usable logo; matched as whole words so "Movil" never matches "Automovil".
+const OPERATOR_DOMAINS: [string, string][] = [
+  ["latam", "latamairlines.com"],
+  ["sky airline", "skyairline.com"],
+  ["jetsmart", "jetsmart.com"],
+  ["star peru", "starperu.com"],
+  ["cruz del sur", "cruzdelsur.com.pe"],
+  ["oltursa", "oltursa.pe"],
+  ["civa", "civa.com.pe"],
+  ["movil", "movilbus.pe"],
+  ["peru rail", "perurail.com"],
+  ["perurail", "perurail.com"],
+  ["inca rail", "incarail.com"],
+];
+
+function words(text: string): string {
+  return ` ${text.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim()} `;
+}
+
+export function logoDomain(operator: string | null, link: string | null): string | null {
+  if (operator) {
+    const name = words(operator);
+    const known = OPERATOR_DOMAINS.find(([key]) => name.includes(` ${key} `));
+    if (known) return known[1];
+  }
+  if (!link) return null;
+  return new URL(link).host.replace(/^www\./, "");
+}
+
+export function logoSrc(domain: string): string {
+  return `/logos/${domain}.png`;
+}
+
+export function initials(name: string): string {
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((word) => word[0].toUpperCase())
+    .join("");
+}
+
 function secondsAgo(iso: string, now: number): number {
   const then = Date.parse(iso);
   if (Number.isNaN(then)) return 0;

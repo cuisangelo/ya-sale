@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
 import type { LegSlot, Option, Version } from "./api";
-import { itineraryTotals, mapsDirectionsUrl, priceFloor } from "./format";
+import { initials, itineraryTotals, logoDomain, logoSrc, mapsDirectionsUrl, optionLink, priceFloor } from "./format";
 
 function version(prices: [string | null, string | null], duration: number | null = 60): Version {
   return {
@@ -54,4 +54,37 @@ test("totals add the selected legs and stay unknown when one leg has no price", 
     duration: "27 h 45 min",
   });
   expect(itineraryTotals([slot(["100", "140"], 1560), slot([null, null], null)])).toEqual({ price: null, duration: null });
+});
+
+test("optionLink opens the seller's purchase page, else the route page it was read from", () => {
+  expect(
+    optionLink({
+      purchase_url: "https://kupos.pe/es/pasajes-bus/lima,peru/tarapoto,peru",
+      source_url: "https://kupos.pe/es/buses/lima/tarapoto",
+    }),
+  ).toBe("https://kupos.pe/es/pasajes-bus/lima,peru/tarapoto,peru");
+  expect(optionLink({ purchase_url: null, source_url: "https://www.checkmybus.pe/lima-lp/tarapoto-sm" })).toBe(
+    "https://www.checkmybus.pe/lima-lp/tarapoto-sm",
+  );
+  expect(optionLink({ purchase_url: "javascript:alert(1)", source_url: "ftp://x.test/a" })).toBeNull();
+});
+
+test("logoDomain shows the operator's own brand when known, else the site that sells it", () => {
+  const checkmybus = "https://www.checkmybus.pe/lima-lp/tarapoto-sm";
+  expect(logoDomain("LATAM Airlines", checkmybus)).toBe("latamairlines.com");
+  expect(logoDomain("Perú Rail", null)).toBe("perurail.com");
+  expect(logoDomain("Movil Bus", checkmybus)).toBe("movilbus.pe");
+  expect(logoDomain("Via Pacifico", checkmybus)).toBe("checkmybus.pe");
+  expect(logoDomain("Automovil Express", checkmybus)).toBe("checkmybus.pe");
+  expect(logoDomain(null, null)).toBeNull();
+});
+
+test("logoSrc points at the logo stored with the web", () => {
+  expect(logoSrc("checkmybus.pe")).toBe("/logos/checkmybus.pe.png");
+});
+
+test("initials stand in for a missing logo", () => {
+  expect(initials("Via Pacifico")).toBe("VP");
+  expect(initials("TSP")).toBe("T");
+  expect(initials("Turismo Amanecer Selva")).toBe("TA");
 });

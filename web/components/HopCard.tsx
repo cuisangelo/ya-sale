@@ -1,11 +1,16 @@
+import { useState } from "react";
 import type { Hop, LegSlot, Mode, Option, Version } from "../lib/api";
 import {
   formatDuration,
   formatPrice,
   freshnessLine,
+  initials,
+  logoDomain,
+  logoSrc,
   mapsDirectionsUrl,
   modeLabel,
   modeTone,
+  optionLink,
   priceFloor,
   purchaseUrl,
   sourceLabel,
@@ -161,23 +166,51 @@ function OptionList({ options }: { options: Option[] }) {
     <details className="options">
       <summary>Ver las {options.length} opciones que encontramos</summary>
       <ul>
-        {options.map((option, position) => (
-          <li key={`${option.source_url}-${position}`} className="option-row">
-            <div className="option-what">
-              <strong>{option.operator ?? "Sin empresa indicada"}</strong>
-              {option.schedule_note ? <span>{option.schedule_note}</span> : null}
-              {option.departure_point ? <span>Sale de {option.departure_point}</span> : null}
-            </div>
-            <div className="option-figures">
-              <strong>{formatPrice(option.price_min_pen, option.price_max_pen) ?? "sin precio"}</strong>
-              {option.duration_min != null ? <span>{formatDuration(option.duration_min)}</span> : null}
-            </div>
-            <a className="option-source mono" href={option.source_url} target="_blank" rel="noreferrer">
-              {sourceLabel(option.source_url)}
-            </a>
-          </li>
-        ))}
+        {options.map((option, position) => {
+          const link = optionLink(option);
+          const content = (
+            <>
+              <OptionLogo operator={option.operator} link={link} />
+              <div className="option-what">
+                <strong>{option.operator ?? "Sin empresa indicada"}</strong>
+                {option.schedule_note ? <span>{option.schedule_note}</span> : null}
+                {option.departure_point ? <span>Sale de {option.departure_point}</span> : null}
+              </div>
+              <div className="option-figures">
+                <strong>{formatPrice(option.price_min_pen, option.price_max_pen) ?? "sin precio"}</strong>
+                {option.duration_min != null ? <span>{formatDuration(option.duration_min)}</span> : null}
+              </div>
+              <span className="option-source mono">{sourceLabel(link ?? option.source_url)}</span>
+            </>
+          );
+          return (
+            <li key={`${option.source_url}-${position}`}>
+              {link ? (
+                <a className="option-row" href={link} target="_blank" rel="noreferrer">
+                  {content}
+                </a>
+              ) : (
+                <div className="option-row">{content}</div>
+              )}
+            </li>
+          );
+        })}
       </ul>
     </details>
+  );
+}
+
+function OptionLogo({ operator, link }: { operator: string | null; link: string | null }) {
+  const domain = logoDomain(operator, link);
+  const [missing, setMissing] = useState(false);
+  const label = operator ?? domain ?? "?";
+  return (
+    <span className="option-logo" aria-hidden="true">
+      {domain && !missing ? (
+        <img src={logoSrc(domain)} alt="" width={28} height={28} onError={() => setMissing(true)} />
+      ) : (
+        initials(label)
+      )}
+    </span>
   );
 }
