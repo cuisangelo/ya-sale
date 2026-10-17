@@ -7,6 +7,20 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 18:18 · Cambio · Las salidas en vivo dependen del modo de cada tramo, no solo del bus
+
+- **Por qué:** el planner solo pedía salidas para tramos con bus y las emitía siempre como
+  `mode: "bus"`. Para sumar vuelos reales (sesión ya-sale-vuelos) y más empresas de bus
+  (ya-sale-empresas) hace falta que cada fuente diga qué modo vende.
+- **Qué cambia:** `DepartureSource` declara `mode`. Por cada tramo y cada modo del tramo,
+  el planner consulta solo las fuentes de ese modo y emite un `leg_departures` por
+  `(index, mode)`. Cruz del Sur y Oltursa declaran `"bus"`. La web ya guardaba y mostraba
+  las salidas por `(index, mode)`, así que no cambia. Se actualizaron la descripción de
+  `plan_trip` en el MCP y `docs/API.md`.
+- **Pruebas:** dos tests nuevos (un tramo bus/avión recibe las salidas de cada fuente en su
+  modo; una fuente de avión nunca se consulta en un tramo sin avión) fallaron antes del
+  cambio; backend 132/132 en verde.
+
 ### 17:38 · Cambio · El botón del paradero muestra el lugar, no la ruta desde el usuario
 
 - **Pedido de Cuiso:** en Tarapoto → Sauce, "Cómo llegar" abría una ruta de Google Maps

@@ -4,13 +4,15 @@ from datetime import date, datetime, timedelta, timezone
 from decimal import Decimal
 from typing import Protocol
 
+from app.legs.domain import Mode
+
 # Peru has no daylight saving time, so a fixed offset is exact and needs no tz database.
 LIMA = timezone(timedelta(hours=-5), "America/Lima")
 
 
 @dataclass(frozen=True)
 class Departure:
-    """One concrete bus departure on sale, linked to the page where its seat is picked."""
+    """One concrete departure on sale, linked to the page where its seat is picked."""
 
     operator: str
     departs_at: datetime
@@ -23,6 +25,7 @@ class Departure:
 
 class DepartureSource(Protocol):
     seller: str
+    mode: Mode
 
     async def departures(self, origin: str, destination: str, travel_date: date) -> list[Departure]: ...
 

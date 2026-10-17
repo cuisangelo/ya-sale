@@ -7,7 +7,7 @@ import httpx
 from pydantic import BaseModel
 
 from app.departures.domain import LIMA, Departure
-from app.legs.domain import normalize_place
+from app.legs.domain import Mode, normalize_place
 
 CITIES_URL = "https://api.oltursa.com.pe/ws-tienda/api/v1/cities"
 SITE_URL = "https://www.oltursa.pe"
@@ -36,6 +36,7 @@ class OltursaSource:
     """Oltursa's public day page, which carries every trip of the day; its seat page has no URL, so rows link to that day."""
 
     seller = "oltursa.pe"
+    mode: Mode = "bus"
 
     def __init__(self, client: httpx.AsyncClient):
         self._client = client

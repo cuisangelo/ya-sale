@@ -24,8 +24,8 @@ def build_mcp(services: Callable[[], object]) -> MCPServer:
     async def plan_trip(origin: str, destination: str, date: str) -> dict:
         """Plan a trip in Peru leg by leg (bus, plane, train, colectivo, combi, mototaxi, boat), with sources.
 
-        `date` is YYYY-MM-DD. For bus legs it also returns the live departures sellers have on that day,
-        each with its time, price, free seats and a booking_url that opens that departure's seats.
+        `date` is YYYY-MM-DD. For every leg mode a live seller covers, it also returns the departures on sale
+        that day, each with its time, price and free seats when known, and a booking_url that opens it.
         """
         latest: dict[tuple[int, str], dict] = {}
         departures: list[dict] = []

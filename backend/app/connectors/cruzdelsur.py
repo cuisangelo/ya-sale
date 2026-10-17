@@ -6,7 +6,7 @@ import httpx
 from pydantic import BaseModel
 
 from app.departures.domain import LIMA, Departure
-from app.legs.domain import normalize_place
+from app.legs.domain import Mode, normalize_place
 
 API_URL = "https://one-api.cruzdelsur.com.pe/api/v2"
 SITE_URL = "https://viajes.cruzdelsur.com.pe"
@@ -54,6 +54,7 @@ class CruzDelSurSource:
     """Cruz del Sur's own booking API: every departure links to its seat page, which opens without a session."""
 
     seller = "cruzdelsur.com.pe"
+    mode: Mode = "bus"
 
     def __init__(self, client: httpx.AsyncClient, poll_interval_s: float):
         self._client = client
