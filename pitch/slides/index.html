@@ -172,6 +172,8 @@
   th, td { text-align: left; padding: 14px 20px; border-bottom: 1.5px solid var(--lana); }
   th { font-size: 16px; color: var(--secundario); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
   td.mono { font-size: 20px; }
+  .precios { margin-top: 22px; font-size: 21px; }
+  .precios b { color: var(--chillka); font-size: 26px; margin-right: 10px; }
   .fuera {
     margin-top: 26px; border: 1.5px dashed var(--purpura); border-radius: 6px; padding: 16px 22px;
     font-size: 20px;
@@ -274,7 +276,7 @@
           <div class="dato">Sale de la Estación de Ollantaytambo · 90 min</div>
           <div class="fuente">cuscoperu.com · consultado en vivo</div>
         </div>
-        <p class="nota" style="margin-top:16px">Primer viaje real de punta a punta, 17 de octubre. Esta vez ningún tramo trajo precio.</p>
+        <p class="nota" style="margin-top:16px">Primer viaje real de punta a punta, 17 de octubre. En producción, el mismo viaje ya trae el bus con precio (S/35).</p>
       </div>
     </div>
   </section>
@@ -323,7 +325,7 @@
         <li>Las páginas leídas son datos no confiables: van cercadas y solo sale JSON validado</li>
         <li>Tope de 8 búsquedas por viaje y 6 consultas por minuto por persona</li>
         <li>Huella anónima, sin cuentas; la IP nunca se guarda ni se loguea</li>
-        <li>59 tests del dominio, la persistencia y la API</li>
+        <li>74 tests del backend y CI/CD: cada push a main con el CI en verde se despliega solo</li>
       </ul>
     </div>
   </section>
@@ -339,6 +341,7 @@
       </tbody>
     </table>
     <p class="nota">3 viajes de prueba: Tarapoto → Sauce, Cusco → Aguas Calientes, Iquitos → Nauta. Por eso buscamos en los dos a la vez.</p>
+    <p class="precios"><b class="mono">5 de 12 → 10 de 11</b> tramos con precio en las 8 rutas de demo, después de que el planificador busca el precio cuando falta</p>
     <p class="fuera"><b>Queda fuera</b>compra de pasajes · viaje de vuelta · cuentas · hoteles y tours · GPS en tiempo real</p>
   </section>
 

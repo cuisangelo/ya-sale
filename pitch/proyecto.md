@@ -96,8 +96,12 @@ AWS App Runner ── un contenedor: FastAPI (API + SSE) + servidor MCP + web es
   cambio material crea una versión nueva y la versión confirmada nunca se sobrescribe.
 - **Web:** Next.js exportada como sitio estático y servida por el mismo backend, con la
   identidad textil andina del proyecto (`design/textil/`).
-- **Tests:** 59 tests con `pytest` sobre el dominio, la persistencia, el extractor, el
-  planificador, la API y el MCP.
+- **Tests:** 74 tests con `pytest` sobre el dominio, la persistencia, el extractor, el
+  planificador, la API y el MCP, más los tests y el build de la web (`vitest`).
+- **CI/CD:** GitHub Actions corre los tests del backend (con Postgres) y de la web en cada push
+  y PR. Cada push a `main` con el CI en verde construye la imagen y la despliega en App Runner.
+  GitHub no guarda claves de AWS: el deploy asume un rol por OIDC que solo puede subir esa
+  imagen y actualizar ese servicio.
 
 ### Seguridad
 
@@ -131,10 +135,21 @@ Ollantaytambo, 125 min, primer bus 03:00 y último 19:00, con link de compra de 
 Ollantaytambo → Aguas Calientes, 90 min. Cada tramo llegó con su fuente y su fecha de consulta.
 Ninguno de los dos trajo precio.
 
+Después de ajustar el planificador para quedarse con el candidato que trae precio y buscar el
+precio cuando falta:
+
+- en las 8 rutas de demo, los tramos con precio pasaron de 5 de 12 a 10 de 11 (Postgres local,
+  con la base vacía);
+- en producción, el mismo viaje Cusco → Aguas Calientes trajo el bus con precio (S/35) y el tren
+  sin precio.
+
 ## Limitaciones
 
 - **Los precios no siempre aparecen.** Muchas páginas no publican la tarifa del tramo local, y
   preferimos dejar el precio vacío antes que inventarlo.
+- **Solo precios en soles.** PeruRail e Inca Rail publican en dólares, y esos precios se
+  descartan. El S/15 que puede aparecer en el tren a Aguas Calientes es la tarifa del Tren
+  Local, que es solo para residentes.
 - **Los datos son tan buenos como las páginas que existen.** Para un pueblo pequeño puede no
   haber ninguna página útil; en ese caso Ya Sale dice "No encontramos cómo llegar…" en vez de
   inventar una ruta.
