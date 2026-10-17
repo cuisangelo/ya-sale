@@ -74,6 +74,12 @@ def material_change(a: LegData, b: LegData) -> bool:
     return _price_change(a, b) or _duration_change(a, b) or _departure_change(a, b)
 
 
+def display_version(versions: list[LegVersion]) -> LegVersion:
+    if leg_status(versions) == "confirmed":
+        return next(v for v in reversed(versions) if v.confirmations > 0)
+    return versions[-1]
+
+
 def leg_status(versions: list[LegVersion]) -> LegStatus:
     confirmed_indexes = [i for i, v in enumerate(versions) if v.confirmations > 0]
     if not confirmed_indexes:

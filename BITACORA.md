@@ -7,6 +7,16 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 14:10 · Cambio · Planificador de viajes: primero lo guardado, después en vivo
+
+- **Qué:** `TripPlanner`.
+  1. Busca cómo llegar y arma la cadena de tramos con Claude.
+  2. Emite primero los tramos guardados.
+  3. Refresca cada tramo en vivo, en paralelo, con un tope de 8 búsquedas por viaje.
+  4. Si el lugar no existe dice "No encontramos cómo llegar…" en vez de inventar.
+  5. Si un proveedor falla, ese tramo marca error y los demás siguen.
+- **Prueba:** `pytest -q` → 42 passed.
+
 ### 14:02 · Cambio · Conectores de búsqueda (delegado a Grok)
 
 - **Qué:** Tavily como fuente principal (`country=peru`, contenido completo) y Exa de respaldo

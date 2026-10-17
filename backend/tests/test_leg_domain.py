@@ -1,7 +1,7 @@
 from datetime import UTC, datetime
 from decimal import Decimal
 
-from app.legs.domain import LegData, LegVersion, leg_status, material_change, normalize_place
+from app.legs.domain import LegData, LegVersion, display_version, leg_status, material_change, normalize_place
 
 T0 = datetime(2026, 10, 17, tzinfo=UTC)
 
@@ -69,6 +69,16 @@ def test_newer_different_version_after_confirmed_is_disputed():
 def test_newer_equivalent_version_keeps_confirmed():
     versions = [version(confirmations=1, price=(10, 15)), version(confirmations=0, price=(12, 14), version_id=2)]
     assert leg_status(versions) == "confirmed"
+
+
+def test_display_version_prefers_confirmed_over_equivalent_newer():
+    versions = [version(confirmations=1, price=(10, 15)), version(confirmations=0, price=(12, 14), version_id=2)]
+    assert display_version(versions).id == 1
+
+
+def test_display_version_shows_newest_when_disputed():
+    versions = [version(confirmations=1, price=(10, 15)), version(confirmations=0, price=(30, 40), version_id=2)]
+    assert display_version(versions).id == 2
 
 
 def test_normalize_place():
