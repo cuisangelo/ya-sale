@@ -9,7 +9,7 @@ from app.connectors.base import SearchHit
 from app.connectors.extractor import ExtractedLeg
 from app.connectors.web_search import SearchBudget
 from app.departures.domain import LIMA, Departure
-from app.legs.domain import LegData, LegKey
+from app.legs.domain import LegData, LegKey, Mode
 from app.places.domain import GeocodingFailed, Point
 from app.legs.repository import LegRepository
 from app.trips.domain import PlannedHop
@@ -88,8 +88,9 @@ def departure(hour: int, seller: str) -> Departure:
 
 
 class FakeDepartureSource:
-    def __init__(self, seller: str, hours=(), error: Exception | None = None, delay: float = 0):
+    def __init__(self, seller: str, hours=(), error: Exception | None = None, delay: float = 0, mode: Mode = "bus"):
         self.seller = seller
+        self.mode = mode
         self.calls: list[tuple[str, str, date]] = []
         self._hours = hours
         self._error = error
@@ -277,6 +278,22 @@ async def test_hops_without_a_bus_never_query_the_sources(repo):
     source = FakeDepartureSource("a.pe", hours=(7,))
     events = await collect(planner(repo, TWO_HOPS, sources=(source,)), "Cusco", "Aguas Calientes")
     assert source.calls == []
+    assert departures_events(events) == []
+
+
+async def test_each_mode_of_a_hop_gets_the_departures_of_its_own_sources(repo):
+    bus, plane = FakeDepartureSource("bus.pe", hours=(7,)), FakeDepartureSource("sky.pe", hours=(9, 6), mode="avion")
+    events = await collect(planner(repo, BUS_OR_PLANE, sources=(bus, plane)), "Lima", "Sauce")
+    found = {(e.index, e.mode): [(d.departs_at.hour, d.seller) for d in e.departures] for e in departures_events(events)}
+    assert found == {(0, "bus"): [(7, "bus.pe")], (0, "avion"): [(6, "sky.pe"), (9, "sky.pe")]}
+    assert bus.calls == plane.calls == [("Lima", "Tarapoto", date(2026, 10, 25))]
+
+
+async def test_a_source_is_never_asked_for_a_mode_it_does_not_serve(repo):
+    plane = FakeDepartureSource("sky.pe", hours=(9,), mode="avion")
+    chain = [PlannedHop("Lima", "Trujillo", ("bus",)), PlannedHop("Trujillo", "Huanchaco", ("combi",))]
+    events = await collect(planner(repo, chain, sources=(plane,)), "Lima", "Huanchaco")
+    assert plane.calls == []
     assert departures_events(events) == []
 
 

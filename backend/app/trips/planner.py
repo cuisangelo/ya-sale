@@ -72,7 +72,12 @@ class TripPlanner:
         pending.append(self._map(chain))
         day = _travel_day(travel_date) if self._departure_sources else None
         if day is not None:
-            pending += [self._departures(index, hop.origin, hop.destination, day) for index, hop in enumerate(chain) if "bus" in hop.modes]
+            pending += [
+                self._departures(index, hop.origin, hop.destination, mode, sources, day)
+                for index, hop in enumerate(chain)
+                for mode in hop.modes
+                if (sources := [s for s in self._departure_sources if s.mode == mode])
+            ]
         for next_event in asyncio.as_completed(pending):
             event = await next_event
             if event is not None:
@@ -105,10 +110,12 @@ class TripPlanner:
             logger.warning("leg refresh failed (%s) for hop %d", type(exc).__name__, index)
             return LegError(index, mode, REFRESH_FAILED)
 
-    async def _departures(self, index: int, origin: str, destination: str, travel_date: date) -> LegDepartures | None:
-        found = await asyncio.gather(*(self._from_source(s, origin, destination, travel_date) for s in self._departure_sources))
+    async def _departures(
+        self, index: int, origin: str, destination: str, mode: Mode, sources: list[DepartureSource], travel_date: date
+    ) -> LegDepartures | None:
+        found = await asyncio.gather(*(self._from_source(s, origin, destination, travel_date) for s in sources))
         departures = by_departure_time(found)
-        return LegDepartures(index, "bus", departures) if departures else None
+        return LegDepartures(index, mode, departures) if departures else None
 
     async def _from_source(self, source: DepartureSource, origin: str, destination: str, travel_date: date) -> list[Departure]:
         # Departures only enrich the leg: a seller that blocks us, changes its API or stalls costs nothing else.
