@@ -12,12 +12,12 @@ def hit(content: str) -> SearchHit:
     return SearchHit(url=HIT.url, title=HIT.title, content=content)
 
 
-def leg(price=(12, 15), duration=110, source_url=HIT.url) -> LegOut:
+def leg(price=(12, 15), duration=110, source_url=HIT.url, purchase_url=None) -> LegOut:
     return LegOut(
         origin="Tarapoto", destination="Sauce", mode="colectivo",
         departure_point="Banda de Shilcayo", operator=None,
         price_min_pen=price[0], price_max_pen=price[1], duration_min=duration,
-        schedule_note=None, purchase_url=None, source_url=source_url,
+        schedule_note=None, purchase_url=purchase_url, source_url=source_url,
     )
 
 
@@ -50,6 +50,21 @@ async def test_drops_out_of_bounds_values():
 async def test_source_url_must_be_one_of_the_given_pages():
     fake = FakeClient(legs=[leg(source_url="https://not-given.example")])
     assert await LegExtractor(fake).extract_legs("A", "B", [HIT]) == []
+
+
+async def test_purchase_url_survives_only_when_the_cited_page_contains_it():
+    page = hit("Compra aquí: https://kupos.pe/es/pasajes-bus/lima,peru/tarapoto,peru y elige asiento")
+    fake = FakeClient(legs=[
+        leg(purchase_url="https://kupos.pe/es/pasajes-bus/lima,peru/tarapoto,peru"),
+        leg(purchase_url="https://kupos.pe/es/invented-by-the-model"),
+        leg(purchase_url=HIT.url),
+    ])
+    out = await LegExtractor(fake).extract_legs("Lima", "Tarapoto", [page])
+    assert [item.data.purchase_url for item in out] == [
+        "https://kupos.pe/es/pasajes-bus/lima,peru/tarapoto,peru",
+        None,
+        HIT.url,
+    ]
 
 
 async def test_page_text_is_fenced_as_untrusted_data():
