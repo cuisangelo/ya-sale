@@ -65,7 +65,7 @@ queda registrada y suma a la página de uso.
 
 ### La comparación
 
-`/comparar` hace la misma pregunta al mismo modelo (Claude Opus 5.5) dos veces: sin
+`/comparar` hace la misma pregunta al mismo modelo (Claude Sonnet 5.5) dos veces: sin
 herramientas y con la herramienta `plan_trip` de Ya Sale. Los contadores de fuentes, datos con
 fecha y tramos confirmados salen de los tramos que devolvió la herramienta, no del texto del
 modelo.
