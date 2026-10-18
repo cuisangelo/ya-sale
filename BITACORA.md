@@ -7,6 +7,22 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-18
 
+### 01:16 · Entrega · Primer envío del proyecto a Hack the Andes
+
+- **Qué:** `andes --output json project submit` con `--deployment-url
+  https://yasale.cuisangelo.com`, `--presentation-url https://yasale.cuisangelo.com/pitch/`,
+  `--github-url https://github.com/cuisangelo/ya-sale` y `--file pitch/proyecto.md`. Cuiso
+  aprobó el payload y confirmó las URLs.
+- **Antes de enviar:** el servidor mostraba `"submission": null`. Web y slides respondían 200
+  y el repo es público. `pitch/proyecto.md` todavía tenía el respaldo de App Runner, que da
+  404 desde que está pausado. Se quitó esa línea, y la arquitectura pasó a describir Lambda,
+  Sonnet 5.5 y los tests actuales (`5139b4c`, `413606e`).
+- **Resultado:** `ok: true` (requestId `a508f474-…`). `andes --output json project` muestra
+  equipo Ya Sale, track `transport`, las tres URLs y la descripción (9 158 caracteres, sin
+  App Runner).
+- **Pendiente:** reenviar con la descripción nueva cuando la sesión del pitch termine la
+  historia de salidas en vivo para IAs, mostrando antes el payload a Cuiso.
+
 ### 01:12 · Cambio · GH Bus se suma como vendedor de salidas en vivo
 
 - **Qué:** `GhBusSource` (`backend/app/connectors/ghbus.py`) usa su web de venta
@@ -53,6 +69,7 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
   desde `LIMA` y desde `LIMA PLAZANORTE` solo da Chepén, Chiclayo, Chimbote, Huaraz, Pacasmayo y
   Trujillo; Cajamarca solo sale hacia Chepén, Chiclayo, Pacasmayo y Trujillo. Su web no vende Lima
   → Cajamarca.
+
 
 ## 2026-10-17
 
