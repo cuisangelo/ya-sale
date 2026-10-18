@@ -17,10 +17,10 @@ from app.config import Settings, load_settings
 from app.connectors.cruzdelsur import CruzDelSurSource
 from app.connectors.extractor import LegExtractor
 from app.connectors.geocoding import GoogleGeocoder
-from app.connectors.ghbus import GhBusSource
 from app.connectors.ittsa import IttsaSource
 from app.connectors.linea import LineaSource
 from app.connectors.oltursa import OltursaSource
+from app.connectors.ventasweb import VentasWebSource
 from app.connectors.web_search import CombinedSearch, ExaConnector, SearchBudget, TavilyConnector
 from app.db import bootstrap_schema, create_pool
 from app.legs.repository import LegRepository
@@ -53,7 +53,8 @@ def build_services(settings: Settings, pool) -> Services:
         CruzDelSurSource(httpx.AsyncClient(timeout=10), poll_interval_s=1),
         OltursaSource(httpx.AsyncClient(timeout=10)),
         IttsaSource(httpx.AsyncClient(timeout=10)),
-        GhBusSource(lambda: httpx.AsyncClient(timeout=10)),
+        VentasWebSource("https://sales.ghbus.com.pe", "ghbus.com.pe", "GH Bus", lambda: httpx.AsyncClient(timeout=10)),
+        VentasWebSource("https://sales.floreshnos.pe", "floreshnos.pe", "Flores", lambda: httpx.AsyncClient(timeout=10)),
         LineaSource(lambda: httpx.AsyncClient(timeout=10)),
     )
     planner = TripPlanner(
