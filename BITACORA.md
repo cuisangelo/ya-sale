@@ -21,6 +21,19 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
   quedan, porque Flores lo usa. Rodear el bloqueo (proxy u otra salida) sería evadirlo; no se hace.
 - **Flores en Lambda:** Lima → Cajamarca de hoy devolvió `floreshnos.pe` 17:30, S/70, 2 asientos.
 
+### 01:23 · Prueba · Lima → Cajamarca ya tiene salidas en vivo desde producción
+
+- **La pregunta de referencia de Cuiso:** "¿Lima → Cajamarca hoy, qué buses salen y quedan
+  asientos?". Claude solo respondió: "No puedo ver asientos disponibles en tiempo real, así que
+  confirma ya mismo en la web o app de la empresa".
+- **Ya Sale, con Lambda corriendo `b93dec6` (merge del PR #22):** `POST /api/trips` Lima →
+  Cajamarca.
+  - **2026-10-18:** `leg_departures` con Flores · BUS CAMA, 17:30, S/70, **2 asientos
+    libres**, y enlace a `sales.floreshnos.pe/?idorigen=6&iddestino=7&fechaida=18/10/2026`.
+  - **2026-10-19:** la misma salida con 46 asientos.
+- **Vendedores en vivo en producción:** Cruz del Sur, Oltursa, Línea, ITTSA, GH Bus y Flores.
+
+
 ### 01:19 · Cambio · Flores se suma: misma plataforma que GH Bus, y responde Lima → Cajamarca
 
 - **Hallazgo:** `sales.floreshnos.pe` es el mismo "Sistema de Ventas Web" que `sales.ghbus.com.pe`
