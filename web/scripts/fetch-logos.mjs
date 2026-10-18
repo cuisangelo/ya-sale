@@ -15,6 +15,7 @@ const DOMAINS = [
   "movilbus.pe",
   "ittsabus.com",
   "linea.pe",
+  "ghbus.com.pe",
   "perurail.com",
   "incarail.com",
   // sites the searches read from
