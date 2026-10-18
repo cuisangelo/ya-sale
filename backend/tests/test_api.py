@@ -24,9 +24,13 @@ def leg_data(price=(10, 15)) -> LegData:
     return LegData("Paradero", None, Decimal(price[0]), Decimal(price[1]), 90, None, None)
 
 
+FINAL_STOP = MapPoint("Ollantaytambo", -13.26, -72.26)
+
+
 class FakePlanner:
-    def __init__(self, repo):
+    def __init__(self, repo, points=(MapPoint("Cusco", -13.53, -71.97), FINAL_STOP)):
         self._repo = repo
+        self._points = points
 
     async def plan(self, origin, destination, date, trip_id):
         yield TripStarted(trip_id, origin, destination, 1, (PlannedHop("Cusco", "Ollantaytambo", ("combi",)),))
@@ -36,22 +40,32 @@ class FakePlanner:
         yield LegRefreshed(0, leg_id, "combi", "Cusco", "Ollantaytambo", "extracted", version, (option,))
         departure = Departure("Movil Bus", datetime(2026, 10, 25, 19, 30, tzinfo=LIMA), None, Decimal(35), 12, "https://movilbus.pe/x", "movilbus.pe")
         yield LegDepartures(0, "bus", (departure,))
-        yield TripMapped((MapPoint("Cusco", -13.53, -71.97),))
+        yield TripMapped(self._points)
         yield TripDone(1)
 
 
-@pytest.fixture
-async def api(pool, settings):
+async def build_api(pool, settings, **planner_args):
     app = create_app(settings)
     legs = LegRepository(pool)
     app.state.services = Services(
-        planner=FakePlanner(legs),
+        planner=FakePlanner(legs, **planner_args),
         legs=legs,
         usage=UsageRepository(pool, settings.team_fingerprints),
         limiter=RateLimiter(pool, per_minute=6),
         compare=None,
     )
-    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
+    return httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test")
+
+
+@pytest.fixture
+async def api(pool, settings):
+    async with await build_api(pool, settings) as client:
+        yield client
+
+
+@pytest.fixture
+async def api_without_final_point(pool, settings):
+    async with await build_api(pool, settings, points=(MapPoint("Cusco", -13.53, -71.97),)) as client:
         yield client
 
 
@@ -73,7 +87,10 @@ async def test_trip_stream_events(api):
     events = sse_events(response.text)
     assert [name for name, _ in events] == ["trip_started", "leg_refreshed", "leg_departures", "trip_mapped", "trip_done"]
     assert events[0][1]["hops"] == [{"origin": "Cusco", "destination": "Ollantaytambo", "modes": ["combi"]}]
-    assert events[3][1] == {"points": [{"name": "Cusco", "lat": -13.53, "lng": -71.97}]}
+    assert events[3][1] == {"points": [
+        {"name": "Cusco", "lat": -13.53, "lng": -71.97},
+        {"name": "Ollantaytambo", "lat": -13.26, "lng": -72.26},
+    ]}
     leg = events[1][1]
     assert leg["options"] == [{
         "departure_point": "Paradero", "operator": None, "price_min_pen": "12", "price_max_pen": "12",
@@ -179,3 +196,57 @@ def test_fingerprint_is_stable_and_salted():
     assert first == fingerprint(Request(scope), "salt-a")
     assert first != fingerprint(Request(scope), "salt-b")
     assert "203.0.113.9" not in first and len(first) == 16
+
+
+async def stream_trip(api, request_headers):
+    return await api.post("/api/trips", json=BODY, headers=request_headers)
+
+
+async def insert_routed_trip(pool, origin, destination, created_at, fingerprint="visitor-fp"):
+    async with pool.connection() as conn:
+        await conn.execute(
+            "INSERT INTO trips (origin, destination, fingerprint, created_at, resolved_destination, destination_lat, destination_lng)"
+            " VALUES (%s, %s, %s, %s, %s, -13.26, -72.26)",
+            (origin, destination, fingerprint, created_at, destination),
+        )
+
+
+async def test_recent_lists_routed_trips_with_their_resolved_place(api):
+    await stream_trip(api, headers(ip="203.0.113.7"))
+    body = (await api.get("/api/trips/recent")).json()
+    assert body == [{"origin": "Cusco", "destination": "Aguas Calientes", "place": "Ollantaytambo",
+                     "at": body[0]["at"], "lat": -13.26, "lng": -72.26}]
+    assert "fingerprint" not in body[0]
+
+
+async def test_recent_skips_trips_whose_last_stop_was_not_located(api_without_final_point):
+    await stream_trip(api_without_final_point, headers())
+    assert (await api_without_final_point.get("/api/trips/recent")).json() == []
+
+
+async def test_recent_dedupes_case_insensitively_keeps_newest_and_caps_at_8(api, pool):
+    for day in range(1, 11):
+        await insert_routed_trip(pool, "Lima", f"Place {day}", datetime(2026, 10, day, tzinfo=UTC))
+    await insert_routed_trip(pool, "lima", "PLACE 10", datetime(2026, 10, 11, tzinfo=UTC))
+    body = (await api.get("/api/trips/recent")).json()
+    assert [(t["origin"], t["destination"]) for t in body] == [
+        ("lima", "PLACE 10"), ("Lima", "Place 9"), ("Lima", "Place 8"), ("Lima", "Place 7"),
+        ("Lima", "Place 6"), ("Lima", "Place 5"), ("Lima", "Place 4"), ("Lima", "Place 3"),
+    ]
+
+
+async def test_recent_excludes_team_fingerprints(api, pool):
+    await insert_routed_trip(pool, "Lima", "Cusco", datetime(2026, 10, 1, tzinfo=UTC), fingerprint="team-fp")
+    assert (await api.get("/api/trips/recent")).json() == []
+
+
+async def test_trip_stream_survives_a_failing_trip_resolution(api, monkeypatch, caplog):
+    async def boom(*args):
+        raise RuntimeError("pool timeout")
+
+    monkeypatch.setattr(UsageRepository, "resolve_trip", boom)
+    response = await api.post("/api/trips", json=BODY, headers=headers())
+    assert [name for name, _ in sse_events(response.text)] == [
+        "trip_started", "leg_refreshed", "leg_departures", "trip_mapped", "trip_done",
+    ]
+    assert "resolving trip" in caplog.text

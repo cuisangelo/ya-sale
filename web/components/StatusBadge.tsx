@@ -9,9 +9,6 @@ const LABELS: Record<LegStatus, string> = {
 export function StatusBadge({ status }: { status: LegStatus }) {
   return (
     <span className={`badge badge-${status}`}>
-      {status === "confirmed" ? (
-        <img src="/textil/motivo-chaska.svg" alt="" width={12} height={12} />
-      ) : null}
       {LABELS[status]}
     </span>
   );

@@ -1,10 +1,6 @@
-import { modeIconSrc, modeTone } from "../lib/format";
+import { modeIconSrc } from "../lib/format";
 
 export function ModeIcon({ mode }: { mode: string }) {
   const src = modeIconSrc(mode);
-  return (
-    <span className={`mode-icon tone-${modeTone(mode)}`}>
-      {src ? <img src={src} alt="" width={22} height={22} /> : null}
-    </span>
-  );
+  return <span className="mode-icon">{src ? <img src={src} alt="" width={22} height={22} /> : null}</span>;
 }

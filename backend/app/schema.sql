@@ -35,6 +35,9 @@ CREATE TABLE IF NOT EXISTS trips (
     created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+-- The typed destination often differs from where the planner ends, so the photo needs the resolved place.
+ALTER TABLE trips ADD COLUMN IF NOT EXISTS resolved_destination TEXT, ADD COLUMN IF NOT EXISTS destination_lat DOUBLE PRECISION, ADD COLUMN IF NOT EXISTS destination_lng DOUBLE PRECISION;
+
 -- Every offer the last refresh found for a leg, each with its own source; replaced on each refresh.
 ALTER TABLE legs ADD COLUMN IF NOT EXISTS options JSONB NOT NULL DEFAULT '[]';
 

@@ -7,6 +7,19 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 18:31 · Cambio · Últimos arreglos de la revisión del rediseño
+
+- **Por qué:** la revisión de toda la rama encontró seis detalles antes de cerrar.
+- **Qué cambia:** si guardar el destino resuelto de un viaje falla, el flujo en vivo sigue y el
+  error queda en el log; el crédito de la foto ya no se corta (la licencia se lee completa, en
+  dos líneas si hace falta); el texto de la portada tiene la misma sombra que el del viaje y la
+  píldora es oscura; una fecha imposible como `2026-13-01` muestra el aviso de siempre en vez
+  de romper la página; `docs/API.md` documenta `GET /api/trips/recent`; el pitch describe la
+  identidad real.
+- **Pruebas:** el test nuevo de la API falla sin el `try/except` y pasa con él. `tsc`,
+  `pnpm test` (55 passed), `next build`, la búsqueda de tamaños de letra (vacía) y `pytest`
+  (135 passed). Capturas de la portada a 1280 y 390 px con los créditos completos.
+
 ### 18:30 · Cambio · Una ruta ya planificada arranca sin buscar de nuevo
 
 - **Medido antes:** un viaje real Lima → Cusco en producción. `trip_started` y los tramos
@@ -22,6 +35,19 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 - **Pruebas:** 3 tests del planner (reusa sin buscar, no guarda "no hay ruta", replanifica
   pasada la semana) y 3 del repositorio contra Postgres. Fallaron antes de implementar; backend
   139/139.
+
+### 18:20 · Cambio · Comparar y uso con la identidad nueva, e imagen para compartir
+
+- **Por qué:** al compartir el enlace se veía la imagen vieja, y `/comparar` y `/uso`
+  arrastraban clases de color por modo que ya no tienen estilos.
+- **Qué cambia:** `/comparar` y `/uso` heredan los colores nuevos sin rediseño; se quitaron
+  las clases `bar-*` que ya no hacían nada. La imagen para compartir (1200×630) pasa a degradado
+  carmín a tinta, logo blanco y "¿De dónde a dónde vas?".
+- **Pruebas:** capturas de Playwright de ambas páginas a 1280 y 390 px con datos simulados:
+  sin desbordes ni errores de consola, y el número de 40 px cabe en las cuatro tarjetas.
+  `tsc`, `pnpm test` (54 passed), `next build`, la búsqueda de tamaños de letra (vacía) y
+  `pytest` del backend (134 passed) pasan.
+
 
 ### 18:18 · Cambio · Las salidas en vivo dependen del modo de cada tramo, no solo del bus
 
@@ -57,6 +83,93 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 - **Pruebas:**
   `test_purchase_url_survives_only_when_the_cited_page_contains_it` falló antes de
   implementar (el enlace inventado sobrevivía) y después pasó. Backend 131/131.
+
+### 18:13 · Cambio · Vista de viaje nueva: foto del destino y los números útiles arriba
+
+- **Por qué:** quien abre un viaje quiere saber primero cuánto cuesta, cuánto demora y cuándo
+  sale; la vista pasa a responder eso arriba, sobre la foto del destino.
+- **Qué cambia:** la vista de viaje usa la cabecera con foto del destino y una pastilla
+  "Lima → Sauce · mar 20 oct · Cambiar" que vuelve al inicio con el formulario precargado.
+  Una tarjeta flotante muestra Desde, En camino, Tramos con transbordos, Primera salida y el
+  estado en vivo. "Primera salida" es la salida más temprana del primer tramo con el modo
+  elegido, en hora de Lima; si ese tramo no tiene salidas, no aparece. Los tramos llevan
+  número cuadrado, pestañas en pastilla y salidas en filas con botón "Comprar". El mapa usa
+  marcadores redondos con el origen en carmín. El esqueleto de carga ya no tiene la barra
+  roja fija, y el indicador en vivo se ve distinto al terminar. La confirmación y la
+  corrección funcionan igual que antes.
+- **Pruebas:** 4 pruebas nuevas en `format.test.ts`; `tsc` y `pnpm test` (53 passed)
+  pasan. Capturas de Playwright a 1280 y 390 px en cada fase del streaming simulado, con
+  salidas de Cruz del Sur y Civa y la pestaña Avión. El único error de consola es el 404 del
+  logo de un blog sin logo guardado, que cae a iniciales.
+
+### 18:00 · Cambio · Inicio nuevo: foto del último destino buscado y búsquedas reales
+
+- **Por qué:** el inicio es lo primero que ve el jurado; pasa a mostrar la foto del último
+  destino que alguien buscó de verdad y la lista de búsquedas recientes, en vez de rutas de
+  ejemplo fijas.
+- **Qué cambia:** el inicio queda con cinco partes: la cabecera con foto y menú (Comparar, Uso
+  real, Para agentes), el buscador flotante (Desde ⇄ Hasta · Cuándo · "Armar viaje"), la
+  sección "Lo último que la gente buscó" (4/2/1 columnas, foto con crédito o degradado), la
+  sección "Para agentes" con la URL del MCP y un pie con el enlace a GitHub. El formulario se
+  precarga con `?o=&d=&f=`. Si `/api/trips/recent` falla o viene vacío, la cabecera se queda
+  en el degradado y la sección no aparece. Se borran `RouteCards`, `SampleTrip`,
+  `UsageProof`, `useOpenTrip`, `public/landing/` y su CSS. El crédito de la cabecera solo
+  aparece si la foto carga.
+- **Pruebas:** 2 pruebas nuevas de `parseRecentTrips`; `tsc` y `pnpm test` (48 passed)
+  pasan. Capturas de Playwright a 1280 y 390 px contra un servidor simulado con 6 búsquedas
+  reales y fotos de Commons: sin errores de consola. Con el endpoint en 500 queda el
+  degradado sin la sección y el error en consola.
+
+### 17:52 · Cambio · Portada de destino compartida: foto con crédito, degradado y respaldo
+
+- **Por qué:** portada y viaje muestran la misma cabecera fotográfica; un solo componente evita
+  duplicar la lógica de la foto y su crédito.
+- **Qué cambia:** `web/components/DestinationHero.tsx` busca la foto del destino, la muestra
+  con fundido de 600 ms y zoom lento, y pone el crédito enlazado a Commons. Sin lugar, sin foto
+  o con error de red (registrado con `console.error`) queda el degradado rojo a negro. Ignora
+  resultados que llegan tras desmontar o cambiar de destino. Con movimiento reducido no hay
+  fundido ni zoom.
+- **Pruebas:** `tsc` y `pnpm test` (46 passed) pasan; la revisión visual se hace al usarlo en
+  portada y viaje.
+
+### 17:50 · Cambio · Adaptador que busca una foto con crédito de cada destino en Wikipedia
+
+- **Por qué:** el rediseño muestra una foto real del destino en portada y viaje, y cada foto
+  debe llevar autor, licencia y enlace a Commons.
+- **Qué cambia:** `web/lib/photos.ts` busca primero el artículo por título (y por
+  `<nombre> (Perú)`), aceptándolo solo si sus coordenadas caen a menos de 25 km; si no, toma
+  la página más cercana en 10 km cuya imagen sea una foto (no mapa, escudo ni bandera). Pide
+  el crédito a Commons y guarda el resultado en memoria y en `localStorage`. Sin foto devuelve
+  `null`; un error de red o HTTP rechaza la promesa.
+- **Pruebas:** 11 pruebas nuevas con `fetch` simulado, sin red real; `tsc` y `pnpm test`
+  (46 passed) pasan.
+
+### 17:50 · Cambio · Base visual de la web: carmín, Inter en tres tamaños y logo propio
+
+- **Por qué:** el rediseño necesita una identidad propia y sin motivos textiles; esta tarea
+  deja los cimientos antes de reconstruir portada y viaje.
+- **Qué cambia:** tokens `--acc`/`--acc-soft`/`--ink`/`--mute`/`--line`/`--soft`; Inter
+  autoalojada reemplaza Bricolage, Archivo y JetBrains Mono; todo `font-size` es 40/18/14
+  (32 solo en el título móvil). Logo SVG inline y `app/icon.svg`. Íconos de modo en línea
+  (`public/modes/`) y se eliminan `public/textil/`, `Franja` y las reglas de color por modo.
+  El spinner de carga pasa a un anillo CSS. Pantallas existentes solo restiladas, sin cambiar layout.
+- **Pruebas:** `tsc`, `pnpm test` (35 passed) y `next build` pasan; los dos greps del brief
+  dan vacío; capturas a 1280 px de `/` y `/viaje/` sin imágenes rotas.
+
+### 17:44 · Cambio · Cada búsqueda guarda su destino resuelto y `GET /api/trips/recent` las lista
+
+- **Por qué:** la portada del rediseño mostrará las últimas búsquedas reales con una foto
+  tomada de las coordenadas del destino. El destino que escribe la persona suele ser distinto
+  del lugar donde el planificador termina la ruta, así que hay que guardar este último.
+- **Qué cambia:** `trips` suma `resolved_destination`, `destination_lat` y `destination_lng`.
+  Al llegar `TripMapped`, `create_trip` busca el punto del último tramo (el destino de
+  `TripStarted.hops[-1]`) y lo guarda con `UsageRepository.resolve_trip`. El nuevo
+  `GET /api/trips/recent` devuelve hasta 8 viajes con ruta y destino ubicado, sin huella,
+  uno por par origen/destino sin distinguir mayúsculas, los más nuevos primero, y excluye al equipo.
+- **Pruebas:** los 4 tests `-k recent` fallaron antes de implementar (columna inexistente).
+  Después, `docker compose run --rm backend uv run pytest -q` dio `134 passed`.
+  Mutación: sin `AND resolved_destination IS NOT NULL` en el SQL, falla
+  `test_recent_skips_trips_whose_last_stop_was_not_located` (1 failed, 3 passed); revertido.
 
 ### 17:38 · Cambio · El botón del paradero muestra el lugar, no la ruta desde el usuario
 

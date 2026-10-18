@@ -4,7 +4,7 @@ import { FormEvent, useState } from "react";
 import { Logo } from "../../components/Logo";
 import { StatusBadge } from "../../components/StatusBadge";
 import { compareQuestion, errorText, type CompareResult } from "../../lib/api";
-import { columnCounter, legFactParts, modeLabel, modeTone, summarySourceLine } from "../../lib/format";
+import { columnCounter, legFactParts, modeLabel, summarySourceLine } from "../../lib/format";
 
 export default function ComparePage() {
   const [question, setQuestion] = useState("");
@@ -33,7 +33,7 @@ export default function ComparePage() {
 
   return (
     <main className="shell shell-wide">
-      <Logo size={36} compact />
+      <Logo />
       <form className="question-card" onSubmit={(event) => void submit(event)}>
         <label className="field wide">
           Pregunta
@@ -61,7 +61,6 @@ export default function ComparePage() {
             <section className="column column-tools">
               <div className="compare-head">
                 <span className="brand-mark">
-                  <img src="/textil/logo-inti.svg" alt="" width={22} height={22} />
                   <b>Claude + Ya Sale</b>
                 </span>
                 <span className="mono meta">
@@ -73,7 +72,7 @@ export default function ComparePage() {
                 {result.with_tools.legs.map((leg) => {
                   const facts = legFactParts(leg.version);
                   return (
-                    <div key={leg.leg_id} className={`compare-leg bar-${modeTone(leg.mode)}`}>
+                    <div key={leg.leg_id} className="compare-leg">
                       <div className="compare-leg-head">
                         <strong>
                           {modeLabel(leg.mode)} · {leg.origin} → {leg.destination}
