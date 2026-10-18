@@ -17,6 +17,7 @@ from app.config import Settings, load_settings
 from app.connectors.cruzdelsur import CruzDelSurSource
 from app.connectors.extractor import LegExtractor
 from app.connectors.geocoding import GoogleGeocoder
+from app.connectors.ghbus import GhBusSource
 from app.connectors.ittsa import IttsaSource
 from app.connectors.linea import LineaSource
 from app.connectors.oltursa import OltursaSource
@@ -52,6 +53,7 @@ def build_services(settings: Settings, pool) -> Services:
         CruzDelSurSource(httpx.AsyncClient(timeout=10), poll_interval_s=1),
         OltursaSource(httpx.AsyncClient(timeout=10)),
         IttsaSource(httpx.AsyncClient(timeout=10)),
+        GhBusSource(lambda: httpx.AsyncClient(timeout=10)),
         LineaSource(lambda: httpx.AsyncClient(timeout=10)),
     )
     planner = TripPlanner(

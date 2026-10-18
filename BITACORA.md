@@ -23,6 +23,54 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 - **Pendiente:** reenviar con la descripción nueva cuando la sesión del pitch termine la
   historia de salidas en vivo para IAs, mostrando antes el payload a Cuiso.
 
+### 01:12 · Cambio · GH Bus se suma como vendedor de salidas en vivo
+
+- **Qué:** `GhBusSource` (`backend/app/connectors/ghbus.py`) usa su web de venta
+  `sales.ghbus.com.pe` como lo hace el navegador: `api/base/lista-oficinas` da las ciudades con su
+  código, la página `/?idorigen=…&iddestino=…&fechaida=dd/mm/aaaa` abre la sesión del visitante y
+  `POST /busqueda-turnos` devuelve cada salida (hora, servicio, precio por piso, asientos libres).
+  Cada búsqueda abre su propia sesión. Un piso a S/0 no cuenta como precio.
+- **Llegada:** su respuesta repite la hora de salida como llegada con duración `00:00`, así que la
+  llegada queda vacía en vez de mostrar un dato falso.
+- **Enlace:** cada fila enlaza a esa página de ruta y fecha, la misma que abre su buscador de
+  `ghbus.com.pe`. En Chrome headless con un perfil limpio abre con la salida y el botón "Elegir
+  Asiento".
+- **Pruebas:** 11 tests con fixtures grabados el 18-10 en el navegador (Lima → Chiclayo del 20-10,
+  un día sin viajes y una búsqueda fallida). Mutaciones: sin abrir la página antes de buscar,
+  `test_the_search_runs_after_opening_its_page_in_the_same_session` rojo; sin revisar `success`,
+  `test_a_failed_search_raises_instead_of_finding_nothing` rojo. Revertidas, backend 178/178.
+- **En vivo desde el contenedor, 20 al 25-10:** Lima → Chiclayo 1 por día (15:00, S/70), Lima →
+  Chachapoyas 1 por día (14:00, S/150), Chiclayo → Tarapoto 1 por día (16:00, S/80). Lima ↔
+  Tarapoto: 0 todos los días; GH no vende ese tramo en su web estos días.
+- **Logo:** el ícono de `ghbus.com.pe`, guardado también como `sales.ghbus.com.pe.png` porque el
+  logo sigue al host del enlace y ese subdominio no tiene ícono propio.
+
+### 01:10 · Decisión · Quiénes quedan fuera de las salidas en vivo y por qué
+
+- **Turismo Días y Amanecer Selva:** las dos webs son la misma app de kupos (mismo build de
+  Next.js). Sus llamadas a `api.kupos.pe` llevan un `XTOKEN` firmado por pedido y una API key
+  escrita en su JavaScript. Reproducirlos es recrear una cabecera firmada y usar una credencial
+  del JS, que está prohibido. Además, `amanecerselva.com.pe` deriva al navegador a
+  `www.movilbus.pe`, que ya estaba fuera. Turismo Días lo cubre el lector genérico del navegador.
+- **Tepsa:** `tepsa.com.pe` y `www.tepsa.com.pe` no responden desde acá (curl, 20 s de espera).
+- **GH Bus pasa el control:** `sales.ghbus.com.pe/robots.txt` no existe (404) y el de
+  `ghbus.com.pe` no prohíbe nada. Sus términos (`TYC_PASAJES.pdf`) regulan el viaje (DNI,
+  equipaje, postergaciones) sin cláusulas sobre acceso automatizado, extracción ni enlaces. Su
+  API es JSON sin firma, sin captcha ni tokens.
+
+### 01:07 · Prueba · Línea e ITTSA responden desde Lambda
+
+- **Comando:** `POST https://yasale.cuisangelo.com/api/trips` con Lima → Trujillo del 22-10, con
+  `0bbe059` en producción. Respuesta 200 con 8 eventos.
+- **Resultado:** un `leg_departures` (tramo 0, bus) con `cruzdelsur.com.pe` 16, `ittsabus.com` 11,
+  `linea.pe` 7 y `oltursa.pe` 7. Ejemplos: ITTSA 08:00 S/80 con 55 libres, enlazado a su página de
+  programación; Línea 09:00 S/80 con 54 libres.
+- **Lima → Cajamarca sin salidas:** no es un error de nombres. En vivo, `ListarDestino` de Línea
+  desde `LIMA` y desde `LIMA PLAZANORTE` solo da Chepén, Chiclayo, Chimbote, Huaraz, Pacasmayo y
+  Trujillo; Cajamarca solo sale hacia Chepén, Chiclayo, Pacasmayo y Trujillo. Su web no vende Lima
+  → Cajamarca.
+
+
 ## 2026-10-17
 
 ### 19:19 · Cambio · ITTSA se suma como vendedor de salidas en vivo
