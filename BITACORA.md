@@ -13,7 +13,8 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
   `www.ittsabus.com/online/`. La portada trae en su payload de Next.js la lista de rutas
   (`destinos`: terminal de origen y de destino con sus ids); `programacion/?origenId=…&destinoId=…&fechaIda=…`
   trae `itinerarioIda` con cada salida: hora de salida y llegada planificadas, clase, precio mínimo
-  y asientos libres por piso. Cada fila toma el precio más bajo de los dos pisos y suma sus libres.
+  y asientos libres por piso. Cada fila toma el precio más bajo de los dos pisos y suma sus libres;
+  un piso a S/0 (agotado o inexistente) no cuenta como precio, y sin ninguno el precio queda vacío.
 - **Terminales:** Lima (La Victoria, Plaza Norte) y Trujillo (Juan Pablo, Terrapuerto) tienen dos;
   se usa la primera ruta de su lista para cada par de ciudades (Lima → Trujillo sale de La
   Victoria a Juan Pablo).

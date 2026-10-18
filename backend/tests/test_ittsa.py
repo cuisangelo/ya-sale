@@ -104,6 +104,19 @@ async def test_trips_that_leave_another_day_are_dropped():
     assert len(departures) == 10
 
 
+@pytest.mark.parametrize(
+    ("floor_prices", "price"),
+    [(("0", "80"), Decimal("80")), (("0", "0"), None)],
+)
+async def test_a_floor_priced_at_zero_is_not_a_price(floor_prices, price):
+    first, second = floor_prices
+    unpriced = page("lima-trujillo-2026-10-22").replace(
+        '\\"precioMinimoPiso1\\":110,\\"precioMinimoPiso2\\":80,', f'\\"precioMinimoPiso1\\":{first},\\"precioMinimoPiso2\\":{second},', 1
+    )
+    departures = await source(FakeIttsa(pages={LIMA_TRUJILLO: unpriced})).departures("Lima", "Trujillo", DAY)
+    assert departures[0].price_pen == price
+
+
 async def test_a_page_without_its_data_raises_instead_of_finding_nothing():
     fake = FakeIttsa(pages={LIMA_TRUJILLO: "<html><body>Mantenimiento</body></html>"})
     with pytest.raises(IttsaPageChanged):

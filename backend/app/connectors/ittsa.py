@@ -80,11 +80,13 @@ class IttsaSource:
         return data
 
     def _departure(self, trip: _Trip, day_page: str) -> Departure:
+        # A floor priced at 0 is sold out or missing on that bus, not free.
+        prices = [p for p in (trip.precioMinimoPiso1, trip.precioMinimoPiso2) if p > 0]
         return Departure(
             operator=f"ITTSA · {trip.claseServicio}",
             departs_at=trip.feSalidaPlanificada.replace(tzinfo=LIMA),
             arrives_at=trip.feLlegadaPlanificada.replace(tzinfo=LIMA),
-            price_pen=min(trip.precioMinimoPiso1, trip.precioMinimoPiso2),
+            price_pen=min(prices, default=None),
             seats_available=trip.nuDisponibleP1 + trip.nuDisponibleP2,
             booking_url=day_page,
             seller=self.seller,
