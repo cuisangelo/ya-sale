@@ -9,7 +9,6 @@ hace la ruta lo confirmó.
 Track **Movilidad y Transporte** · equipo Ya Sale (Cuisangelo) · Hack the Andes 2026.
 
 - **Demo:** https://yasale.cuisangelo.com
-- **Respaldo directo:** https://ibiarhyx7y.us-east-1.awsapprunner.com
 - **Slides:** https://yasale.cuisangelo.com/pitch/
 - **Repo:** https://github.com/cuisangelo/ya-sale
 
@@ -83,11 +82,11 @@ las herramientas `plan_trip(origin, destination, date)`, `get_leg(leg_id)` y
 Navegador / ChatGPT / Claude
         │
         ▼
-Vercel ── web estática (Next.js) y slides; reenvía /api y /mcp a App Runner
+Vercel ── web estática (Next.js) y slides; reenvía /api y /mcp a AWS Lambda
         │
         ▼
-AWS App Runner ── FastAPI (API + SSE) + servidor MCP
-        │ conector VPC
+AWS Lambda ── FastAPI (API + SSE en streaming) + servidor MCP
+        │ subredes privadas de la VPC
         ├──► RDS Postgres 16 privado: tramos, versiones, confirmaciones, viajes
         └──► NAT gateway ──► Tavily · Exa · Claude
 ```
@@ -96,18 +95,19 @@ AWS App Runner ── FastAPI (API + SSE) + servidor MCP
   `connectors/`, `compare/`, `usage/`, `api/`). Las reglas de confianza son lógica pura en
   `backend/app/legs/domain.py`, sin I/O.
 - **Conectores:** Tavily y Exa como fuentes de búsqueda detrás de una misma interfaz, y un
-  extractor con Claude Opus 5.5 que solo devuelve salida estructurada validada con Pydantic.
+  extractor con Claude Sonnet 5.5 que solo devuelve salida estructurada validada con Pydantic.
 - **Persistencia por versiones:** un dato equivalente solo actualiza la fecha de consulta; un
   cambio material crea una versión nueva y la versión confirmada nunca se sobrescribe.
 - **Web:** Next.js exportada como sitio estático y servida por Vercel, que reenvía `/api` y
-  `/mcp` al backend en App Runner. Tiene identidad propia: carmín
+  `/mcp` al backend en AWS Lambda. Tiene identidad propia: carmín
   #C8102E como único acento, Inter y una foto del destino (Wikipedia/Commons, con crédito) en
   cada viaje y en el inicio.
-- **Tests:** 74 tests con `pytest` sobre el dominio, la persistencia, el extractor, el
-  planificador, la API y el MCP, más los tests y el build de la web (`vitest`).
+- **Tests:** 167 tests con `pytest` sobre el dominio, la persistencia, el extractor, el
+  planificador, los vendedores en vivo, la API y el MCP, más 55 tests y el build de la web
+  (`vitest`).
 - **CI/CD:** GitHub Actions corre los tests del backend (con Postgres) y de la web en cada push
   y PR. Cuando un push a `main` cambia el backend y el CI está en verde, se construye la imagen
-  y se despliega en App Runner; la web se despliega en Vercel desde su integración con GitHub.
+  y se despliega en AWS Lambda; la web se despliega en Vercel desde su integración con GitHub.
   GitHub no guarda claves de AWS: el deploy asume un rol por OIDC que solo puede subir esa
   imagen y actualizar ese servicio.
 
