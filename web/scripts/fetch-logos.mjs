@@ -13,6 +13,7 @@ const DOMAINS = [
   "oltursa.pe",
   "civa.com.pe",
   "movilbus.pe",
+  "ittsabus.com",
   "linea.pe",
   "perurail.com",
   "incarail.com",
