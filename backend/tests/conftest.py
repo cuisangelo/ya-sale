@@ -35,7 +35,7 @@ async def _session_pool(settings):
 @pytest.fixture
 async def pool(_session_pool):
     async with _session_pool.connection() as conn:
-        await conn.execute("TRUNCATE legs, leg_versions, confirmations, trips, places, rate_events, routes RESTART IDENTITY CASCADE")
+        await conn.execute("TRUNCATE legs, leg_versions, confirmations, trips, places, rate_events, routes, operator_recipes, reader_results, reader_requests RESTART IDENTITY CASCADE")
     return _session_pool
 
 

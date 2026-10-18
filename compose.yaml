@@ -33,5 +33,23 @@ services:
     ports:
       - "8080:8080"
 
+  # The browser reader worker: drains reader_requests with a headed Chromium on Xvfb.
+  reader:
+    build:
+      context: .
+      dockerfile: reader.Dockerfile
+    init: true
+    volumes:
+      - ./backend/app:/app/app
+    env_file:
+      - path: backend/.env
+        required: false
+    environment:
+      DATABASE_URL: postgresql://yasale:yasale@postgres:5432/yasale
+    depends_on:
+      postgres:
+        condition: service_healthy
+    profiles: ["reader"]
+
 volumes:
   uv-venv:

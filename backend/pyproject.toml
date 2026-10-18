@@ -19,6 +19,10 @@ dev = [
     "pytest>=8.3",
     "pytest-asyncio>=0.24",
 ]
+# Only the browser reader's container installs this; the API image stays free of a browser driver.
+reader = [
+    "playwright==1.63.0",
+]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
