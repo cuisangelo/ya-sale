@@ -1,5 +1,4 @@
-import type { Usage } from "./api";
-import { formatCount, type ModeTone } from "./format";
+import type { RecentTrip } from "./api";
 
 export interface TripDraft {
   origin: string;
@@ -7,15 +6,12 @@ export interface TripDraft {
   date: string;
 }
 
-export type TripHrefResult = { ok: true; href: string } | { ok: false; error: string };
-
-export type UsageState = { status: "loading" } | { status: "ready"; usage: Usage } | { status: "failed" };
-
-export interface UsageStat {
-  value: string;
-  label: string;
-  tone: ModeTone;
+export interface RecentSearch {
+  trip: RecentTrip;
+  href: string;
 }
+
+export type TripHrefResult = { ok: true; href: string } | { ok: false; error: string };
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -41,13 +37,13 @@ export function limaToday(now: Date): string {
   return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Lima" }).format(now);
 }
 
-export function usageStats(state: UsageState): UsageStat[] | null {
-  if (state.status !== "ready") return null;
-  const { usage } = state;
-  return [
-    { value: formatCount(usage.trips), label: "viajes armados", tone: "land" },
-    { value: formatCount(usage.destinations), label: "destinos distintos", tone: "air" },
-    { value: formatCount(usage.people), label: "personas distintas", tone: "water" },
-    { value: formatCount(usage.confirmed_legs), label: "tramos confirmados", tone: "rail" },
-  ];
+// Any visitor's input lands in the recent list, so one unusable search is logged and skipped
+// instead of blanking the home for everyone.
+export function buildRecentSearches(trips: RecentTrip[], today: string): RecentSearch[] {
+  return trips.flatMap((trip) => {
+    const result = tripHref({ origin: trip.origin, destination: trip.destination, date: today }, today);
+    if (result.ok) return [{ trip, href: result.href }];
+    console.error(`Skipping recent search ${trip.origin} → ${trip.destination}: ${result.error}`);
+    return [];
+  });
 }

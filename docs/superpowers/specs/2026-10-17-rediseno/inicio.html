@@ -1,0 +1,132 @@
+<h2>Identidad propia + inicio más limpio</h2>
+<p class="subtitle">Sin franja ni motivos textiles. Solo tres tamaños de letra en todo el sitio: 40 (título), 18 (destacado) y 14 (todo lo demás); la jerarquía se marca con peso y color, no con más tamaños. Una sola familia tipográfica. Elige una identidad (click) y abajo ves el inicio completo con la A aplicada.</p>
+
+<style>
+  .id-wrap { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  @media (max-width: 1100px) { .id-wrap { grid-template-columns: 1fr; } }
+  .mini { position: relative; height: 210px; border-radius: 14px; overflow: hidden; font-family: "Inter", system-ui, sans-serif; color: #fff; background: center/cover; }
+  .mini::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.4), rgba(0,0,0,.05) 40%, rgba(0,0,0,.7)); }
+  .mini > * { position: relative; z-index: 1; }
+  .mini .lg { position: absolute; top: 14px; left: 16px; display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 800; letter-spacing: -.02em; }
+  .mini .t { position: absolute; left: 16px; bottom: 58px; font-size: 18px; font-weight: 800; }
+  .mini .bar { position: absolute; left: 12px; right: 12px; bottom: 10px; background: #fff; color: #121212; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; padding: 6px 6px 6px 14px; font-size: 14px; font-weight: 600; }
+  .mini .bar button { border: 0; color: #fff; font-weight: 800; font-size: 14px; border-radius: 9px; padding: 8px 14px; }
+  .sw { display: flex; gap: 6px; margin-top: 8px; }
+  .sw i { width: 22px; height: 22px; border-radius: 6px; display: block; border: 1px solid rgba(0,0,0,.08); }
+
+  .ys2 { --ink: #111114; --mute: #6b6b76; --line: #ececf0; --soft: #f6f6f8; --acc: #C8102E;
+         font-family: "Inter", system-ui, sans-serif; font-size: 14px; line-height: 1.45; color: var(--ink); background: #fff; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); }
+  .ys2 * { box-sizing: border-box; }
+  .ys2 .hero { position: relative; height: 420px; background: center 60%/cover url("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Arquitectura_de_Kuelap.jpg/960px-Arquitectura_de_Kuelap.jpg"); animation: kb2 16s ease-out both; }
+  @keyframes kb2 { from { background-size: 115%; } to { background-size: 100%; } }
+  .ys2 .hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.45) 0%, rgba(0,0,0,.05) 35%, rgba(0,0,0,.72) 100%); }
+  .ys2 .hero > * { position: relative; z-index: 1; }
+  .ys2 nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 32px; color: #fff; }
+  .ys2 .brand { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 800; letter-spacing: -.02em; }
+  .ys2 nav a { color: #fff; opacity: .9; margin-left: 22px; text-decoration: none; }
+  .ys2 .pill { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,.16); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,.28); border-radius: 999px; padding: 6px 12px; color: #fff; font-weight: 600; }
+  .ys2 .pill .dot { width: 8px; height: 8px; border-radius: 50%; background: #3ddc84; }
+  .ys2 .claim { position: absolute; left: 32px; bottom: 84px; color: #fff; max-width: 620px; }
+  .ys2 .claim h1 { margin: 14px 0 0; font-size: 40px; line-height: 1.05; letter-spacing: -.03em; font-weight: 800; }
+  .ys2 .claim p { margin: 10px 0 0; opacity: .9; }
+  .ys2 .credit { position: absolute; right: 16px; bottom: 54px; color: #fff; opacity: .7; }
+  .ys2 .search { position: relative; z-index: 2; margin: -40px 32px 0; background: #fff; border-radius: 16px; box-shadow: 0 16px 44px rgba(17,17,20,.16); padding: 8px; display: grid; grid-template-columns: 1fr 36px 1fr 180px auto; gap: 4px; }
+  .ys2 .f { padding: 8px 14px; border-radius: 10px; }
+  .ys2 .f small { display: block; font-size: 14px; color: var(--mute); }
+  .ys2 .f div { font-size: 18px; font-weight: 700; }
+  .ys2 .swap { display: grid; place-items: center; color: var(--mute); font-size: 18px; }
+  .ys2 .go { border: 0; background: var(--acc); color: #fff; font-weight: 700; font-size: 18px; border-radius: 12px; padding: 0 26px; }
+  .ys2 .head { padding: 36px 32px 0; display: flex; justify-content: space-between; align-items: baseline; }
+  .ys2 .head h3 { margin: 0; font-size: 18px; font-weight: 700; }
+  .ys2 .head span { color: var(--mute); }
+  .ys2 .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; padding: 16px 32px 32px; }
+  .ys2 .rc { border-radius: 14px; overflow: hidden; background: #fff; border: 1px solid var(--line); transition: transform .2s, box-shadow .2s; }
+  .ys2 .rc:hover { transform: translateY(-3px); box-shadow: 0 12px 26px rgba(17,17,20,.1); }
+  .ys2 .rc .ph { height: 128px; background: center/cover; }
+  .ys2 .rc .bd { padding: 12px 14px 14px; }
+  .ys2 .rc b { font-weight: 700; }
+  .ys2 .rc .meta { color: var(--mute); margin-top: 2px; }
+</style>
+
+<div class="cards id-wrap">
+  <div class="card" data-choice="id-a-naranja" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mini" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Arquitectura_de_Kuelap.jpg/960px-Arquitectura_de_Kuelap.jpg')">
+        <div class="lg"><svg width="26" height="26" viewBox="0 0 26 26"><rect width="26" height="26" rx="8" fill="#C8102E"/><path d="M7 17c3-8 9-8 12-3" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round"/><circle cx="19" cy="14" r="2.2" fill="#fff"/></svg>ya sale</div>
+        <div class="t">Lima → Kuélap</div>
+        <div class="bar">¿A dónde vas?<button style="background:#C8102E">Armar viaje</button></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A · Naranja señal</h3>
+      <p>Naranja intenso (#FF4D2E) sobre blanco y tinta casi negra. Logo: una ruta curva que llega a un punto. Cálido, viajero, se ve en cualquier foto. Ref.: Strava, Glovo.</p>
+      <div class="sw"><i style="background:#C8102E"></i><i style="background:#111114"></i><i style="background:#f6f6f8"></i></div>
+    </div>
+  </div>
+
+  <div class="card" data-choice="id-b-azul" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mini" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Islas_flotantes_de_los_Uros%2C_Lago_Titicaca%2C_Per%C3%BA%2C_2015-08-01%2C_DD_25.JPG/960px-Islas_flotantes_de_los_Uros%2C_Lago_Titicaca%2C_Per%C3%BA%2C_2015-08-01%2C_DD_25.JPG')">
+        <div class="lg"><svg width="26" height="26" viewBox="0 0 26 26"><circle cx="13" cy="13" r="13" fill="#3b5bff"/><path d="M8 13h10m-4-4 4 4-4 4" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Ya Sale</div>
+        <div class="t">Puno → Uros</div>
+        <div class="bar">¿A dónde vas?<button style="background:#3b5bff">Armar viaje</button></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B · Azul eléctrico</h3>
+      <p>Azul eléctrico (#3B5BFF) como único acento. Logo: una flecha de salida en círculo. Se siente producto tech y confiable. Ref.: Revolut, Linear, Booking.</p>
+      <div class="sw"><i style="background:#3b5bff"></i><i style="background:#0f1222"></i><i style="background:#f5f6fa"></i></div>
+    </div>
+  </div>
+
+  <div class="card" data-choice="id-c-verde" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mini" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Oasis_de_Huacachina%2C_Ica%2C_Per%C3%BA%2C_2015-07-29%2C_DD_18.JPG/960px-Oasis_de_Huacachina%2C_Ica%2C_Per%C3%BA%2C_2015-07-29%2C_DD_18.JPG')">
+        <div class="lg"><svg width="26" height="26" viewBox="0 0 26 26"><rect width="26" height="26" rx="13" fill="#c6f432"/><circle cx="9" cy="13" r="3" fill="#111"/><circle cx="17" cy="13" r="3" fill="none" stroke="#111" stroke-width="2.4"/></svg>yasale</div>
+        <div class="t">Ica → Huacachina</div>
+        <div class="bar">¿A dónde vas?<button style="background:#111;color:#c6f432">Armar viaje</button></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C · Lima ácido</h3>
+      <p>Negro con verde lima (#C6F432) de acento. Logo: dos puntos, origen y destino. Joven y atrevido, muy "startup". Ref.: Cash App, Wise.</p>
+      <div class="sw"><i style="background:#c6f432"></i><i style="background:#111111"></i><i style="background:#f4f4f2"></i></div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top:28px">
+  <div class="mockup">
+    <div class="mockup-header">Inicio completo · identidad A aplicada · 3 tamaños de letra</div>
+    <div class="mockup-body" style="padding:0">
+      <div class="ys2">
+        <div class="hero">
+          <nav>
+            <span class="brand"><svg width="28" height="28" viewBox="0 0 26 26"><rect width="26" height="26" rx="8" fill="#C8102E"/><path d="M7 17c3-8 9-8 12-3" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round"/><circle cx="19" cy="14" r="2.2" fill="#fff"/></svg>ya sale</span>
+            <div><a>Comparar</a><a>Uso real</a><a>Para agentes</a></div>
+          </nav>
+          <div class="claim">
+            <span class="pill"><span class="dot"></span>Última búsqueda: Lima → Kuélap, hace 3 min</span>
+            <h1>¿De dónde a dónde vas?</h1>
+            <p>Cualquier punto del Perú, tramo por tramo, con precio, fuente y fecha.</p>
+          </div>
+          <div class="credit">Foto: Kuélap · Wikimedia Commons · CC BY-SA</div>
+        </div>
+        <div class="search">
+          <div class="f"><small>Desde</small><div>Lima</div></div>
+          <div class="swap">⇄</div>
+          <div class="f"><small>Hasta</small><div style="color:#a0a0aa">Kuélap, Máncora, Uros…</div></div>
+          <div class="f"><small>Cuándo</small><div>Sáb 18 oct</div></div>
+          <button class="go">Armar viaje</button>
+        </div>
+        <div class="head"><h3>Lo último que la gente buscó</h3><span>Búsquedas reales · toca una para verla</span></div>
+        <div class="grid">
+          <div class="rc"><div class="ph" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Arquitectura_de_Kuelap.jpg/960px-Arquitectura_de_Kuelap.jpg')"></div><div class="bd"><b>Lima → Kuélap</b><div class="meta">hace 3 min · avión, colectivo</div></div></div>
+          <div class="rc"><div class="ph" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Oasis_de_Huacachina%2C_Ica%2C_Per%C3%BA%2C_2015-07-29%2C_DD_18.JPG/960px-Oasis_de_Huacachina%2C_Ica%2C_Per%C3%BA%2C_2015-07-29%2C_DD_18.JPG')"></div><div class="bd"><b>Ica → Huacachina</b><div class="meta">hace 9 min · mototaxi</div></div></div>
+          <div class="rc"><div class="ph" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Islas_flotantes_de_los_Uros%2C_Lago_Titicaca%2C_Per%C3%BA%2C_2015-08-01%2C_DD_25.JPG/960px-Islas_flotantes_de_los_Uros%2C_Lago_Titicaca%2C_Per%C3%BA%2C_2015-08-01%2C_DD_25.JPG')"></div><div class="bd"><b>Puno → Uros</b><div class="meta">hace 31 min · lancha</div></div></div>
+          <div class="rc"><div class="ph" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Machu_Picchu%2C_Peru_-_Laslovarga_%28262%29.jpg/960px-Machu_Picchu%2C_Peru_-_Laslovarga_%28262%29.jpg')"></div><div class="bd"><b>Cusco → Aguas Calientes</b><div class="meta">hace 1 h · colectivo, tren</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

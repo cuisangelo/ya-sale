@@ -1,4 +1,4 @@
-import { type ReactNode, useState } from "react";
+import { type CSSProperties, type ReactNode, useState } from "react";
 import type { Departure, Hop, LegSlot, Mode, Option, Version } from "../lib/api";
 import {
   datedLink,
@@ -12,7 +12,6 @@ import {
   logoSrc,
   mapsPlaceUrl,
   modeLabel,
-  modeTone,
   optionLink,
   priceFloor,
   purchaseUrl,
@@ -44,13 +43,15 @@ export function HopCard({ index, hop, slots, selected, departures, date, active,
 
   return (
     <article
-      className={`hop-card bar-${modeTone(selected)}${active ? " is-active" : ""}${pending ? " is-pending" : ""}`}
+      className={`hop-card${active ? " is-active" : ""}${pending ? " is-pending" : ""}`}
+      // The index staggers each card's entrance in CSS.
+      style={{ "--i": index } as CSSProperties}
       onPointerEnter={onFocus}
       onFocus={onFocus}
     >
       <header className="hop-head">
         <span className="hop-step" aria-hidden="true">
-          <span>{index + 1}</span>
+          {index + 1}
         </span>
         <h2 className="hop-route">
           {hop.origin} → {hop.destination}
@@ -69,25 +70,23 @@ export function HopCard({ index, hop, slots, selected, departures, date, active,
                 type="button"
                 role="tab"
                 aria-selected={mode === selected}
-                className={`mode-tab tab-${modeTone(mode)}`}
+                className="mode-tab"
                 onClick={() => onSelect(mode)}
               >
                 <ModeIcon mode={mode} />
-                <span className="mode-tab-text">
-                  <strong>{modeLabel(mode)}</strong>
-                  <span className={floor || tab?.error ? undefined : "tab-searching"}>
-                    {floor ?? (tab?.error ? "sin datos" : "buscando…")}
-                  </span>
-                </span>
+                {modeLabel(mode)}
+                <small className={floor || tab?.error ? undefined : "tab-searching"}>
+                  {floor ?? (tab?.error ? "sin datos" : "buscando…")}
+                </small>
               </button>
             );
           })}
         </div>
       ) : (
-        <div className="mode-single">
+        <p className="mode-single">
           <ModeIcon mode={selected} />
-          <strong>{modeLabel(selected)}</strong>
-        </div>
+          {modeLabel(selected)}
+        </p>
       )}
 
       {slot && summary ? (
@@ -165,7 +164,6 @@ function LegDetails({ slot, version, trip, now, children }: LegDetailsProps) {
             target="_blank"
             rel="noreferrer"
           >
-            <img src="/textil/motivo-chakana.svg" alt="" width={14} height={14} />
             Ver en el mapa
           </a>
         </p>
@@ -194,24 +192,24 @@ function DepartureList({ departures, date }: { departures: Departure[]; date: st
       <h3>{heading}</h3>
       <ul>
         {departures.map((departure, position) => {
-          const seats = seatsLabel(departure.seats_available);
+          const facts = [
+            departure.arrives_at ? `llega ${departureClock(departure.arrives_at)}` : null,
+            seatsLabel(departure.seats_available),
+            sourceLabel(departure.booking_url),
+          ].filter(Boolean);
           return (
             // A seller without per-departure pages links every departure of the day to the same list.
             <li key={`${departure.booking_url}-${position}`}>
-              <a className="option-row" href={departure.booking_url} target="_blank" rel="noreferrer">
+              <a className="dep-row" href={departure.booking_url} target="_blank" rel="noreferrer">
                 <OptionLogo operator={departure.operator} link={departure.booking_url} />
-                <div className="option-what">
+                <span className="dep-what">
                   <strong>
-                    {departureClock(departure.departs_at)}
-                    {departure.arrives_at ? ` → ${departureClock(departure.arrives_at)}` : null}
+                    {departure.operator} · {departureClock(departure.departs_at)}
                   </strong>
-                  <span>{departure.operator}</span>
-                </div>
-                <div className="option-figures">
-                  <strong>{formatPrice(departure.price_pen, null) ?? "sin precio"}</strong>
-                  {seats ? <span>{seats}</span> : null}
-                </div>
-                <span className="option-source mono">{sourceLabel(departure.booking_url)}</span>
+                  <small>{facts.join(" · ")}</small>
+                </span>
+                <span className="dep-price">{formatPrice(departure.price_pen, null) ?? "sin precio"}</span>
+                <span className="dep-buy">Comprar</span>
               </a>
             </li>
           );

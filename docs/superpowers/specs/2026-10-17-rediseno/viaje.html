@@ -1,0 +1,108 @@
+<h2>Vista de viaje · carmín, foto del destino, 3 tamaños</h2>
+<p class="subtitle">Lima → Sauce. Arriba la foto de Sauce (cambia por destino). La tarjeta flotante responde lo que el viajero quiere saber primero: cuánto, cuánto demora y desde dónde sale. Cada tramo muestra salidas concretas con empresa, hora, precio y link para comprar. El mapa queda fijo a la derecha. Abajo, el estado de carga en el mismo estilo.</p>
+
+<style>
+  .tv { --ink:#111114; --mute:#6b6b76; --line:#ececf0; --soft:#f6f6f8; --acc:#C8102E; --acc-soft:#fbe7ea;
+        font-family:"Inter",system-ui,sans-serif; font-size:14px; line-height:1.45; color:var(--ink); background:#fff; border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+  .tv * { box-sizing:border-box; }
+  .tv .hero { position:relative; height:260px; color:#fff; background:center 55%/cover url("https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Plaza_de_Armas_de_Sauce%2C_San_Mart%C3%ADn13.jpg/960px-Plaza_de_Armas_de_Sauce%2C_San_Mart%C3%ADn13.jpg"); animation:kb3 16s ease-out both; }
+  @keyframes kb3 { from { background-size:115%; } to { background-size:100%; } }
+  .tv .hero::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,.45), rgba(0,0,0,.05) 40%, rgba(0,0,0,.75)); }
+  .tv .hero > * { position:relative; z-index:1; }
+  .tv nav { display:flex; justify-content:space-between; align-items:center; padding:18px 28px; }
+  .tv .brand { display:flex; gap:8px; align-items:center; font-size:18px; font-weight:800; letter-spacing:-.02em; }
+  .tv .edit { background:rgba(255,255,255,.16); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,.3); border-radius:999px; padding:6px 12px; font-weight:600; }
+  .tv .title { position:absolute; left:28px; bottom:56px; }
+  .tv .title h1 { margin:0; font-size:40px; letter-spacing:-.03em; line-height:1.05; font-weight:800; }
+  .tv .title span { opacity:.9; }
+  .tv .credit { position:absolute; right:16px; bottom:50px; opacity:.7; }
+  .tv .sum { position:relative; z-index:2; margin:-34px 28px 0; background:#fff; border-radius:16px; box-shadow:0 16px 44px rgba(17,17,20,.16); padding:14px 18px; display:grid; grid-template-columns:repeat(4,1fr) auto; gap:12px; align-items:center; }
+  .tv .sum small { display:block; color:var(--mute); }
+  .tv .sum strong { font-size:18px; font-weight:800; }
+  .tv .sum .acc { color:var(--acc); }
+  .tv .live { display:flex; flex-direction:column; gap:6px; min-width:170px; }
+  .tv .live b { display:flex; gap:8px; align-items:center; color:var(--acc); font-weight:700; }
+  .tv .live b i { width:8px; height:8px; border-radius:50%; background:var(--acc); animation:pl 1.4s infinite; }
+  @keyframes pl { 50% { opacity:.3; } }
+  .tv .track { height:6px; border-radius:3px; background:var(--soft); overflow:hidden; }
+  .tv .track span { display:block; height:100%; width:66%; background:var(--acc); border-radius:3px; }
+  .tv .body { display:grid; grid-template-columns:minmax(0,1.2fr) minmax(0,1fr); gap:20px; padding:24px 28px 28px; }
+  .tv .leg { border:1px solid var(--line); border-radius:14px; padding:16px; display:grid; gap:12px; animation:up .5s ease-out both; }
+  .tv .leg + .join { margin:10px 0 10px 18px; padding-left:14px; border-left:2px dashed var(--line); color:var(--mute); }
+  @keyframes up { from { opacity:0; transform:translateY(10px); } }
+  .tv .lh { display:flex; align-items:center; gap:10px; }
+  .tv .n { width:26px; height:26px; border-radius:8px; background:var(--ink); color:#fff; display:grid; place-items:center; font-weight:700; }
+  .tv .lh h3 { margin:0; font-size:18px; font-weight:700; }
+  .tv .lh .ok { margin-left:auto; color:var(--mute); }
+  .tv .tabs { display:flex; gap:6px; }
+  .tv .tab { border:1px solid var(--line); border-radius:999px; padding:6px 12px; font-weight:600; background:#fff; }
+  .tv .tab.on { background:var(--ink); color:#fff; border-color:var(--ink); }
+  .tv .tab small { color:inherit; opacity:.7; margin-left:6px; font-weight:400; }
+  .tv .dep { display:grid; grid-template-columns:32px 1fr auto auto; gap:12px; align-items:center; padding:10px 12px; border-radius:12px; background:var(--soft); }
+  .tv .dep + .dep { margin-top:6px; }
+  .tv .lo { width:32px; height:32px; border-radius:8px; background:#fff; display:grid; place-items:center; font-weight:800; border:1px solid var(--line); }
+  .tv .dep small { display:block; color:var(--mute); }
+  .tv .dep .p { font-size:18px; font-weight:800; }
+  .tv .buy { color:#fff; background:var(--acc); border-radius:9px; padding:7px 12px; font-weight:700; }
+  .tv .meta { display:flex; justify-content:space-between; color:var(--mute); }
+  .tv .meta a { color:var(--acc); font-weight:600; text-decoration:none; }
+  .tv .map { position:relative; border-radius:14px; overflow:hidden; border:1px solid var(--line); min-height:520px; background:#eef0f3; }
+  .tv .map svg { position:absolute; inset:0; width:100%; height:100%; }
+  .tv .map .lbl { position:absolute; background:#fff; border-radius:8px; padding:3px 8px; font-weight:700; box-shadow:0 2px 6px rgba(0,0,0,.12); }
+  .tv .sk { height:14px; border-radius:6px; background:linear-gradient(90deg,#f1f1f4 25%,#fafafb 50%,#f1f1f4 75%) 0 0/200% 100%; animation:sh 1.4s infinite; }
+  @keyframes sh { from { background-position-x:100%; } to { background-position-x:-100%; } }
+  .tv .loading { display:flex; gap:10px; align-items:center; color:var(--ink); font-weight:600; }
+  .tv .spin { width:16px; height:16px; border-radius:50%; border:2.5px solid var(--acc-soft); border-top-color:var(--acc); animation:rot .8s linear infinite; }
+  @keyframes rot { to { transform:rotate(360deg); } }
+</style>
+
+<div class="mockup">
+  <div class="mockup-header">Vista previa · /viaje/?o=Lima&d=Sauce</div>
+  <div class="mockup-body" style="padding:0">
+    <div class="tv">
+      <div class="hero">
+        <nav>
+          <span class="brand"><svg width="28" height="28" viewBox="0 0 26 26"><rect width="26" height="26" rx="8" fill="#C8102E"/><path d="M7 17c3-8 9-8 12-3" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round"/><circle cx="19" cy="14" r="2.2" fill="#fff"/></svg>ya sale</span>
+          <span class="edit">Lima → Sauce · sáb 18 oct · Cambiar</span>
+        </nav>
+        <div class="title"><span>Tu viaje a</span><h1>Sauce, San Martín</h1></div>
+        <div class="credit">Foto: Plaza de Armas de Sauce · Wikimedia Commons · CC BY-SA</div>
+      </div>
+
+      <div class="sum">
+        <div><small>Desde</small><strong class="acc">S/158</strong></div>
+        <div><small>En camino</small><strong>27 h 45</strong></div>
+        <div><small>Tramos</small><strong>2 · 1 transbordo</strong></div>
+        <div><small>Primera salida</small><strong>12:00 · Plaza Norte</strong></div>
+        <div class="live"><b><i></i>Buscando en vivo · 2 de 3</b><div class="track"><span></span></div></div>
+      </div>
+
+      <div class="body">
+        <div>
+          <div class="leg">
+            <div class="lh"><span class="n">1</span><h3>Lima → Tarapoto</h3><span class="ok">Extraído hace 2 min</span></div>
+            <div class="tabs"><span class="tab on">Bus<small>desde S/143</small></span><span class="tab">Avión<small>desde S/189</small></span></div>
+            <div>
+              <div class="dep"><span class="lo" style="color:#C8102E">C</span><div><b>Civa · 12:00</b><small>Terminal Plaza Norte · 26 h</small></div><span class="p">S/143</span><span class="buy">Comprar</span></div>
+              <div class="dep"><span class="lo" style="color:#1a73e8">M</span><div><b>Movil Bus · 15:30</b><small>Javier Prado · 25 h</small></div><span class="p">S/154</span><span class="buy">Comprar</span></div>
+            </div>
+            <div class="meta"><span>Según checkmybus.pe y civa.com.pe</span><a>Ver 4 opciones más</a></div>
+          </div>
+          <div class="join">Transbordo en Tarapoto · paradero de autos a Sauce</div>
+          <div class="leg" style="animation-delay:.15s">
+            <div class="lh"><span class="n">2</span><h3>Tarapoto → Sauce</h3><span class="ok">Buscando…</span></div>
+            <div class="loading"><span class="spin"></span>Anotando precios, horarios y paraderos…<span style="margin-left:auto;color:#6b6b76">7 s</span></div>
+            <div class="sk" style="width:70%"></div><div class="sk" style="width:45%"></div>
+          </div>
+        </div>
+
+        <div class="map">
+          <svg viewBox="0 0 400 520" preserveAspectRatio="none"><path d="M90 470 C 120 400, 110 360, 160 320 S 230 230, 250 170 S 300 90, 300 80" stroke="#C8102E" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M300 80 L 320 110" stroke="#C8102E" stroke-width="4" stroke-dasharray="2 8" stroke-linecap="round"/><circle cx="90" cy="470" r="7" fill="#C8102E" stroke="#fff" stroke-width="3"/><circle cx="300" cy="80" r="7" fill="#111114" stroke="#fff" stroke-width="3"/><circle cx="320" cy="110" r="7" fill="#111114" stroke="#fff" stroke-width="3"/></svg>
+          <span class="lbl" style="left:22%;top:86%">Lima</span>
+          <span class="lbl" style="left:58%;top:10%">Tarapoto</span>
+          <span class="lbl" style="left:70%;top:22%">Sauce</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

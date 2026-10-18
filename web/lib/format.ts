@@ -1,4 +1,4 @@
-import type { LegSlot, LegSummary, Mode, Option, Version } from "./api";
+import { departuresFor, type LegSlot, type LegSummary, type Mode, type Option, type TripState, type Version } from "./api";
 
 const MODE_LABELS: Record<Mode, string> = {
   bus: "Bus",
@@ -17,19 +17,19 @@ const MODE_LABELS: Record<Mode, string> = {
 };
 
 const MODE_ICONS: Record<string, string> = {
-  bus: "/textil/modo-bus.svg",
-  bus_urbano: "/textil/modo-bus.svg",
-  custer: "/textil/modo-bus.svg",
-  avion: "/textil/modo-avion.svg",
-  tren: "/textil/modo-tren.svg",
-  metro: "/textil/modo-tren.svg",
-  colectivo: "/textil/modo-colectivo.svg",
-  combi: "/textil/modo-combi.svg",
-  mototaxi: "/textil/modo-mototaxi.svg",
-  moto: "/textil/modo-mototaxi.svg",
-  lancha: "/textil/modo-lancha.svg",
-  bote: "/textil/modo-lancha.svg",
-  balsa: "/textil/modo-lancha.svg",
+  bus: "/modes/bus.svg",
+  bus_urbano: "/modes/bus.svg",
+  custer: "/modes/bus.svg",
+  avion: "/modes/avion.svg",
+  tren: "/modes/tren.svg",
+  metro: "/modes/tren.svg",
+  colectivo: "/modes/colectivo.svg",
+  combi: "/modes/combi.svg",
+  mototaxi: "/modes/mototaxi.svg",
+  moto: "/modes/mototaxi.svg",
+  lancha: "/modes/lancha.svg",
+  bote: "/modes/lancha.svg",
+  balsa: "/modes/lancha.svg",
 };
 
 export type ModeTone = "land" | "air" | "rail" | "water";
@@ -69,6 +69,15 @@ export function departureClock(iso: string): string {
   }).format(Date.parse(iso));
 }
 
+// Only hop 0 says when the trip leaves; a later hop's bus would pass for the trip's departure.
+export function firstDeparture(state: TripState, firstMode: Mode | undefined): { time: string; operator: string } | null {
+  if (!firstMode) return null;
+  const departures = departuresFor(state, 0, firstMode);
+  if (departures.length === 0) return null;
+  const earliest = departures.reduce((best, next) => (Date.parse(next.departs_at) < Date.parse(best.departs_at) ? next : best));
+  return { time: departureClock(earliest.departs_at), operator: earliest.operator };
+}
+
 // The trip date is a calendar day with no zone; read at noon UTC it is the same day everywhere.
 export function departuresHeading(day: string): string {
   const label = new Intl.DateTimeFormat("es-PE", {
@@ -78,6 +87,17 @@ export function departuresHeading(day: string): string {
     timeZone: "UTC",
   }).format(Date.parse(`${day}T12:00:00Z`));
   return `Salidas del ${label.replace(",", "")}`;
+}
+
+// Shape alone lets `2026-13-01` through, and formatting it throws.
+export function isTripDay(value: string): boolean {
+  return /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(Date.parse(`${value}T12:00:00Z`));
+}
+
+export function tripDayLabel(day: string): string {
+  return new Intl.DateTimeFormat("es-PE", { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" })
+    .format(Date.parse(`${day}T12:00:00Z`))
+    .replace(/[,.]/g, "");
 }
 
 export function seatsLabel(seats: number | null): string | null {

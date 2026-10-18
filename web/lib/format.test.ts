@@ -1,10 +1,12 @@
 import { expect, test } from "vitest";
-import type { LegSlot, Option, Version } from "./api";
+import { initialTripState, reduceTrip, type Departure, type LegSlot, type Mode, type Option, type TripState, type Version } from "./api";
 import {
   datedLink,
   departureClock,
   departuresHeading,
+  firstDeparture,
   initials,
+  isTripDay,
   itineraryTotals,
   logoDomain,
   logoSrc,
@@ -12,6 +14,7 @@ import {
   optionLink,
   priceFloor,
   seatsLabel,
+  tripDayLabel,
 } from "./format";
 
 function version(prices: [string | null, string | null], duration: number | null = 60): Version {
@@ -108,6 +111,10 @@ test("the departures heading names the trip day", () => {
   expect(departuresHeading("2026-10-25")).toBe("Salidas del domingo 25 de octubre");
 });
 
+test("the trip pill names the day in short form", () => {
+  expect(tripDayLabel("2026-10-20")).toBe("mar 20 oct");
+});
+
 test("seats read in singular and plural, and unknown seats say nothing", () => {
   expect(seatsLabel(1)).toBe("1 asiento libre");
   expect(seatsLabel(12)).toBe("12 asientos libres");
@@ -133,4 +140,51 @@ test("links that cannot carry the trip stay as they are", () => {
   expect(datedLink("https://www.skyairline.com/peru", trip)).toBe("https://www.skyairline.com/peru");
   expect(datedLink("https://www.movilbus.pe/", trip)).toBe("https://www.movilbus.pe/");
   expect(datedLink(null, trip)).toBeNull();
+});
+
+function departure(operator: string, departs_at: string): Departure {
+  return {
+    operator,
+    departs_at,
+    arrives_at: null,
+    price_pen: "143",
+    seats_available: null,
+    booking_url: "https://example.test",
+    seller: "example",
+  };
+}
+
+function withDepartures(index: number, mode: Mode, departures: Departure[]): TripState {
+  return reduceTrip(initialTripState, { event: "leg_departures", data: { index, mode, departures } });
+}
+
+test("firstDeparture picks the earliest of hop 0", () => {
+  const state = withDepartures(0, "bus", [
+    departure("Cruz del Sur", "2026-10-20T21:00:00-05:00"),
+    departure("Civa", "2026-10-20T12:00:00-05:00"),
+  ]);
+  expect(firstDeparture(state, "bus")).toEqual({ time: "12:00", operator: "Civa" });
+});
+
+test("firstDeparture reads a midnight bus as 00:xx, never 24:xx", () => {
+  const state = withDepartures(0, "bus", [departure("Civa", "2026-10-21T00:05:00-05:00")]);
+  expect(firstDeparture(state, "bus")).toEqual({ time: "00:05", operator: "Civa" });
+});
+
+test("firstDeparture ignores later hops", () => {
+  const state = withDepartures(1, "bus", [departure("Civa", "2026-10-20T06:00:00-05:00")]);
+  expect(firstDeparture(state, "bus")).toBeNull();
+});
+
+test("firstDeparture returns null for an unknown mode", () => {
+  const state = withDepartures(0, "bus", [departure("Civa", "2026-10-20T12:00:00-05:00")]);
+  expect(firstDeparture(state, "avion")).toBeNull();
+  expect(firstDeparture(state, undefined)).toBeNull();
+});
+
+test("isTripDay rejects shapes and impossible months that would make tripDayLabel throw", () => {
+  expect(isTripDay("2026-10-20")).toBe(true);
+  expect(isTripDay("2026-13-01")).toBe(false);
+  expect(isTripDay("20-10-2026")).toBe(false);
+  expect(isTripDay("")).toBe(false);
 });

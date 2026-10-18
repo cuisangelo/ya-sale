@@ -1,6 +1,6 @@
-import { expect, test } from "vitest";
-import type { Usage } from "./api";
-import { limaToday, tripHref, usageStats } from "./landing";
+import { expect, test, vi } from "vitest";
+import type { RecentTrip } from "./api";
+import { buildRecentSearches, limaToday, tripHref } from "./landing";
 
 const TODAY = "2026-10-17";
 
@@ -31,18 +31,20 @@ test("limaToday uses the Lima calendar day, not UTC", () => {
   expect(limaToday(new Date("2026-10-18T05:30:00Z"))).toBe("2026-10-18");
 });
 
-const usage: Usage = { trips: 204, destinations: 87, people: 0, confirmed_legs: 12, recent: [] };
+function recentTrip(origin: string, destination: string): RecentTrip {
+  return { origin, destination, place: destination, at: "2026-10-17T14:00:00Z", lat: -6.42, lng: -77.92 };
+}
 
-test("usageStats shows nothing until real numbers arrive", () => {
-  expect(usageStats({ status: "loading" })).toBeNull();
-  expect(usageStats({ status: "failed" })).toBeNull();
-});
-
-test("usageStats shows the four API numbers as they are, zeros included", () => {
-  expect(usageStats({ status: "ready", usage })).toEqual([
-    { value: "204", label: "viajes armados", tone: "land" },
-    { value: "87", label: "destinos distintos", tone: "air" },
-    { value: "0", label: "personas distintas", tone: "water" },
-    { value: "12", label: "tramos confirmados", tone: "rail" },
+test("buildRecentSearches skips and logs a search that is not a valid trip, keeping the rest", () => {
+  const log = vi.spyOn(console, "error").mockImplementation(() => {});
+  const searches = buildRecentSearches(
+    [recentTrip("Lima", "lima"), recentTrip("Lima", "Kuélap"), recentTrip("Ica", "Huacachina")],
+    TODAY,
+  );
+  expect(searches).toEqual([
+    { trip: recentTrip("Lima", "Kuélap"), href: "/viaje/?o=Lima&d=Ku%C3%A9lap&f=2026-10-17" },
+    { trip: recentTrip("Ica", "Huacachina"), href: "/viaje/?o=Ica&d=Huacachina&f=2026-10-17" },
   ]);
+  expect(log).toHaveBeenCalledTimes(1);
+  log.mockRestore();
 });

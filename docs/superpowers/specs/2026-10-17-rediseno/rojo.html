@@ -1,0 +1,87 @@
+<h2>¿Qué rojo es Ya Sale?</h2>
+<p class="subtitle">Un rojo que guiña al Perú sin folclore. Los tres pasan contraste AA con texto blanco a 14 px. Abajo, los rojos de marcas con las que no queremos confundirnos.</p>
+
+<style>
+  .rj { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  @media (max-width: 1100px) { .rj { grid-template-columns: 1fr; } }
+  .rm { font-family: "Inter", system-ui, sans-serif; font-size: 14px; border-radius: 14px; overflow: hidden; border: 1px solid #ececf0; background: #fff; color: #111114; }
+  .rm .hero { position: relative; height: 170px; color: #fff; background: center/cover; }
+  .rm .hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.4), rgba(0,0,0,.05) 40%, rgba(0,0,0,.7)); }
+  .rm .hero > * { position: relative; z-index: 1; }
+  .rm .lg { position: absolute; top: 14px; left: 16px; display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 800; letter-spacing: -.02em; }
+  .rm .t { position: absolute; left: 16px; bottom: 16px; font-size: 18px; font-weight: 800; }
+  .rm .bar { margin: -14px 12px 0; position: relative; z-index: 2; background: #fff; border-radius: 12px; box-shadow: 0 10px 28px rgba(0,0,0,.14); display: flex; align-items: center; justify-content: space-between; padding: 6px 6px 6px 14px; font-weight: 600; }
+  .rm .bar button { border: 0; color: #fff; font-weight: 700; font-size: 14px; border-radius: 9px; padding: 9px 14px; }
+  .rm .leg { margin: 12px; padding: 12px; border-radius: 12px; background: #f6f6f8; display: flex; justify-content: space-between; align-items: center; }
+  .rm .leg b { font-size: 14px; }
+  .rm .leg .p { font-size: 18px; font-weight: 800; }
+  .rm .leg small { display: block; color: #6b6b76; font-size: 14px; }
+  .rm .tab { display: inline-block; margin: 0 12px 12px; padding: 6px 10px; border-radius: 999px; font-weight: 700; }
+  .comp { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; font-family: "Inter", system-ui, sans-serif; font-size: 13px; }
+  .comp span { display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; border: 1px solid #e3e3e8; border-radius: 999px; }
+  .comp i { width: 16px; height: 16px; border-radius: 4px; display: block; }
+</style>
+
+<div class="cards rj">
+  <div class="card" data-choice="rojo-bandera" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="rm">
+        <div class="hero" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Arquitectura_de_Kuelap.jpg/960px-Arquitectura_de_Kuelap.jpg')">
+          <div class="lg"><svg width="26" height="26" viewBox="0 0 26 26"><rect width="26" height="26" rx="8" fill="#D91023"/><path d="M7 17c3-8 9-8 12-3" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round"/><circle cx="19" cy="14" r="2.2" fill="#fff"/></svg>ya sale</div>
+          <div class="t">Lima → Kuélap</div>
+        </div>
+        <div class="bar">¿A dónde vas?<button style="background:#D91023">Armar viaje</button></div>
+        <div class="leg"><div><b>Chachapoyas → Kuélap</b><small>Colectivo · 1 h 30</small></div><div class="p" style="color:#D91023">S/20</div></div>
+        <span class="tab" style="background:#fde8ea;color:#a20c1a">● Buscando en vivo</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Rojo bandera · #D91023</h3>
+      <p>El rojo exacto de la bandera. Directo y reconocible para cualquier peruano. Contraste 5,2:1. Está cerca del rojo de Netflix, pero sobre fotos y blanco se lee distinto.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="rojo-carmin" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="rm">
+        <div class="hero" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Islas_flotantes_de_los_Uros%2C_Lago_Titicaca%2C_Per%C3%BA%2C_2015-08-01%2C_DD_25.JPG/960px-Islas_flotantes_de_los_Uros%2C_Lago_Titicaca%2C_Per%C3%BA%2C_2015-08-01%2C_DD_25.JPG')">
+          <div class="lg"><svg width="26" height="26" viewBox="0 0 26 26"><rect width="26" height="26" rx="8" fill="#C8102E"/><path d="M7 17c3-8 9-8 12-3" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round"/><circle cx="19" cy="14" r="2.2" fill="#fff"/></svg>ya sale</div>
+          <div class="t">Puno → Uros</div>
+        </div>
+        <div class="bar">¿A dónde vas?<button style="background:#C8102E">Armar viaje</button></div>
+        <div class="leg"><div><b>Puno → Islas de los Uros</b><small>Lancha · 30 min</small></div><div class="p" style="color:#C8102E">S/15</div></div>
+        <span class="tab" style="background:#fbe7ea;color:#9a0c24">● Buscando en vivo</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Carmín · #C8102E</h3>
+      <p>Un punto más profundo que la bandera: se siente más premium y menos "alerta". Contraste 5,9:1. Es el más fácil de distinguir de Airbnb y Netflix.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="rojo-granate" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="rm">
+        <div class="hero" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Oasis_de_Huacachina%2C_Ica%2C_Per%C3%BA%2C_2015-07-29%2C_DD_18.JPG/960px-Oasis_de_Huacachina%2C_Ica%2C_Per%C3%BA%2C_2015-07-29%2C_DD_18.JPG')">
+          <div class="lg"><svg width="26" height="26" viewBox="0 0 26 26"><rect width="26" height="26" rx="8" fill="#A50F2D"/><path d="M7 17c3-8 9-8 12-3" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round"/><circle cx="19" cy="14" r="2.2" fill="#fff"/></svg>ya sale</div>
+          <div class="t">Ica → Huacachina</div>
+        </div>
+        <div class="bar">¿A dónde vas?<button style="background:#A50F2D">Armar viaje</button></div>
+        <div class="leg"><div><b>Ica → Huacachina</b><small>Mototaxi · 10 min</small></div><div class="p" style="color:#A50F2D">S/8</div></div>
+        <span class="tab" style="background:#f6e6ea;color:#7d0b22">● Buscando en vivo</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Granate · #A50F2D</h3>
+      <p>Oscuro y elegante, contraste 7,8:1. Muy sobrio, pero en botones pequeños puede verse apagado, casi marrón, junto a fotos cálidas como el desierto.</p>
+    </div>
+  </div>
+</div>
+
+<div class="comp">
+  <b style="align-self:center">No confundirnos con:</b>
+  <span><i style="background:#FF385C"></i>Airbnb #FF385C</span>
+  <span><i style="background:#E50914"></i>Netflix #E50914</span>
+  <span><i style="background:#E8114B"></i>LATAM #E8114B</span>
+  <span><i style="background:#003580"></i>Booking #003580</span>
+</div>

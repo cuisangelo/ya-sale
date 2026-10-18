@@ -1,17 +1,18 @@
 import asyncio
 import logging
 from collections.abc import AsyncIterator, Callable, Sequence
-from datetime import UTC, date, datetime
+from datetime import UTC, date, datetime, timedelta
 
 from app.connectors.base import Connector
 from app.connectors.extractor import ExtractedLeg, LegExtractor
 from app.connectors.web_search import BudgetExhausted, SearchBudget
 from app.departures.domain import Departure, DepartureSource, by_departure_time
-from app.legs.domain import LegKey, LegOption, Mode, completeness, display_version, distinct_options, has_price, leg_status
+from app.legs.domain import LegKey, LegOption, Mode, completeness, display_version, distinct_options, has_price, leg_status, normalize_place
 from app.legs.repository import LegRepository
 from app.places.domain import GeocodingFailed, MapPoint, Point
 from app.places.locator import PlaceLocator
 from app.trips.domain import PlannedHop
+from app.trips.repository import RouteRepository
 from app.trips.events import LegDepartures, LegError, LegRefreshed, LegStored, NoRoute, TripDone, TripEvent, TripMapped, TripStarted
 
 logger = logging.getLogger(__name__)
@@ -20,6 +21,8 @@ MAX_SEARCHES_PER_TRIP = 12
 RESULTS_PER_SEARCH = 5
 # Sellers answer in a few seconds when they answer at all; the trip's own legs take longer than this.
 DEPARTURES_TIMEOUT_S = 15
+# How to get somewhere changes slowly; prices and times are refreshed on every trip regardless.
+ROUTE_TTL = timedelta(days=7)
 
 NO_LIVE_DATA = "No encontramos datos en vivo para este tramo."
 REFRESH_FAILED = "No pudimos actualizar este tramo ahora."
@@ -34,6 +37,7 @@ class TripPlanner:
         budget_factory: Callable[[], SearchBudget],
         locator: PlaceLocator,
         departure_sources: Sequence[DepartureSource],
+        routes: RouteRepository,
     ):
         self._repo = repo
         self._extractor = extractor
@@ -41,12 +45,11 @@ class TripPlanner:
         self._budget_factory = budget_factory
         self._locator = locator
         self._departure_sources = departure_sources
+        self._routes = routes
 
     async def plan(self, origin: str, destination: str, travel_date: str, trip_id: int) -> AsyncIterator[TripEvent]:
         budget = self._budget_factory()
-        budget.take()
-        pages = await self._search.search(f"cómo llegar de {origin} a {destination} transporte", RESULTS_PER_SEARCH)
-        chain = await self._extractor.plan_chain(origin, destination, pages)
+        chain = await self._chain(origin, destination, budget)
         if not chain:
             yield NoRoute(f"No encontramos cómo llegar de {origin} a {destination}. Revisa los nombres o prueba un lugar cercano.")
             return
@@ -83,6 +86,19 @@ class TripPlanner:
             if event is not None:
                 yield event
         yield TripDone(len(chain))
+
+    async def _chain(self, origin: str, destination: str, budget: SearchBudget) -> list[PlannedHop]:
+        key = f"{normalize_place(origin)}→{normalize_place(destination)}"
+        now = datetime.now(UTC)
+        cached = await self._routes.cached(key, now - ROUTE_TTL)
+        if cached is not None:
+            return cached
+        budget.take()
+        pages = await self._search.search(f"cómo llegar de {origin} a {destination} transporte", RESULTS_PER_SEARCH)
+        chain = await self._extractor.plan_chain(origin, destination, pages)
+        if chain:
+            await self._routes.store(key, chain, now)
+        return chain
 
     async def _refresh(
         self, index: int, origin: str, destination: str, mode: Mode, funded: bool, budget: SearchBudget

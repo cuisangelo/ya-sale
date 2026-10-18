@@ -3,7 +3,6 @@ import { LoadingWords } from "./LoadingWords";
 export function TripSkeleton({ origin, destination }: { origin: string; destination: string }) {
   return (
     <section className="trip-skeleton" aria-busy="true" aria-label="Armando tu viaje">
-      <div className="loom" aria-hidden="true" />
       <LoadingWords
         words={[
           `Buscando cómo llegar de ${origin} a ${destination}…`,
@@ -16,9 +15,9 @@ export function TripSkeleton({ origin, destination }: { origin: string; destinat
       <div className="trip-layout" aria-hidden="true">
         <div className="trip-hops">
           <SkeletonCard />
-          <div className="join">
-            <span className="mayu" />
-          </div>
+          <p className="join">
+            <span className="skeleton-line skeleton-short" />
+          </p>
           <SkeletonCard />
         </div>
         <div className="trip-map-column">
