@@ -20,6 +20,22 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
   `pnpm test` (55 passed), `next build`, la búsqueda de tamaños de letra (vacía) y `pytest`
   (135 passed). Capturas de la portada a 1280 y 390 px con los créditos completos.
 
+### 18:30 · Cambio · Una ruta ya planificada arranca sin buscar de nuevo
+
+- **Medido antes:** un viaje real Lima → Cusco en producción. `trip_started` y los tramos
+  guardados a los 6,1 s; salidas en vivo a los 9,1 s; vuelo refrescado a los 15,8 s; bus a
+  los 22,3 s. Los primeros 6 s eran siempre una búsqueda web y una llamada a Claude para
+  planificar la ruta, aunque se acabara de planificar.
+- **Qué cambia:** nueva tabla `routes` (par normalizado → tramos JSON, `planned_at`) con
+  `RouteRepository`. El planner reusa la ruta si se planificó hace menos de 7 días; si no, la
+  planifica y la guarda. Un "no hay ruta" nunca se guarda. Los precios, las salidas y el
+  refresco de cada tramo siguen igual, en cada viaje.
+- **Efecto:** las rutas repetidas, como las de la demo, se ahorran una búsqueda y una llamada
+  al modelo, y ese cupo de búsqueda queda para los tramos.
+- **Pruebas:** 3 tests del planner (reusa sin buscar, no guarda "no hay ruta", replanifica
+  pasada la semana) y 3 del repositorio contra Postgres. Fallaron antes de implementar; backend
+  139/139.
+
 ### 18:20 · Cambio · Comparar y uso con la identidad nueva, e imagen para compartir
 
 - **Por qué:** al compartir el enlace se veía la imagen vieja, y `/comparar` y `/uso`
@@ -31,6 +47,7 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
   sin desbordes ni errores de consola, y el número de 40 px cabe en las cuatro tarjetas.
   `tsc`, `pnpm test` (54 passed), `next build`, la búsqueda de tamaños de letra (vacía) y
   `pytest` del backend (134 passed) pasan.
+
 
 ### 18:18 · Cambio · Las salidas en vivo dependen del modo de cada tramo, no solo del bus
 

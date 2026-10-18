@@ -55,3 +55,10 @@ CREATE TABLE IF NOT EXISTS rate_events (
 );
 
 CREATE INDEX IF NOT EXISTS rate_events_fingerprint ON rate_events (fingerprint, created_at);
+
+-- The hops the planner found for an origin and destination, so a repeated route starts without a search.
+CREATE TABLE IF NOT EXISTS routes (
+    key        TEXT PRIMARY KEY,
+    hops       JSONB NOT NULL,
+    planned_at TIMESTAMPTZ NOT NULL
+);

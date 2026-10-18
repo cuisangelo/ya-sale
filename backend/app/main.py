@@ -25,6 +25,7 @@ from app.mcp_server import build_mcp
 from app.places.locator import PlaceLocator
 from app.places.repository import PlaceRepository
 from app.trips.planner import MAX_SEARCHES_PER_TRIP, TripPlanner
+from app.trips.repository import RouteRepository
 from app.usage.repository import UsageRepository
 
 TRIPS_PER_MINUTE_PER_FINGERPRINT = 6
@@ -49,7 +50,9 @@ def build_services(settings: Settings, pool) -> Services:
         CruzDelSurSource(httpx.AsyncClient(timeout=10), poll_interval_s=1),
         OltursaSource(httpx.AsyncClient(timeout=10)),
     )
-    planner = TripPlanner(legs, LegExtractor(client), search, lambda: SearchBudget(MAX_SEARCHES_PER_TRIP), locator, departure_sources)
+    planner = TripPlanner(
+        legs, LegExtractor(client), search, lambda: SearchBudget(MAX_SEARCHES_PER_TRIP), locator, departure_sources, RouteRepository(pool)
+    )
     return Services(
         planner=planner,
         legs=legs,
