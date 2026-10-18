@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from datetime import UTC, date, datetime
+from datetime import UTC, date, datetime, timedelta
 from decimal import Decimal
 
 import pytest
@@ -46,8 +46,10 @@ class FakeSearch:
 class FakeExtractor:
     def __init__(self, chain):
         self._chain = chain
+        self.chain_calls = 0
 
     async def plan_chain(self, origin, destination, pages):
+        self.chain_calls += 1
         return list(self._chain)
 
     def modes(self, origin, destination):
@@ -104,6 +106,18 @@ class FakeDepartureSource:
         return [departure(hour, self.seller) for hour in self._hours]
 
 
+class FakeRoutes:
+    def __init__(self):
+        self.saved: dict[str, tuple[list[PlannedHop], datetime]] = {}
+
+    async def cached(self, key, planned_after):
+        found = self.saved.get(key)
+        return found[0] if found and found[1] > planned_after else None
+
+    async def store(self, key, chain, planned_at):
+        self.saved[key] = (list(chain), planned_at)
+
+
 def unpriced() -> LegData:
     return LegData("Terminal", None, None, None, 120, None, None)
 
@@ -117,7 +131,7 @@ def repo(pool):
     return LegRepository(pool)
 
 
-def planner(repo, chain, search=None, extractor=None, budget=8, locator=None, sources=()):
+def planner(repo, chain, search=None, extractor=None, budget=8, locator=None, sources=(), routes=None):
     return TripPlanner(
         repo,
         extractor or FakeExtractor(chain),
@@ -125,6 +139,7 @@ def planner(repo, chain, search=None, extractor=None, budget=8, locator=None, so
         lambda: SearchBudget(budget),
         locator or FakeLocator(),
         sources,
+        routes or FakeRoutes(),
     )
 
 
@@ -327,3 +342,30 @@ async def test_a_date_that_is_not_a_day_skips_departures_but_keeps_the_trip(repo
     events = [e async for e in planner(repo, BUS_OR_PLANE, sources=(source,)).plan("Lima", "Sauce", "el sábado", trip_id=1)]
     assert source.calls == []
     assert isinstance(events[-1], TripDone) and len(refreshed(events)) == 3
+
+
+async def test_a_planned_route_is_reused_without_searching_or_asking_the_model_again(repo):
+    search, extractor = FakeSearch(), FakeExtractor(TWO_HOPS)
+    p = planner(repo, TWO_HOPS, search=search, extractor=extractor)
+    first = await collect(p, "Cusco", "Aguas Calientes")
+    queries_before = len(search.queries)
+    second = await collect(p, "cusco ", "AGUAS CALIENTES")
+    assert extractor.chain_calls == 1
+    assert not any("cómo llegar" in q for q in search.queries[queries_before:])
+    assert first[0].hops == second[0].hops
+
+
+async def test_no_route_is_never_remembered(repo):
+    routes = FakeRoutes()
+    await collect(planner(repo, [], routes=routes), "Xyzabc", "San Juan")
+    assert routes.saved == {}
+
+
+async def test_a_route_older_than_a_week_is_planned_again(repo):
+    routes, extractor = FakeRoutes(), FakeExtractor(TWO_HOPS)
+    p = planner(repo, TWO_HOPS, extractor=extractor, routes=routes)
+    await collect(p, "Cusco", "Aguas Calientes")
+    key = next(iter(routes.saved))
+    routes.saved[key] = (routes.saved[key][0], datetime.now(UTC) - timedelta(days=8))
+    await collect(p, "Cusco", "Aguas Calientes")
+    assert extractor.chain_calls == 2
