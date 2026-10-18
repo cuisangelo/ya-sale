@@ -27,6 +27,9 @@ from app.legs.repository import LegRepository
 from app.mcp_server import build_mcp
 from app.places.locator import PlaceLocator
 from app.places.repository import PlaceRepository
+from app.reader.registry import OPERATORS
+from app.reader.repository import RequestQueue, ResultRepository
+from app.reader.source import BrowserOperatorSource
 from app.trips.planner import MAX_SEARCHES_PER_TRIP, TripPlanner
 from app.trips.repository import RouteRepository
 from app.usage.repository import UsageRepository
@@ -56,6 +59,7 @@ def build_services(settings: Settings, pool) -> Services:
         VentasWebSource("https://sales.ghbus.com.pe", "ghbus.com.pe", "GH Bus", lambda: httpx.AsyncClient(timeout=10)),
         VentasWebSource("https://sales.floreshnos.pe", "floreshnos.pe", "Flores", lambda: httpx.AsyncClient(timeout=10)),
         LineaSource(lambda: httpx.AsyncClient(timeout=10)),
+        *(BrowserOperatorSource(site, ResultRepository(pool), RequestQueue(pool)) for site in OPERATORS),
     )
     planner = TripPlanner(
         legs, LegExtractor(client), search, lambda: SearchBudget(MAX_SEARCHES_PER_TRIP), locator, departure_sources, RouteRepository(pool)

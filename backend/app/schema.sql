@@ -62,3 +62,37 @@ CREATE TABLE IF NOT EXISTS routes (
     hops       JSONB NOT NULL,
     planned_at TIMESTAMPTZ NOT NULL
 );
+
+-- How a visitor reaches an operator's departures, found once by the browser agent and replayed after.
+-- route_key is '*' when the recipe's URL template serves every route of that operator.
+CREATE TABLE IF NOT EXISTS operator_recipes (
+    domain          TEXT NOT NULL,
+    route_key       TEXT NOT NULL,
+    status          TEXT NOT NULL CHECK (status IN ('ready', 'blocked')),
+    recipe          JSONB NOT NULL,
+    compliance_note TEXT NOT NULL,
+    discovered_at   TIMESTAMPTZ NOT NULL DEFAULT now(),
+    PRIMARY KEY (domain, route_key)
+);
+
+-- The departures the browser reader last saw for an operator, route and day; read by the API, written by the reader.
+CREATE TABLE IF NOT EXISTS reader_results (
+    domain      TEXT NOT NULL,
+    route_key   TEXT NOT NULL,
+    travel_date DATE NOT NULL,
+    departures  JSONB NOT NULL,
+    read_at     TIMESTAMPTZ NOT NULL,
+    PRIMARY KEY (domain, route_key, travel_date)
+);
+
+-- Searches the API asked the browser reader for; the worker claims one at a time and deletes it when done.
+CREATE TABLE IF NOT EXISTS reader_requests (
+    domain       TEXT NOT NULL,
+    route_key    TEXT NOT NULL,
+    travel_date  DATE NOT NULL,
+    origin       TEXT NOT NULL,
+    destination  TEXT NOT NULL,
+    requested_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    claimed_at   TIMESTAMPTZ,
+    PRIMARY KEY (domain, route_key, travel_date)
+);

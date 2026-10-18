@@ -7,6 +7,46 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-18
 
+### 01:22 · Cambio · Lector genérico: un agente con navegador lee la web de cualquier empresa de buses
+
+- **Qué:** `backend/app/reader/`. Una vez por empresa, `claude-sonnet-5-5` con el
+  `computer_toolset_20260801` ve capturas de un Chromium real (con pantalla virtual Xvfb) y hace
+  clic o escribe origen, destino y fecha hasta que aparece la lista de salidas (máx. 25 acciones,
+  300 s). Lo que encontró queda como receta en `operator_recipes`: la URL de resultados como
+  plantilla (`{origin_slug}`, `{date}`…), el botón de búsqueda y los clics grabados. Después,
+  Playwright repite la receta sin modelo por clic y un solo `messages.parse` lee la página
+  (texto marcado como no confiable). La API nunca espera al navegador: `BrowserOperatorSource`
+  lee `reader_results` (15 min) y, si no hay, deja la búsqueda en `reader_requests` para el worker
+  (`python -m app.reader worker`, `reader.Dockerfile`).
+- **Barreras en código:** el agente solo puede escribir origen, destino o fecha (cualquier otro
+  texto se rechaza y el resto del turno no se ejecuta); el botón que repite una receta nunca es de
+  compra (`comprar`, `asiento`, `pago`…); User-Agent honesto (versión real de Chromium +
+  `YaSaleBot/0.1 (+https://yasale.cuisangelo.com)`); un captcha o bloqueo deja la empresa en
+  `blocked`. Sin stealth, sin APIs internas, sin tokens de sus scripts.
+- **Turismo Días** (`turismodias.com.pe`, plataforma kupos): robots.txt `Allow: /`; sus términos
+  son solo condiciones del pasajero. Descubrimiento Lima → Cajamarca del 20-10: 17 acciones,
+  5 llamadas, USD 0,0407; lectura completa 70,7 s, USD 0,0501, 8 salidas (16:00 Ejecutivo S/70 …
+  19:20 Platinium S/110). Receta para todas sus rutas. Repetición sin descubrir, Lima → Chiclayo
+  del 21-10: 31,5 s, 1 llamada, USD 0,0051, 2 salidas (19:30 y 20:20, Oro S/100). El enlace abre
+  en un navegador limpio con el buscador ya lleno; un clic en "Buscar" muestra la lista.
+- **Movil Bus** (`movilbus.pe`, solo la web pública como un visitante): robots.txt `Allow: /`;
+  sus cláusulas de viaje y su PDF de políticas no dicen nada de acceso automatizado. Su URL de
+  resultados solo vale dentro de la sesión (un visitante nuevo vuelve al inicio), así que la
+  lectura repite los clics grabados y el enlace va a su portada. Lima → Huancayo del 20-10:
+  100,8 s, USD 0,0447, 7 salidas con asientos libres (11:30 Presidencial S/105, 23 libres).
+  Lima → Huaraz del 20-10: los clics de otra ruta no sirvieron y volvió a descubrir: 151,3 s,
+  USD 0,0896, 18 salidas.
+- **Civa: no se agrega.** robots.txt responde 403 a nuestro cliente identificado y sale en
+  blanco en el navegador honesto; sin poder leer sus reglas, no entra. Excluciva (su marca
+  premium) queda fuera con ella. redbus.pe sigue fuera (sus términos prohíben el scraping).
+- **Pruebas:** 198/198. Mutaciones: `may_type` → `return True` deja 2 rojos; quitar la vuelta a
+  los clics deja rojo el test de URL atada a la sesión. Un test encontró que la receta de toda la
+  empresa le ganaba a la de la ruta (orden invertido en el SQL); corregido.
+- **Falta:** el worker no corre en AWS. En producción la API encola y nadie lee la cola, así que
+  estas dos empresas solo aparecen corriendo el worker local (`docker compose --profile reader
+  up reader`). Plan: un servicio Fargate en las subredes privadas con el NAT existente, 1 vCPU /
+  2 GB ARM ≈ USD 0,04/h según precio de lista (sin medir).
+
 ### 01:19 · Cambio · Flores se suma: misma plataforma que GH Bus, y responde Lima → Cajamarca
 
 - **Hallazgo:** `sales.floreshnos.pe` es el mismo "Sistema de Ventas Web" que `sales.ghbus.com.pe`
