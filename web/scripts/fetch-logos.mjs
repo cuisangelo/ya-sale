@@ -29,6 +29,8 @@ const DOMAINS = [
   "skyscanner.com.pe",
   "rome2rio.com",
   "tripadvisor.com.pe",
+  // flights of airlines without a dated search link open Google Flights
+  "google.com",
 ];
 
 const outDir = new URL("../public/logos/", import.meta.url);
