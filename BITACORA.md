@@ -7,6 +7,27 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 19:19 · Cambio · ITTSA se suma como vendedor de salidas en vivo
+
+- **Qué:** `IttsaSource` (`backend/app/connectors/ittsa.py`) lee las páginas de su web de venta
+  `www.ittsabus.com/online/`. La portada trae en su payload de Next.js la lista de rutas
+  (`destinos`: terminal de origen y de destino con sus ids); `programacion/?origenId=…&destinoId=…&fechaIda=…`
+  trae `itinerarioIda` con cada salida: hora de salida y llegada planificadas, clase, precio mínimo
+  y asientos libres por piso. Cada fila toma el precio más bajo de los dos pisos y suma sus libres.
+- **Terminales:** Lima (La Victoria, Plaza Norte) y Trujillo (Juan Pablo, Terrapuerto) tienen dos;
+  se usa la primera ruta de su lista para cada par de ciudades (Lima → Trujillo sale de La
+  Victoria a Juan Pablo).
+- **Enlace:** cada fila enlaza a esa página de programación, que es la misma a la que lleva su
+  buscador (`direccionar_venta_pasajes.php` responde 302 a ella). En Chrome headless con un perfil
+  limpio abre con las salidas del día ("LIMA (LA VICTORIA) → TRUJILLO (JUAN PABLO)", 08:00 AM desde
+  S/80.00). Elegir asiento no tiene URL propia.
+- **Pruebas:** 10 tests con fixtures grabados el 17-10 (Lima → Trujillo del 22-10 con 11 viajes y
+  Lima → Chiclayo del 15-03-2027 sin viajes). Mutaciones: con `routes[key] =` en vez de
+  `setdefault`, 7 rojos (Lima pasaba a Plaza Norte); sin el filtro de fecha,
+  `test_trips_that_leave_another_day_are_dropped` rojo. Revertidas, backend 154/154. En vivo desde
+  el contenedor para el 22-10: Lima → Trujillo 11, Lima → Chiclayo 3, Piura → Lima 2,
+  Trujillo → Piura 7.
+
 ### 19:14 · Deploy · Rediseño con foto protagonista en producción
 
 - **Qué:** el PR #17 (rediseño de inicio y vista de viaje, identidad carmín, búsquedas recientes)
@@ -29,6 +50,17 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
     del equipo;
   - una corrida mostró 404 de logos de vendedores sin archivo, que caen a iniciales por diseño, y
     no se repitieron al volver a cargar.
+
+### 19:14 · Decisión · ITTSA pasa el control de términos y robots
+
+- **robots.txt:** `www.ittsabus.com/robots.txt` solo prohíbe `/trabaja_nosotros.php`,
+  `/cargos.php`, los formularios de `/webComprobantes/` y `/concesionarias/`. `/online/` está
+  permitido.
+- **Términos:** `terminos_condiciones.php` y `TERMINOS_Y_CONDICIONES_2024.pdf` regulan el viaje
+  (boleto personal, embarque, DNI, equipaje, devoluciones). No dicen nada sobre acceso
+  automatizado, extracción de datos ni enlaces; la política de privacidad tampoco.
+- **Cómo se usa:** las mismas páginas que abre un visitante, sin captcha, tokens, cabeceras
+  firmadas ni Cloudflare (sirve IIS). No se entra a la selección de asientos ni se envían datos.
 
 ### 18:31 · Cambio · Últimos arreglos de la revisión del rediseño
 
