@@ -7,6 +7,29 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-17
 
+### 19:14 · Deploy · Rediseño con foto protagonista en producción
+
+- **Qué:** el PR #17 (rediseño de inicio y vista de viaje, identidad carmín, búsquedas recientes)
+  entró a `main` como `0c445d1`.
+- **Pipelines:**
+  - Vercel quedó `success` para ese SHA;
+  - el run de CI/CD 39081694655 terminó con `backend`, `web` y `deploy` en verde.
+- **Verificado en `yasale.cuisangelo.com`:**
+  - `/api/health` → 200;
+  - `/api/trips/recent` → 200 con `[]`, lo esperado porque las búsquedas anteriores no tienen
+    destino resuelto;
+  - los chunks en vivo traen "Lo último que la gente buscó", "Primera salida" y "Para agentes",
+    y ningún `textil`.
+- **Prueba en navegador:** Playwright en una ventana nueva, a 1280 y 390 px.
+  - El inicio carga sin errores de consola.
+  - Un viaje real Cusco → Aguas Calientes muestra la foto del destino con su crédito, la tarjeta
+    con "Desde S/47", "2 · 1 transbordo" y la ruta por carretera en carmín.
+- **Pendiente:**
+  - la sección de búsquedas recientes aparece con la primera búsqueda nueva que dé ruta y no sea
+    del equipo;
+  - una corrida mostró 404 de logos de vendedores sin archivo, que caen a iniciales por diseño, y
+    no se repitieron al volver a cargar.
+
 ### 18:31 · Cambio · Últimos arreglos de la revisión del rediseño
 
 - **Por qué:** la revisión de toda la rama encontró seis detalles antes de cerrar.
