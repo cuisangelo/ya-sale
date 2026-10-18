@@ -7,6 +7,25 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-18
 
+### 01:19 · Cambio · Flores se suma: misma plataforma que GH Bus, y responde Lima → Cajamarca
+
+- **Hallazgo:** `sales.floreshnos.pe` es el mismo "Sistema de Ventas Web" que `sales.ghbus.com.pe`
+  (mismas rutas `api/base/lista-oficinas` y `busqueda-turnos`). En vez de copiar el conector,
+  `GhBusSource` pasa a ser `VentasWebSource` (`backend/app/connectors/ventasweb.py`), que recibe la
+  web, el vendedor y la marca; `build_services` crea una instancia para GH Bus y otra para Flores.
+- **Control:** `sales.floreshnos.pe/robots.txt` no existe (404). Los términos de
+  `floreshnos.pe/index.php/terminos/` y la política de privacidad regulan viaje, encomiendas y
+  compras por internet, sin cláusulas sobre acceso automatizado, extracción ni enlaces.
+- **Llegada:** Flores sí informa la duración (`15:00`), así que la llegada es salida + duración;
+  con duración `00:00` (GH) queda vacía. Mutación: calcularla siempre puso rojo
+  `test_their_arrival_is_a_placeholder_so_it_is_left_unknown`; revertida.
+- **Pruebas:** 12 tests de la plataforma (11 de GH más uno de Flores con Lima → Cajamarca del
+  19-10 grabado en el navegador). Backend 179/179.
+- **En vivo desde el contenedor:** Lima → Cajamarca hoy 18-10: una salida 17:30, S/70, **2
+  asientos libres**, llega 08:30 del 19 (la pregunta de referencia de Cuiso). Lima → Arequipa 5
+  salidas, Lima → Trujillo 4. Sin logo: Google no tiene ícono para `floreshnos.pe` y la web
+  muestra las iniciales.
+
 ### 01:16 · Entrega · Primer envío del proyecto a Hack the Andes
 
 - **Qué:** `andes --output json project submit` con `--deployment-url
