@@ -53,7 +53,6 @@ def build_services(settings: Settings, pool) -> Services:
         CruzDelSurSource(httpx.AsyncClient(timeout=10), poll_interval_s=1),
         OltursaSource(httpx.AsyncClient(timeout=10)),
         IttsaSource(httpx.AsyncClient(timeout=10)),
-        VentasWebSource("https://sales.ghbus.com.pe", "ghbus.com.pe", "GH Bus", lambda: httpx.AsyncClient(timeout=10)),
         VentasWebSource("https://sales.floreshnos.pe", "floreshnos.pe", "Flores", lambda: httpx.AsyncClient(timeout=10)),
         LineaSource(lambda: httpx.AsyncClient(timeout=10)),
     )

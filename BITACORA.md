@@ -7,6 +7,20 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
 
 ## 2026-10-18
 
+### 01:24 · Bloqueo · GH Bus no responde desde Lambda y sale de producción
+
+- **Qué pasó:** con `f10e4af` y `b93dec6` en producción, tres viajes desde
+  `yasale.cuisangelo.com` (Lima → Chiclayo del 21-10 y del 22-10, Lima → Cajamarca de hoy)
+  dejaron en el log de Lambda `departures from ghbus.com.pe failed …: ConnectTimeout`. Desde el
+  contenedor local la misma búsqueda da su salida de las 15:00; Cruz del Sur, Oltursa, ITTSA,
+  Línea y Flores sí responden desde Lambda. `sales.ghbus.com.pe` no acepta conexiones desde la
+  salida de AWS (us-east-1).
+- **Costo:** GH lee su lista de ciudades antes de mirar la ruta, así que cada búsqueda en bus
+  esperaba los 10 s del timeout antes de emitir `leg_departures`.
+- **Decisión:** se quita la instancia de GH Bus de `build_services`. `VentasWebSource` y sus tests
+  quedan, porque Flores lo usa. Rodear el bloqueo (proxy u otra salida) sería evadirlo; no se hace.
+- **Flores en Lambda:** Lima → Cajamarca de hoy devolvió `floreshnos.pe` 17:30, S/70, 2 asientos.
+
 ### 01:23 · Prueba · Lima → Cajamarca ya tiene salidas en vivo desde producción
 
 - **La pregunta de referencia de Cuiso:** "¿Lima → Cajamarca hoy, qué buses salen y quedan
@@ -18,6 +32,7 @@ Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** ·
     libres**, y enlace a `sales.floreshnos.pe/?idorigen=6&iddestino=7&fechaida=18/10/2026`.
   - **2026-10-19:** la misma salida con 46 asientos.
 - **Vendedores en vivo en producción:** Cruz del Sur, Oltursa, Línea, ITTSA, GH Bus y Flores.
+
 
 ### 01:19 · Cambio · Flores se suma: misma plataforma que GH Bus, y responde Lima → Cajamarca
 
