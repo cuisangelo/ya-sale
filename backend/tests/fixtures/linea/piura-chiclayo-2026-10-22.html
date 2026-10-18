@@ -1,0 +1,494 @@
+
+
+
+<style>
+    .cursor_pointer {
+        cursor: pointer;
+    }
+
+    .tabCab {
+        font-weight: 100;
+    }
+
+    .btnProgress .progress-bar {
+        padding-top: 5px;
+    }
+
+    .btnProgress {
+        height: 32px;
+    }
+
+    @media (max-width: 320px) {
+        .nav > li > a {
+            padding: 10px 2px !important;
+        }
+    }
+
+    @media (max-width: 424px) {
+        .hidden-w425 {
+            display: none !important;
+        }
+
+        .col-xs-25 {
+            width: 20% !important;
+        }
+    }
+
+    @media (max-width:479px) {
+        .display_blocks_none_bottom {
+            margin-bottom: 20px;
+        }
+    }
+
+    @media(max-width: 768px) {
+        .tab_iti_fecha {
+            font-size: 12px !important;
+        }
+
+        .btnProgress .progress-bar {
+            padding-top: 5px;
+        }
+
+        .btnProgress {
+            height: 28px;
+        }
+    }
+
+    @media(min-width: 768px) {
+        .fs_servicio {
+            font-size: 1.6rem;
+        }
+    }
+
+    @media (max-width: 400px) {
+        .libres {
+            margin-top: 25px !important;
+            font-size: 15px;
+        }
+    }
+
+    @media (min-width: 992px) and ( max-width: 1199.5px) {
+        .circulo-blue {
+            margin-left: 40px !important;
+            margin-top: 15px !important;
+        }
+
+        .cant {
+            margin-left: 132px !important;
+            margin-top: -65px !important;
+        }
+    }
+
+    @media (max-width: 479px) {
+        .cant-br {
+            display: none !important;
+        }
+    }
+</style>
+<ul class="nav nav-tabs nav-default">
+
+
+    
+    <li class="nav-tab-no-access disabled hidden-w425">
+        <a data-toggle="tab" class="btn btn-link tab_iti_fecha tabCab nav-tab-no-access disabled" data-itinerario='{"ida":"20/10/2026", "vuelta":"", "retorno":"False" }'>
+            <span class="text-capitalize">mar. 20</span> <span class="text-capitalize">Oct.</span>
+            <br>
+            VENDIDO</a>
+    </li>
+
+    
+    
+    <li class="nav-tab-no-access disabled">
+        <a data-toggle="tab" class="btn btn-link tab_iti_fecha tabCab nav-tab-no-access disabled" data-itinerario='{"ida":"21/10/2026", "vuelta":"", "retorno":"False" }'>
+            <span class="text-capitalize">mié. 21</span> <span class="text-capitalize">Oct.</span>
+            <br>
+            VENDIDO</a>
+    </li>
+
+    
+    
+    <li class="active">
+        <a data-toggle="tab" href="#tabItinerarios" class="btn btn-link tab_iti_fecha">
+            <span class="text-capitalize">jue. 22</span> <span class="text-capitalize">Oct.</span>
+            <br>
+            Desde<br />
+            VENDIDO
+        </a>
+    </li>
+
+    
+    <li class="nav-tab-no-access disabled">
+        <a data-toggle="tab" class="btn btn-link tab_iti_fecha tabCab nav-tab-no-access disabled" data-itinerario='{"ida":"23/10/2026", "vuelta":"", "retorno":"False" }'>
+            <span class="text-capitalize">vie. 23</span> <span class="text-capitalize">Oct.</span>
+            <br>
+            No<br />programado&nbsp;</a>
+    </li>
+
+    
+    <li class="nav-tab-no-access disabled">
+        <a data-toggle="tab" class="btn btn-link tab_iti_fecha tabCab nav-tab-no-access disabled" data-itinerario='{"ida":"24/10/2026", "vuelta":"", "retorno":"False" }'>
+            <span class="text-capitalize">sáb. 24</span> <span class="text-capitalize">Oct.</span>
+            <br>
+            No<br />programado&nbsp;</a>
+    </li>
+    
+    
+</ul>
+
+<div class="tab-content">
+    <!--contenedor de Tabs -->
+
+    <div id="tabItinerarios" class="tab-pane fade in active">
+        <div class="panel-group">
+            <div class="panel panel-default">
+                <!--  Itinerarios -->
+                
+                <div class='text-center fade in active p-top-40 panel p-bottom-40 border_blocks'>
+                    <h4 class="text-bold">No se encontró itinerarios</h4>
+                    <span>No hay itinerarios disponibles para la fecha seleccionada.</span>
+                </div>
+                
+                <!--  Itinerarios -->
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Servicios -->
+<div class="modal fade" id="modalServicio" tabindex="-1" role="dialog" aria-labelledby="modalTitulo">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
+                <h4 class="modal-title" id="modalTitulo"></h4>
+            </div>
+            <div class="modal-body" id="modalServicioBody">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Alerta -->
+<div class="modal fade" id="modalAlerta" tabindex="-1" role="dialog" data-backdrop="true" aria-labelledby="modalAlertaTitulo">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
+                <h4 class="modal-title" id="modalAlertaTitulo">
+                    
+                        Mensaje
+                </h4>
+            </div>
+            <div class="modal-body" id="modalAlertaBody">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" style="font-size: 13px;">Entendido</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Disponibilidad Retorno -->
+<div class="modal fade" id="modalDisponibilidad" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="modalDisponibilidadTitulo">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                
+                <h4 class="modal-title" id="modalDisponibilidadTitulo">Aviso</h4>
+            </div>
+            <div class="modal-body" id="modalDisponibilidadBody">
+                <p>Estimado usuario,</p>
+                <p>Encontramos los asientos que seleccionó en el mismo servicio y horario para la fecha de retorno.</p>
+                <p><b>¿Desea que lo seleccionemos por usted?</b></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-dismiss="modal" id="btnConfirm" data-value="1" style="font-size: 13px;">Si</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" id="btnCancel" data-value="0" style="font-size: 13px;">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Cerrar Crokies -->
+<div class="modal fade" id="modalEliminarAsientos" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="modalEliminarAsientosTitulo">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                
+                <h4 class="modal-title" id="modalEliminarAsientosTitulo">Aviso</h4>
+            </div>
+            <div class="modal-body" id="modalEliminarAsientosBody">
+                
+                      Estimado Cliente,
+                      <br>
+                Al cerrar el croquis se eliminarán los asientos separados.
+                      <br>
+                <b>¿Seguro desea cerrar?</b>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-dismiss="modal" id="btnConfirmElimAsiento" data-value="1" style="font-size: 13px;">Si</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" id="btnCancelElimAsiento" data-value="0" style="font-size: 13px;">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Fin Modal Cerrar Crokies -->
+
+<!-- Modal Mensaje -->
+<div class="modal fade" id="modalMensaje" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="modalMensajeTitulo">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                
+                <h4 class="modal-title" id="modalMensajeTitulo">Mensaje</h4>
+            </div>
+            <div class="modal-body" id="modalMensajeBody">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Fin Modal Mensaje -->
+<script>
+    //$('[data-toggle="tooltip"]').tooltip();
+
+    $(window).on("scroll", function () {
+        var panel_pisos = $(".panel_pisos_ec");
+        if (panel_pisos.length > 0) {
+            var scroll_pnPisos = panel_pisos.offset().top;
+            if ($(window).scrollTop() > scroll_pnPisos) {
+                var num_calc = (window.innerWidth <= 425) ? 12
+                    : (window.innerWidth <= 500) ? 16
+                        : (window.innerWidth <= 768) ? 19
+                            : (window.innerWidth <= 800) ? 14
+                                : (window.innerWidth <= 1024) ? 20
+                                    : (window.innerWidth <= 1200) ? 24
+                                        : (window.innerWidth <= 1366) ? 12
+                                            : (window.innerWidth <= 1440) ? 9 : 12
+                    ;
+                var padding = window.innerWidth / num_calc;
+                $(".div_select_precios").css({
+                    "position": "fixed",
+                    "top": "5px",
+                    "z-index": "9",
+                    "background": "white",
+                    "width": "100%",
+                    "left": "0px",
+                    //"padding-bottom": "10px",
+                    "padding-left": padding,//"30px",
+                });
+
+                var margin = (window.innerWidth >= 1366) ? -65
+                    : (window.innerWidth >= 1200) ? -60
+                        : (window.innerWidth >= 1024) ? -40
+                            : (window.innerWidth >= 900) ? -30
+                                : (window.innerWidth >= 768) ? -20
+                                    : (window.innerWidth >= 700) ? -45
+                                        : (window.innerWidth >= 600) ? -30
+                                            : (window.innerWidth >= 500) ? -20
+                                                : (window.innerWidth > 400) ? -5
+                                                    : 0
+                    ;
+                $("#tab_precios_piso1, #tab_precios_piso2").css({
+                    "margin-left": margin //((window.innerWidth > 768) ? "-65px" : "0px")
+                });
+
+                $(".btnSiguienteP").css({
+                    "position": "fixed",
+                    "top": "-15px",
+                    "z-index": "10",
+                    "background": "white",
+                    "width": "auto",
+                    "right": "0", // "15px"
+                    "padding-right": (padding + 20),
+                });
+
+                /*$("#btnSiguiente, #btnProgressSig").css({
+                    "width": "100%",
+                });*/
+
+                $(".btnCerrarP").css({
+                    "position": "fixed",
+                    "top": "-15px",
+                    "z-index": "10",
+                    "background": "white",
+                    "width": "auto",
+                    //"right": "0", //180px
+                    "right": (padding + 200),
+                });
+            } else {
+                $(".div_select_precios").css({
+                    "position": "",
+                    "top": "",
+                    "z-index": "",
+                    "background": "",
+                    "width": "",
+                    "left": "",
+                    "padding-bottom": "",
+                    "padding-left": "",
+                });
+
+                $("#tab_precios_piso1, #tab_precios_piso2").css({
+                    "margin-left": ""
+                });
+
+                $(".btnSiguienteP, .btnCerrarP").css({
+                    "position": "",
+                    "top": "",
+                    "z-index": "1",
+                    "background": "",
+                    "width": "",
+                    "right": "",
+                    "padding-right": ""
+                });
+
+                /*$("#btnSiguiente, #btnProgressSig").css({
+                    "width": "85%",
+                });*/
+            }
+        }
+    });
+
+    var expandir = true;
+    function verCroquis(object) {
+        var idBtn = $(object).data().target;
+        var btnCerrarCroquis = $(".btnCerrar");
+        var split_btn = idBtn.split('btnVerAsientos');
+        if (split_btn.length > 1) {
+            if ($("#bus" + split_btn[1]).css("display") == "block") {
+                expandir = false;
+            }
+        }
+        if (expandir || btnCerrarCroquis.length == 0) {
+            var boton = $("#" + idBtn);
+            validarHorario(boton[0]);
+            expandir = false;
+            $("#imgModal").show();
+        } else {
+            $("#btnCerrar").click();
+            expandir = true;
+        }
+    }
+
+    function verPuntosED(object) {
+        var idBtn = $(object).data().target;
+        var btnCerrarCroquis = $(".btnCerrar")
+        if (expandir || btnCerrarCroquis.length == 0) {
+            var boton = $("#" + idBtn);
+            validarHorario(boton[0]);
+            expandir = false;
+            $("#imgModal").show();
+        } else {
+            $("#btnCerrar").click();
+            expandir = true;
+        }
+    }
+
+    function diferenciarPreciosPiso(object) {
+        var data_as = $(object).data();
+        var btn_bus = data_as.target;
+        var div_precios = data_as.parent;
+        $("#" + div_precios + " >" + ".precio_asiento").removeClass("color_red bold borderB-active m-bottom-10");
+        $("#" + div_precios + " >" + ".precio_asiento").addClass("color_gray");
+
+        $("." + btn_bus).children().css("opacity", "unset");
+        $("." + btn_bus).children().attr("disabled", false);
+
+        if (data_as.precio != "0") {
+            var id = "." + btn_bus + " >." + data_as.precio;
+            var item_as = $(id);
+            if (item_as.length > 0) {
+                $("." + btn_bus).children().css("opacity", "0.3");
+                $("." + btn_bus).children().attr("disabled", true);
+
+                $(id).css("opacity", "unset");
+                $(id).attr("disabled", false);
+            }
+        }
+
+        $(object).addClass("color_red bold borderB-active m-bottom-10");
+        $(object).removeClass("color_gray");
+    }
+
+    function mostrar_tabs_precios(piso) {
+        var num_pisos = $(".tab_precios_piso");
+        if (num_pisos.length > 1) {
+            $(".tab_precios_piso").parent().hide();
+            $("#tab_precios_piso" + piso).parent().show();
+            var valor = $(".panel_pisos_ec").offset().top;
+            valor = 330;
+            $("html,body").animate({ scrollTop: valor }, { duration: "slow" });
+        }
+    }
+
+    function mostrarParadas(object) {
+        var paradas = $(object).data().paradas;
+        var paradas_array = paradas.split(",");
+        if (paradas_array.length > 0) {
+            var html = "";
+            for (var i = 0; i < paradas_array.length; i++) {
+                html += '<p class="font_size_16p">- En ' + paradas_array[i] + '</p>'
+            }
+            $("#modalMensajeTitulo").html("Paradas intermedias");
+            $("#modalMensajeBody").html(html);
+            $("#modalMensaje").modal("show");
+        } else {
+            $("#modalMensajeTitulo").html("Mensaje");
+        }
+    }
+
+    function mostrarLoadPage(mostrar) {
+        if (mostrar == "1") {
+            $("#imgModal").show()
+        } else {
+            $("#imgModal").hide()
+        }
+    }
+
+    function obtenerPrecioServicio(id, tipo) {
+        var respuesta = "";
+        //var pisos = $(".panel_pisos_ec >div >ul> >li");
+        var pisos = $(".div_select_precios >ul >li");
+        for (var i = 0; i < pisos.length; i++) {
+            if (pisos[i].className == "active") {
+                switch (tipo) {
+                    case 1: //precio
+                        if (i == 0) {
+                            respuesta = $("#btnVerAsientos" + id).data().precio1;
+                        } else {
+                            respuesta = $("#btnVerAsientos" + id).data().precio2;
+                        }
+                        break;
+
+                    case 2://servicio
+                        if (i == 0) {
+                            respuesta = $("#btnVerAsientos" + id).data().serv1;
+                        } else {
+                            respuesta = $("#btnVerAsientos" + id).data().serv2;
+                        }
+                        break;
+
+                    case 3: //puntos
+                        if (i == 0) {
+                            respuesta = $("#btnVerAsientos" + id).data().puntos1;
+                        } else {
+                            respuesta = $("#btnVerAsientos" + id).data().puntos2;
+                        }
+                        break;
+                }
+            }
+        }
+        return respuesta;
+    }
+</script>
+

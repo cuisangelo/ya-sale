@@ -1,0 +1,1710 @@
+
+
+
+<style>
+    .cursor_pointer {
+        cursor: pointer;
+    }
+
+    .tabCab {
+        font-weight: 100;
+    }
+
+    .btnProgress .progress-bar {
+        padding-top: 5px;
+    }
+
+    .btnProgress {
+        height: 32px;
+    }
+
+    @media (max-width: 320px) {
+        .nav > li > a {
+            padding: 10px 2px !important;
+        }
+    }
+
+    @media (max-width: 424px) {
+        .hidden-w425 {
+            display: none !important;
+        }
+
+        .col-xs-25 {
+            width: 20% !important;
+        }
+    }
+
+    @media (max-width:479px) {
+        .display_blocks_none_bottom {
+            margin-bottom: 20px;
+        }
+    }
+
+    @media(max-width: 768px) {
+        .tab_iti_fecha {
+            font-size: 12px !important;
+        }
+
+        .btnProgress .progress-bar {
+            padding-top: 5px;
+        }
+
+        .btnProgress {
+            height: 28px;
+        }
+    }
+
+    @media(min-width: 768px) {
+        .fs_servicio {
+            font-size: 1.6rem;
+        }
+    }
+
+    @media (max-width: 400px) {
+        .libres {
+            margin-top: 25px !important;
+            font-size: 15px;
+        }
+    }
+
+    @media (min-width: 992px) and ( max-width: 1199.5px) {
+        .circulo-blue {
+            margin-left: 40px !important;
+            margin-top: 15px !important;
+        }
+
+        .cant {
+            margin-left: 132px !important;
+            margin-top: -65px !important;
+        }
+    }
+
+    @media (max-width: 479px) {
+        .cant-br {
+            display: none !important;
+        }
+    }
+</style>
+<ul class="nav nav-tabs nav-default">
+
+
+    
+    <li class=" hidden-w425">
+        <a data-toggle="tab" class="btn btn-link tab_iti_fecha tabCab " data-itinerario='{"ida":"20/10/2026", "vuelta":"", "retorno":"False" }'>
+            <span class="text-capitalize">mar. 20</span> <span class="text-capitalize">Oct.</span>
+            <br>
+            Desde<br />S/ 70</a>
+    </li>
+
+    
+    
+    <li class="">
+        <a data-toggle="tab" class="btn btn-link tab_iti_fecha tabCab " data-itinerario='{"ida":"21/10/2026", "vuelta":"", "retorno":"False" }'>
+            <span class="text-capitalize">mié. 21</span> <span class="text-capitalize">Oct.</span>
+            <br>
+            Desde<br />S/ 70</a>
+    </li>
+
+    
+    
+    <li class="active">
+        <a data-toggle="tab" href="#tabItinerarios" class="btn btn-link tab_iti_fecha">
+            <span class="text-capitalize">jue. 22</span> <span class="text-capitalize">Oct.</span>
+            <br>
+            Desde<br />
+            S/ 70
+        </a>
+    </li>
+
+    
+    <li class="">
+        <a data-toggle="tab" class="btn btn-link tab_iti_fecha tabCab " data-itinerario='{"ida":"23/10/2026", "vuelta":"", "retorno":"False" }'>
+            <span class="text-capitalize">vie. 23</span> <span class="text-capitalize">Oct.</span>
+            <br>
+            Desde<br />S/ 70</a>
+    </li>
+
+    
+    <li class="">
+        <a data-toggle="tab" class="btn btn-link tab_iti_fecha tabCab " data-itinerario='{"ida":"24/10/2026", "vuelta":"", "retorno":"False" }'>
+            <span class="text-capitalize">sáb. 24</span> <span class="text-capitalize">Oct.</span>
+            <br>
+            Desde<br />S/ 70</a>
+    </li>
+    
+    
+</ul>
+
+<div class="tab-content">
+    <!--contenedor de Tabs -->
+
+    <div id="tabItinerarios" class="tab-pane fade in active">
+        <div class="panel-group">
+            <div class="panel panel-default">
+                <!--  Itinerarios -->
+                
+                <div id="pnlItinerario0" class="row border_blocks itinerarios">
+                    <div class="panel-heading">
+                        <!-- Detalles generales del bus -->
+                        <div class="col-md-3 col-xs-5">
+                            <div class="col-md-12 col-xs-12 p-l-20 p-top-20 reset_styles">
+                                <div class="cursor_pointer" data-target="btnVerAsientos0" onclick="verCroquis(this)">
+                                    
+                                    <h2 class="text-uppercase font_size_2 reset_styles_m_top_20 text_color_red " style="margin-top: -5px; margin-left: -5px;"> 9:00 am</h2>
+                                    <h5 class="text-uppercase fs_servicio reset_styles_m_top_20 " style="margin-top: -5px; margin-left: -5px;">VIP/ESPECIAL</h5>
+                                </div>
+                                <div class="">
+                                    
+                                    
+                                    <div class="text-left font_size_09 cursor_pointer color_blue" style="padding-right: 12px; margin-left: -5px; margin-top: -5px;"
+                                        data-paradas="Lima-Terminal Plaza Norte, Chimbote-Terminal Chimbador" data-target="btnVerAsientos0" onclick="mostrarParadas(this)">
+                                        2 Paradas intermedias
+                                        
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12 col-xs-12" style="padding-top: 10px; padding-bottom: 10px; margin-left: -8px; display: none;">
+                                <div class="col-md-12 col-xs-12 p-l-20 p-top-20 reset_styles">
+                                    
+
+                                    <button  type="button" class="btn btn-primary btn_verAsiento" style="padding: 5px !important;"
+                                        id="btnVerAsientos0" onclick="validarHorario(this)"
+                                        data-id="0" data-puntos1="0" data-puntos2="0"
+                                        data-viaje="6185307" data-bus="0767" data-retorno="False" data-precio1="95" data-precio2="80"
+                                        data-serv1="VIP" data-s1='60' data-serv2="ESPECIAL" data-s2='61' data-escala='Lima-Terminal Plaza Norte, Chimbote-Terminal Chimbador'
+                                        data-p_min1="95.00" data-p_min2="80.00" data-p_max1="105.00" data-p_max2="80.00"
+                                        data-target="#bus0">
+                                        Ver asientos
+                                    </button>
+                                    <div id="btnProgress0" class="progress btnProgress btn_verAsiento" style="display: none; margin: 0 !important; /*margin-right: 5px !important; */">
+                                        <div id="txtProgress0" class="progress-bar progress-bar-striped progress-bar-danger active" role="progressbar"
+                                            aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
+                                            Ver asientos
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-xs-7 p-top-10 p-bottom-20 reset_styles">
+                            <div class="row">
+                                <div class="col-md-4 cursor_pointer" data-target="btnVerAsientos0" onclick="verCroquis(this)">
+                                    <h5 class="m-top-10 reset_styles font_size_12" style="color: green">PISO 1 - 
+                                                                
+                                        
+
+                                        <b class="m-top-10" style="cursor: pointer;" onclick="$('#servicios10').click();">
+                                            VIP
+                                                                   
+                                        </b>
+
+
+                                        
+                                        
+                                    </h5>
+
+                                    <font class="p-l-5 font_size_09 text_float_left">
+                                        <font class="" style="padding-right: 8px; margin-left: -5.5px;">
+                                            Desde <b>S/ 95</b>
+                                            <b class="text_color_red" hidden>ó 0 ptos</b>
+                                        </font>
+                                    </font>
+                                    <h5 class="p-top-10 reset_styles libres" style="color: black; font-weight: bolder">9 libres</h5>
+                                </div>
+
+                                <div class="col-md-8 display_blocks_none">
+                                    
+
+                                    
+
+                                    
+                                    <div class="info-servicios">
+                                        
+                                        <img onclick="$('#servicios10').click();" src="https://www.linea.pe/img_prestaciones/nuevos/asientos-160.png" title="Asientos 160°" alt="Asientos160" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios10').click();" src="https://www.linea.pe/img_prestaciones/nuevos/wifi.png" title="WiFi" alt="WiFi" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios10').click();" src="https://www.linea.pe/img_prestaciones/nuevos/aire-acondicionado.png" title="Aire Acondicionado" alt="Aireacondicionado" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios10').click();" src="https://www.linea.pe/img_prestaciones/nuevos/parada-comercial.png" title="Viaje con escala" alt="ParadaComercial" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios10').click();" src="https://linea.pe/assets/images/circulo-blue.png" class="circulo-blue" title="Otros" style="height: 30px; margin-left: -196px; margin-top: 85px; position: absolute;" />
+                                        <p class="cant" style="position: absolute; margin-left: 165px; margin-top: 5px; color: white; font-weight: bold;" title="Otros" onclick="$('#servicios10').click();">+4</p>
+                                        
+                                    </div>
+                                    <div class="p-l-15 ">
+                                        
+                                        <font id="servicios10" class="info-servicios" data-id="0" data-servicios='[{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/asientos-160.png", "nombre":"Asientos 160°","etiqueta":"Asientos160"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/wifi.png", "nombre":"WiFi","etiqueta":"WiFi"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/aire-acondicionado.png", "nombre":"Aire Acondicionado","etiqueta":"Aireacondicionado"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/parada-comercial.png", "nombre":"Viaje con escala","etiqueta":"ParadaComercial"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/peliculas.png", "nombre":"Streaming","etiqueta":"Películas"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/servicios_higienicos.png", "nombre":"Servicios Higiénicos","etiqueta":"ServiciosHigiénicos"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/cargador-electrico.png", "nombre":"Cargador eléctrico","etiqueta":"Cargadoreléctrico"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/botiquin.png", "nombre":"Botiquín","etiqueta":"Botiquín"}]' onclick="mostrarServicio('', 'VIP', 'servicios10')">
+                                            <!-- Infórmese aquí sobre las prestaciones del servicio -->
+                                        </font>
+                                        
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <br class="cant-br" style="" />
+                            <hr style="margin: 10px 0 0 0; width: 80%;" />
+                            <div class="row">
+                                <div class="col-md-4 m-top-10 cursor_pointer" data-target="btnVerAsientos0" onclick="verCroquis(this)">
+                                    <h5 class="m-top-10 reset_styles font_size_12" style="color: green">PISO 2 - 
+                                                               
+                                        
+                                        <b class="m-top-10">ESPECIAL</b>
+
+                                        
+                                        
+                                    </h5>
+
+                                    <font class="p-l-5 font_size_09 text_float_left">
+                                        <font class="" style="padding-right: 8px; margin-left: -5.5px;">
+                                            Precio Único <b>S/ 80</b>
+                                            <b class="text_color_red" hidden>ó 0 ptos</b>
+                                        </font>
+                                    </font>
+                                    <h5 class="p-top-10 reset_styles libres" style="color: black; font-weight: bolder">45 libres</h5>
+                                </div>
+                                <div class="col-md-8 m-top-10 display_blocks_none">
+                                    
+
+
+
+
+                                    
+                                    <div class="info-servicios">
+                                        
+                                        <img onclick="$('#servicios20').click();" src="https://www.linea.pe/img_prestaciones/nuevos/asiento-ergonomico.png" title="Asientos 140°" alt="AsientosErgonómicos" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios20').click();" src="https://www.linea.pe/img_prestaciones/nuevos/wifi.png" title="WiFi" alt="WiFi" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios20').click();" src="https://www.linea.pe/img_prestaciones/nuevos/aire-acondicionado.png" title="Aire Acondicionado" alt="Aireacondicionado" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios20').click();" src="https://www.linea.pe/img_prestaciones/nuevos/parada-comercial.png" title="Viaje con escala" alt="ParadaComercial" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios10').click();" class="circulo-blue" src="https://linea.pe/assets/images/circulo-blue.png" title="Otros" style="height: 30px; margin-left: -196px; margin-top: 85px; position: absolute;" />
+                                        <p class="cant" style="position: absolute; margin-left: 165px; margin-top: 5px; color: white; font-weight: bold;" title="Otros" onclick="$('#servicios20').click();">+4</p>
+                                        
+                                    </div>
+                                    <div class="p-l-15 ">
+                                        
+                                        <font id="servicios20" class="info-servicios" data-id="0" data-servicios='[{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/asiento-ergonomico.png", "nombre":"Asientos 140°","etiqueta":"AsientosErgonómicos"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/wifi.png", "nombre":"WiFi","etiqueta":"WiFi"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/aire-acondicionado.png", "nombre":"Aire Acondicionado","etiqueta":"Aireacondicionado"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/parada-comercial.png", "nombre":"Viaje con escala","etiqueta":"ParadaComercial"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/peliculas.png", "nombre":"Streaming","etiqueta":"Películas"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/servicios_higienicos.png", "nombre":"Servicios Higiénicos","etiqueta":"ServiciosHigiénicos"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/cargador-electrico.png", "nombre":"Cargador eléctrico","etiqueta":"Cargadoreléctrico"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/botiquin.png", "nombre":"Botiquín","etiqueta":"Botiquín"}]' onclick="mostrarServicio('', 'ESPECIAL', 'servicios20')">
+                                            <!-- Infórmese aquí sobre las prestaciones del servicio -->
+                                        </font>
+                                        
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+
+                        
+                        <div class="col-md-3 col-xs-12 p-top-10 p-bottom-20 reset_styles font_size_09">
+                            <div class="col-md-12 col-xs-6 p-top-10 reset_styles display_blocks_none">
+                                <p class="text_color_red">Embarque:</p>
+                                Av. Paseo de La República 941- La Victoria
+                            </div>
+                            <div class="col-md-12 col-xs-6 p-top-10 reset_styles display_blocks_none">
+                                <p class="text_color_red">Desembarque:</p>
+                                Av. America Sur Nro 2857
+                            </div>
+
+                            <div class="col-md-12 col-xs-12 p-top-10 display_inline_block" style="margin-left: -5px; margin-top: -5px;">
+                                <span class="text_color_red">Embarque:</span>
+                                Av. Paseo de La República 941- La Victoria
+                                <br />
+                                <span class="text_color_red">Desembarque:</span>
+                                Av. America Sur Nro 2857
+                            </div>
+                        </div>
+
+                        
+                    </div>
+                </div>
+                <div id="bus0" class="panel-collapse collapse m-top-10">
+                </div>
+                
+                <div id="pnlItinerario1" class="row border_blocks itinerarios">
+                    <div class="panel-heading">
+                        <!-- Detalles generales del bus -->
+                        <div class="col-md-3 col-xs-5">
+                            <div class="col-md-12 col-xs-12 p-l-20 p-top-20 reset_styles">
+                                <div class="cursor_pointer" data-target="btnVerAsientos1" onclick="verCroquis(this)">
+                                    
+                                    <h2 class="text-uppercase font_size_2 reset_styles_m_top_20 text_color_red " style="margin-top: -5px; margin-left: -5px;"> 8:00 pm</h2>
+                                    <h5 class="text-uppercase fs_servicio reset_styles_m_top_20 " style="margin-top: -5px; margin-left: -5px;">VIP/ESPECIAL EC</h5>
+                                </div>
+                                <div class="">
+                                    
+                                    
+                                    <div class="text-left font_size_09 cursor_pointer color_blue" style="padding-right: 12px; margin-left: -5px; margin-top: -5px;"
+                                        data-paradas="Lima-Terminal Plaza Norte, Chimbote-Terminal Chimbador" data-target="btnVerAsientos1" onclick="mostrarParadas(this)">
+                                        2 Paradas intermedias
+                                        
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12 col-xs-12" style="padding-top: 10px; padding-bottom: 10px; margin-left: -8px; display: none;">
+                                <div class="col-md-12 col-xs-12 p-l-20 p-top-20 reset_styles">
+                                    
+
+                                    <button  type="button" class="btn btn-primary btn_verAsiento" style="padding: 5px !important;"
+                                        id="btnVerAsientos1" onclick="validarHorario(this)"
+                                        data-id="1" data-puntos1="0" data-puntos2="0"
+                                        data-viaje="6185430" data-bus="0386" data-retorno="False" data-precio1="95" data-precio2="70"
+                                        data-serv1="VIP" data-s1='86' data-serv2="ESPECIAL" data-s2='87' data-escala='Lima-Terminal Plaza Norte, Chimbote-Terminal Chimbador'
+                                        data-p_min1="95.00" data-p_min2="70.00" data-p_max1="105.00" data-p_max2="70.00"
+                                        data-target="#bus1">
+                                        Ver asientos
+                                    </button>
+                                    <div id="btnProgress1" class="progress btnProgress btn_verAsiento" style="display: none; margin: 0 !important; /*margin-right: 5px !important; */">
+                                        <div id="txtProgress1" class="progress-bar progress-bar-striped progress-bar-danger active" role="progressbar"
+                                            aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
+                                            Ver asientos
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-xs-7 p-top-10 p-bottom-20 reset_styles">
+                            <div class="row">
+                                <div class="col-md-4 cursor_pointer" data-target="btnVerAsientos1" onclick="verCroquis(this)">
+                                    <h5 class="m-top-10 reset_styles font_size_12" style="color: green">PISO 1 - 
+                                                                
+                                        
+
+                                        <b class="m-top-10" style="cursor: pointer;" onclick="$('#servicios11').click();">
+                                            VIP
+                                                                   
+                                        </b>
+
+
+                                        
+                                        
+                                    </h5>
+
+                                    <font class="p-l-5 font_size_09 text_float_left">
+                                        <font class="" style="padding-right: 8px; margin-left: -5.5px;">
+                                            Desde <b>S/ 95</b>
+                                            <b class="text_color_red" hidden>ó 0 ptos</b>
+                                        </font>
+                                    </font>
+                                    <h5 class="p-top-10 reset_styles libres" style="color: black; font-weight: bolder">10 libres</h5>
+                                </div>
+
+                                <div class="col-md-8 display_blocks_none">
+                                    
+
+                                    
+
+                                    
+                                    <div class="info-servicios">
+                                        
+                                        <img onclick="$('#servicios11').click();" src="https://www.linea.pe/img_prestaciones/nuevos/asientos-160.png" title="Asientos 160°" alt="Asientos160" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios11').click();" src="https://www.linea.pe/img_prestaciones/nuevos/wifi.png" title="WiFi" alt="WiFi" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios11').click();" src="https://www.linea.pe/img_prestaciones/nuevos/aire-acondicionado.png" title="Aire Acondicionado" alt="Aireacondicionado" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios11').click();" src="https://www.linea.pe/img_prestaciones/nuevos/parada-comercial.png" title="Viaje con escala" alt="ParadaComercial" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios11').click();" src="https://linea.pe/assets/images/circulo-blue.png" class="circulo-blue" title="Otros" style="height: 30px; margin-left: -196px; margin-top: 85px; position: absolute;" />
+                                        <p class="cant" style="position: absolute; margin-left: 165px; margin-top: 5px; color: white; font-weight: bold;" title="Otros" onclick="$('#servicios11').click();">+4</p>
+                                        
+                                    </div>
+                                    <div class="p-l-15 ">
+                                        
+                                        <font id="servicios11" class="info-servicios" data-id="1" data-servicios='[{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/asientos-160.png", "nombre":"Asientos 160°","etiqueta":"Asientos160"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/wifi.png", "nombre":"WiFi","etiqueta":"WiFi"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/aire-acondicionado.png", "nombre":"Aire Acondicionado","etiqueta":"Aireacondicionado"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/parada-comercial.png", "nombre":"Viaje con escala","etiqueta":"ParadaComercial"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/peliculas.png", "nombre":"Streaming","etiqueta":"Películas"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/servicios_higienicos.png", "nombre":"Servicios Higiénicos","etiqueta":"ServiciosHigiénicos"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/cargador-electrico.png", "nombre":"Cargador eléctrico","etiqueta":"Cargadoreléctrico"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/botiquin.png", "nombre":"Botiquín","etiqueta":"Botiquín"}]' onclick="mostrarServicio('', 'VIP', 'servicios11')">
+                                            <!-- Infórmese aquí sobre las prestaciones del servicio -->
+                                        </font>
+                                        
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <br class="cant-br" style="" />
+                            <hr style="margin: 10px 0 0 0; width: 80%;" />
+                            <div class="row">
+                                <div class="col-md-4 m-top-10 cursor_pointer" data-target="btnVerAsientos1" onclick="verCroquis(this)">
+                                    <h5 class="m-top-10 reset_styles font_size_12" style="color: green">PISO 2 - 
+                                                               
+                                        
+                                        <b class="m-top-10">ESPECIAL</b>
+
+                                        
+                                        
+                                    </h5>
+
+                                    <font class="p-l-5 font_size_09 text_float_left">
+                                        <font class="" style="padding-right: 8px; margin-left: -5.5px;">
+                                            Precio Único <b>S/ 70</b>
+                                            <b class="text_color_red" hidden>ó 0 ptos</b>
+                                        </font>
+                                    </font>
+                                    <h5 class="p-top-10 reset_styles libres" style="color: black; font-weight: bolder">42 libres</h5>
+                                </div>
+                                <div class="col-md-8 m-top-10 display_blocks_none">
+                                    
+
+
+
+
+                                    
+                                    <div class="info-servicios">
+                                        
+                                        <img onclick="$('#servicios21').click();" src="https://www.linea.pe/img_prestaciones/nuevos/asiento-ergonomico.png" title="Asientos 140°" alt="AsientosErgonómicos" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios21').click();" src="https://www.linea.pe/img_prestaciones/nuevos/wifi.png" title="WiFi" alt="WiFi" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios21').click();" src="https://www.linea.pe/img_prestaciones/nuevos/aire-acondicionado.png" title="Aire Acondicionado" alt="Aireacondicionado" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios21').click();" src="https://www.linea.pe/img_prestaciones/nuevos/parada-comercial.png" title="Viaje con escala" alt="ParadaComercial" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios11').click();" class="circulo-blue" src="https://linea.pe/assets/images/circulo-blue.png" title="Otros" style="height: 30px; margin-left: -196px; margin-top: 85px; position: absolute;" />
+                                        <p class="cant" style="position: absolute; margin-left: 165px; margin-top: 5px; color: white; font-weight: bold;" title="Otros" onclick="$('#servicios21').click();">+4</p>
+                                        
+                                    </div>
+                                    <div class="p-l-15 ">
+                                        
+                                        <font id="servicios21" class="info-servicios" data-id="1" data-servicios='[{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/asiento-ergonomico.png", "nombre":"Asientos 140°","etiqueta":"AsientosErgonómicos"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/wifi.png", "nombre":"WiFi","etiqueta":"WiFi"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/aire-acondicionado.png", "nombre":"Aire Acondicionado","etiqueta":"Aireacondicionado"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/parada-comercial.png", "nombre":"Viaje con escala","etiqueta":"ParadaComercial"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/peliculas.png", "nombre":"Streaming","etiqueta":"Películas"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/servicios_higienicos.png", "nombre":"Servicios Higiénicos","etiqueta":"ServiciosHigiénicos"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/cargador-electrico.png", "nombre":"Cargador eléctrico","etiqueta":"Cargadoreléctrico"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/botiquin.png", "nombre":"Botiquín","etiqueta":"Botiquín"}]' onclick="mostrarServicio('', 'ESPECIAL', 'servicios21')">
+                                            <!-- Infórmese aquí sobre las prestaciones del servicio -->
+                                        </font>
+                                        
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+
+                        
+                        <div class="col-md-3 col-xs-12 p-top-10 p-bottom-20 reset_styles font_size_09">
+                            <div class="col-md-12 col-xs-6 p-top-10 reset_styles display_blocks_none">
+                                <p class="text_color_red">Embarque:</p>
+                                Av. Paseo de La República 941- La Victoria
+                            </div>
+                            <div class="col-md-12 col-xs-6 p-top-10 reset_styles display_blocks_none">
+                                <p class="text_color_red">Desembarque:</p>
+                                Av. America Sur Nro 2857
+                            </div>
+
+                            <div class="col-md-12 col-xs-12 p-top-10 display_inline_block" style="margin-left: -5px; margin-top: -5px;">
+                                <span class="text_color_red">Embarque:</span>
+                                Av. Paseo de La República 941- La Victoria
+                                <br />
+                                <span class="text_color_red">Desembarque:</span>
+                                Av. America Sur Nro 2857
+                            </div>
+                        </div>
+
+                        
+                    </div>
+                </div>
+                <div id="bus1" class="panel-collapse collapse m-top-10">
+                </div>
+                
+                <div id="pnlItinerario2" class="row border_blocks itinerarios">
+                    <div class="panel-heading">
+                        <!-- Detalles generales del bus -->
+                        <div class="col-md-3 col-xs-5">
+                            <div class="col-md-12 col-xs-12 p-l-20 p-top-20 reset_styles">
+                                <div class="cursor_pointer" data-target="btnVerAsientos2" onclick="verCroquis(this)">
+                                    
+                                    <h2 class="text-uppercase font_size_2 reset_styles_m_top_20 text_color_red " style="margin-top: -5px; margin-left: -5px;"> 8:00 pm</h2>
+                                    <h5 class="text-uppercase fs_servicio reset_styles_m_top_20 " style="margin-top: -5px; margin-left: -5px;">SUPER VIP</h5>
+                                </div>
+                                <div class="">
+                                    
+                                    
+                                    <div class="text-left font_size_09  color_blue" style="padding-right: 12px; margin-left: -5px; margin-top: -5px;"
+                                        data-paradas="" data-target="btnVerAsientos2" onclick="">
+                                        Sin paradas intermedias
+                                        
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12 col-xs-12" style="padding-top: 10px; padding-bottom: 10px; margin-left: -8px; display: none;">
+                                <div class="col-md-12 col-xs-12 p-l-20 p-top-20 reset_styles">
+                                    
+
+                                    <button  type="button" class="btn btn-primary btn_verAsiento" style="padding: 5px !important;"
+                                        id="btnVerAsientos2" onclick="validarHorario(this)"
+                                        data-id="2" data-puntos1="0" data-puntos2="0"
+                                        data-viaje="6185135" data-bus="0726" data-retorno="False" data-precio1="115" data-precio2="155"
+                                        data-serv1="VIP" data-s1='17' data-serv2="SUPER VIP 2°PISO" data-s2='18' data-escala=''
+                                        data-p_min1="115.00" data-p_min2="155.00" data-p_max1="125.00" data-p_max2="165.00"
+                                        data-target="#bus2">
+                                        Ver asientos
+                                    </button>
+                                    <div id="btnProgress2" class="progress btnProgress btn_verAsiento" style="display: none; margin: 0 !important; /*margin-right: 5px !important; */">
+                                        <div id="txtProgress2" class="progress-bar progress-bar-striped progress-bar-danger active" role="progressbar"
+                                            aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
+                                            Ver asientos
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-xs-7 p-top-10 p-bottom-20 reset_styles">
+                            <div class="row">
+                                <div class="col-md-4 cursor_pointer" data-target="btnVerAsientos2" onclick="verCroquis(this)">
+                                    <h5 class="m-top-10 reset_styles font_size_12" style="color: green">PISO 1 - 
+                                                                
+                                        
+
+                                        <b class="m-top-10" style="cursor: pointer;" onclick="$('#servicios12').click();">
+                                            VIP
+                                                                   
+                                        </b>
+
+
+                                        
+                                        
+                                    </h5>
+
+                                    <font class="p-l-5 font_size_09 text_float_left">
+                                        <font class="" style="padding-right: 8px; margin-left: -5.5px;">
+                                            Desde <b>S/ 115</b>
+                                            <b class="text_color_red" hidden>ó 0 ptos</b>
+                                        </font>
+                                    </font>
+                                    <h5 class="p-top-10 reset_styles libres" style="color: black; font-weight: bolder">5 libres</h5>
+                                </div>
+
+                                <div class="col-md-8 display_blocks_none">
+                                    
+
+                                    
+
+                                    
+                                    <div class="info-servicios">
+                                        
+                                        <img onclick="$('#servicios12').click();" src="https://www.linea.pe/img_prestaciones/nuevos/asientos-160.png" title="Asientos 160°" alt="Asientos160" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios12').click();" src="https://www.linea.pe/img_prestaciones/nuevos/wifi.png" title="WiFi" alt="WiFi" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios12').click();" src="https://www.linea.pe/img_prestaciones/nuevos/aire-acondicionado.png" title="Aire Acondicionado" alt="Aireacondicionado" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios12').click();" src="https://www.linea.pe/img_prestaciones/nuevos/peliculas.png" title="Streaming" alt="Películas" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios12').click();" src="https://linea.pe/assets/images/circulo-blue.png" class="circulo-blue" title="Otros" style="height: 30px; margin-left: -196px; margin-top: 85px; position: absolute;" />
+                                        <p class="cant" style="position: absolute; margin-left: 165px; margin-top: 5px; color: white; font-weight: bold;" title="Otros" onclick="$('#servicios12').click();">+3</p>
+                                        
+                                    </div>
+                                    <div class="p-l-15 ">
+                                        
+                                        <font id="servicios12" class="info-servicios" data-id="2" data-servicios='[{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/asientos-160.png", "nombre":"Asientos 160°","etiqueta":"Asientos160"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/wifi.png", "nombre":"WiFi","etiqueta":"WiFi"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/aire-acondicionado.png", "nombre":"Aire Acondicionado","etiqueta":"Aireacondicionado"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/peliculas.png", "nombre":"Streaming","etiqueta":"Películas"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/servicios_higienicos.png", "nombre":"Servicios Higiénicos","etiqueta":"ServiciosHigiénicos"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/cargador-electrico.png", "nombre":"Cargador eléctrico","etiqueta":"Cargadoreléctrico"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/botiquin.png", "nombre":"Botiquín","etiqueta":"Botiquín"}]' onclick="mostrarServicio('', 'VIP', 'servicios12')">
+                                            <!-- Infórmese aquí sobre las prestaciones del servicio -->
+                                        </font>
+                                        
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <br class="cant-br" style="" />
+                            <hr style="margin: 10px 0 0 0; width: 80%;" />
+                            <div class="row">
+                                <div class="col-md-4 m-top-10 cursor_pointer" data-target="btnVerAsientos2" onclick="verCroquis(this)">
+                                    <h5 class="m-top-10 reset_styles font_size_12" style="color: green">PISO 2 - 
+                                                               
+                                        
+                                        <b class="m-top-10">SUPER VIP 2°PISO</b>
+
+                                        
+                                        
+                                    </h5>
+
+                                    <font class="p-l-5 font_size_09 text_float_left">
+                                        <font class="" style="padding-right: 8px; margin-left: -5.5px;">
+                                            Desde <b>S/ 155</b>
+                                            <b class="text_color_red" hidden>ó 0 ptos</b>
+                                        </font>
+                                    </font>
+                                    <h5 class="p-top-10 reset_styles libres" style="color: black; font-weight: bolder">10 libres</h5>
+                                </div>
+                                <div class="col-md-8 m-top-10 display_blocks_none">
+                                    
+
+
+
+
+                                    
+                                    <div class="info-servicios">
+                                        
+                                        <img onclick="$('#servicios22').click();" src="https://www.linea.pe/img_prestaciones/servicioabordo.png" title="Servicio a Bordo" alt="ServicioaBordo" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios22').click();" src="https://www.linea.pe/img_prestaciones/nuevos/asientos-180.png" title="Asientos 180°" alt="Asientos180" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios22').click();" src="https://www.linea.pe/img_prestaciones/nuevos/wifi.png" title="WiFi" alt="WiFi" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios22').click();" src="https://www.linea.pe/img_prestaciones/nuevos/aire-acondicionado.png" title="Aire Acondicionado" alt="Aireacondicionado" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios12').click();" class="circulo-blue" src="https://linea.pe/assets/images/circulo-blue.png" title="Otros" style="height: 30px; margin-left: -196px; margin-top: 85px; position: absolute;" />
+                                        <p class="cant" style="position: absolute; margin-left: 165px; margin-top: 5px; color: white; font-weight: bold;" title="Otros" onclick="$('#servicios22').click();">+4</p>
+                                        
+                                    </div>
+                                    <div class="p-l-15 ">
+                                        
+                                        <font id="servicios22" class="info-servicios" data-id="2" data-servicios='[{"ruta":"https://www.linea.pe/img_prestaciones/servicioabordo.png", "nombre":"Servicio a Bordo","etiqueta":"ServicioaBordo"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/asientos-180.png", "nombre":"Asientos 180°","etiqueta":"Asientos180"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/wifi.png", "nombre":"WiFi","etiqueta":"WiFi"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/aire-acondicionado.png", "nombre":"Aire Acondicionado","etiqueta":"Aireacondicionado"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/snack.png", "nombre":"Snack","etiqueta":"Snack"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/servicios_higienicos.png", "nombre":"Servicios Higiénicos","etiqueta":"ServiciosHigiénicos"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/cargador-electrico.png", "nombre":"Cargador eléctrico","etiqueta":"Cargadoreléctrico"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/botiquin.png", "nombre":"Botiquín","etiqueta":"Botiquín"}]' onclick="mostrarServicio('', 'SUPER VIP 2°PISO', 'servicios22')">
+                                            <!-- Infórmese aquí sobre las prestaciones del servicio -->
+                                        </font>
+                                        
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+
+                        
+                        <div class="col-md-3 col-xs-12 p-top-10 p-bottom-20 reset_styles font_size_09">
+                            <div class="col-md-12 col-xs-6 p-top-10 reset_styles display_blocks_none">
+                                <p class="text_color_red">Embarque:</p>
+                                Av. Paseo de La República 941- La Victoria
+                            </div>
+                            <div class="col-md-12 col-xs-6 p-top-10 reset_styles display_blocks_none">
+                                <p class="text_color_red">Desembarque:</p>
+                                Av. America Sur Nro 2857
+                            </div>
+
+                            <div class="col-md-12 col-xs-12 p-top-10 display_inline_block" style="margin-left: -5px; margin-top: -5px;">
+                                <span class="text_color_red">Embarque:</span>
+                                Av. Paseo de La República 941- La Victoria
+                                <br />
+                                <span class="text_color_red">Desembarque:</span>
+                                Av. America Sur Nro 2857
+                            </div>
+                        </div>
+
+                        
+                    </div>
+                </div>
+                <div id="bus2" class="panel-collapse collapse m-top-10">
+                </div>
+                
+                <div id="pnlItinerario3" class="row border_blocks itinerarios">
+                    <div class="panel-heading">
+                        <!-- Detalles generales del bus -->
+                        <div class="col-md-3 col-xs-5">
+                            <div class="col-md-12 col-xs-12 p-l-20 p-top-20 reset_styles">
+                                <div class="cursor_pointer" data-target="btnVerAsientos3" onclick="verCroquis(this)">
+                                    
+                                    <h2 class="text-uppercase font_size_2 reset_styles_m_top_20 text_color_red " style="margin-top: -5px; margin-left: -5px;"> 8:30 pm</h2>
+                                    <h5 class="text-uppercase fs_servicio reset_styles_m_top_20 " style="margin-top: -5px; margin-left: -5px;">VIP/ESPECIAL</h5>
+                                </div>
+                                <div class="">
+                                    
+                                    
+                                    <div class="text-left font_size_09  color_blue" style="padding-right: 12px; margin-left: -5px; margin-top: -5px;"
+                                        data-paradas="" data-target="btnVerAsientos3" onclick="">
+                                        Sin paradas intermedias
+                                        
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12 col-xs-12" style="padding-top: 10px; padding-bottom: 10px; margin-left: -8px; display: none;">
+                                <div class="col-md-12 col-xs-12 p-l-20 p-top-20 reset_styles">
+                                    
+
+                                    <button  type="button" class="btn btn-primary btn_verAsiento" style="padding: 5px !important;"
+                                        id="btnVerAsientos3" onclick="validarHorario(this)"
+                                        data-id="3" data-puntos1="0" data-puntos2="0"
+                                        data-viaje="6185306" data-bus="0722" data-retorno="False" data-precio1="115" data-precio2="80"
+                                        data-serv1="VIP 1°PISO" data-s1='43' data-serv2="ESPECIAL 2°PISO" data-s2='44' data-escala=''
+                                        data-p_min1="115.00" data-p_min2="80.00" data-p_max1="125.00" data-p_max2="80.00"
+                                        data-target="#bus3">
+                                        Ver asientos
+                                    </button>
+                                    <div id="btnProgress3" class="progress btnProgress btn_verAsiento" style="display: none; margin: 0 !important; /*margin-right: 5px !important; */">
+                                        <div id="txtProgress3" class="progress-bar progress-bar-striped progress-bar-danger active" role="progressbar"
+                                            aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
+                                            Ver asientos
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-xs-7 p-top-10 p-bottom-20 reset_styles">
+                            <div class="row">
+                                <div class="col-md-4 cursor_pointer" data-target="btnVerAsientos3" onclick="verCroquis(this)">
+                                    <h5 class="m-top-10 reset_styles font_size_12" style="color: green">PISO 1 - 
+                                                                
+                                        
+
+                                        <b class="m-top-10" style="cursor: pointer;" onclick="$('#servicios13').click();">
+                                            VIP 1°PISO
+                                                                   
+                                        </b>
+
+
+                                        
+                                        
+                                    </h5>
+
+                                    <font class="p-l-5 font_size_09 text_float_left">
+                                        <font class="" style="padding-right: 8px; margin-left: -5.5px;">
+                                            Desde <b>S/ 115</b>
+                                            <b class="text_color_red" hidden>ó 0 ptos</b>
+                                        </font>
+                                    </font>
+                                    <h5 class="p-top-10 reset_styles libres" style="color: black; font-weight: bolder">6 libres</h5>
+                                </div>
+
+                                <div class="col-md-8 display_blocks_none">
+                                    
+
+                                    
+
+                                    
+                                    <div class="info-servicios">
+                                        
+                                        <img onclick="$('#servicios13').click();" src="https://www.linea.pe/img_prestaciones/nuevos/asientos-160.png" title="Asientos 160°" alt="Asientos160" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios13').click();" src="https://www.linea.pe/img_prestaciones/nuevos/wifi.png" title="WiFi" alt="WiFi" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios13').click();" src="https://www.linea.pe/img_prestaciones/nuevos/aire-acondicionado.png" title="Aire Acondicionado" alt="Aireacondicionado" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios13').click();" src="https://www.linea.pe/img_prestaciones/nuevos/peliculas.png" title="Streaming" alt="Películas" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios13').click();" src="https://linea.pe/assets/images/circulo-blue.png" class="circulo-blue" title="Otros" style="height: 30px; margin-left: -196px; margin-top: 85px; position: absolute;" />
+                                        <p class="cant" style="position: absolute; margin-left: 165px; margin-top: 5px; color: white; font-weight: bold;" title="Otros" onclick="$('#servicios13').click();">+3</p>
+                                        
+                                    </div>
+                                    <div class="p-l-15 ">
+                                        
+                                        <font id="servicios13" class="info-servicios" data-id="3" data-servicios='[{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/asientos-160.png", "nombre":"Asientos 160°","etiqueta":"Asientos160"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/wifi.png", "nombre":"WiFi","etiqueta":"WiFi"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/aire-acondicionado.png", "nombre":"Aire Acondicionado","etiqueta":"Aireacondicionado"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/peliculas.png", "nombre":"Streaming","etiqueta":"Películas"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/servicios_higienicos.png", "nombre":"Servicios Higiénicos","etiqueta":"ServiciosHigiénicos"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/cargador-electrico.png", "nombre":"Cargador eléctrico","etiqueta":"Cargadoreléctrico"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/botiquin.png", "nombre":"Botiquín","etiqueta":"Botiquín"}]' onclick="mostrarServicio('', 'VIP 1°PISO', 'servicios13')">
+                                            <!-- Infórmese aquí sobre las prestaciones del servicio -->
+                                        </font>
+                                        
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <br class="cant-br" style="" />
+                            <hr style="margin: 10px 0 0 0; width: 80%;" />
+                            <div class="row">
+                                <div class="col-md-4 m-top-10 cursor_pointer" data-target="btnVerAsientos3" onclick="verCroquis(this)">
+                                    <h5 class="m-top-10 reset_styles font_size_12" style="color: green">PISO 2 - 
+                                                               
+                                        
+                                        <b class="m-top-10">ESPECIAL 2°PISO</b>
+
+                                        
+                                        
+                                    </h5>
+
+                                    <font class="p-l-5 font_size_09 text_float_left">
+                                        <font class="" style="padding-right: 8px; margin-left: -5.5px;">
+                                            Precio Único <b>S/ 80</b>
+                                            <b class="text_color_red" hidden>ó 0 ptos</b>
+                                        </font>
+                                    </font>
+                                    <h5 class="p-top-10 reset_styles libres" style="color: black; font-weight: bolder">47 libres</h5>
+                                </div>
+                                <div class="col-md-8 m-top-10 display_blocks_none">
+                                    
+
+
+
+
+                                    
+                                    <div class="info-servicios">
+                                        
+                                        <img onclick="$('#servicios23').click();" src="https://www.linea.pe/img_prestaciones/nuevos/asiento-ergonomico.png" title="Asientos 140°" alt="AsientosErgonómicos" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios23').click();" src="https://www.linea.pe/img_prestaciones/nuevos/wifi.png" title="WiFi" alt="WiFi" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios23').click();" src="https://www.linea.pe/img_prestaciones/nuevos/aire-acondicionado.png" title="Aire Acondicionado" alt="Aireacondicionado" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios23').click();" src="https://www.linea.pe/img_prestaciones/nuevos/peliculas.png" title="Streaming" alt="Películas" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios13').click();" class="circulo-blue" src="https://linea.pe/assets/images/circulo-blue.png" title="Otros" style="height: 30px; margin-left: -196px; margin-top: 85px; position: absolute;" />
+                                        <p class="cant" style="position: absolute; margin-left: 165px; margin-top: 5px; color: white; font-weight: bold;" title="Otros" onclick="$('#servicios23').click();">+3</p>
+                                        
+                                    </div>
+                                    <div class="p-l-15 ">
+                                        
+                                        <font id="servicios23" class="info-servicios" data-id="3" data-servicios='[{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/asiento-ergonomico.png", "nombre":"Asientos 140°","etiqueta":"AsientosErgonómicos"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/wifi.png", "nombre":"WiFi","etiqueta":"WiFi"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/aire-acondicionado.png", "nombre":"Aire Acondicionado","etiqueta":"Aireacondicionado"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/peliculas.png", "nombre":"Streaming","etiqueta":"Películas"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/servicios_higienicos.png", "nombre":"Servicios Higiénicos","etiqueta":"ServiciosHigiénicos"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/cargador-electrico.png", "nombre":"Cargador eléctrico","etiqueta":"Cargadoreléctrico"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/botiquin.png", "nombre":"Botiquín","etiqueta":"Botiquín"}]' onclick="mostrarServicio('', 'ESPECIAL 2°PISO', 'servicios23')">
+                                            <!-- Infórmese aquí sobre las prestaciones del servicio -->
+                                        </font>
+                                        
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+
+                        
+                        <div class="col-md-3 col-xs-12 p-top-10 p-bottom-20 reset_styles font_size_09">
+                            <div class="col-md-12 col-xs-6 p-top-10 reset_styles display_blocks_none">
+                                <p class="text_color_red">Embarque:</p>
+                                Av. Paseo de La República 941- La Victoria
+                            </div>
+                            <div class="col-md-12 col-xs-6 p-top-10 reset_styles display_blocks_none">
+                                <p class="text_color_red">Desembarque:</p>
+                                Av. America Sur Nro 2857
+                            </div>
+
+                            <div class="col-md-12 col-xs-12 p-top-10 display_inline_block" style="margin-left: -5px; margin-top: -5px;">
+                                <span class="text_color_red">Embarque:</span>
+                                Av. Paseo de La República 941- La Victoria
+                                <br />
+                                <span class="text_color_red">Desembarque:</span>
+                                Av. America Sur Nro 2857
+                            </div>
+                        </div>
+
+                        
+                    </div>
+                </div>
+                <div id="bus3" class="panel-collapse collapse m-top-10">
+                </div>
+                
+                <div id="pnlItinerario4" class="row border_blocks itinerarios">
+                    <div class="panel-heading">
+                        <!-- Detalles generales del bus -->
+                        <div class="col-md-3 col-xs-5">
+                            <div class="col-md-12 col-xs-12 p-l-20 p-top-20 reset_styles">
+                                <div class="cursor_pointer" data-target="btnVerAsientos4" onclick="verCroquis(this)">
+                                    
+                                    <h2 class="text-uppercase font_size_2 reset_styles_m_top_20 text_color_red " style="margin-top: -5px; margin-left: -5px;"> 9:00 pm</h2>
+                                    <h5 class="text-uppercase fs_servicio reset_styles_m_top_20 " style="margin-top: -5px; margin-left: -5px;">SUPER VIP</h5>
+                                </div>
+                                <div class="">
+                                    
+                                    
+                                    <div class="text-left font_size_09  color_blue" style="padding-right: 12px; margin-left: -5px; margin-top: -5px;"
+                                        data-paradas="" data-target="btnVerAsientos4" onclick="">
+                                        Sin paradas intermedias
+                                        
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12 col-xs-12" style="padding-top: 10px; padding-bottom: 10px; margin-left: -8px; display: none;">
+                                <div class="col-md-12 col-xs-12 p-l-20 p-top-20 reset_styles">
+                                    
+
+                                    <button  type="button" class="btn btn-primary btn_verAsiento" style="padding: 5px !important;"
+                                        id="btnVerAsientos4" onclick="validarHorario(this)"
+                                        data-id="4" data-puntos1="0" data-puntos2="0"
+                                        data-viaje="6185134" data-bus="0724" data-retorno="False" data-precio1="115" data-precio2="155"
+                                        data-serv1="VIP" data-s1='17' data-serv2="SUPER VIP 2°PISO" data-s2='18' data-escala=''
+                                        data-p_min1="115.00" data-p_min2="155.00" data-p_max1="125.00" data-p_max2="165.00"
+                                        data-target="#bus4">
+                                        Ver asientos
+                                    </button>
+                                    <div id="btnProgress4" class="progress btnProgress btn_verAsiento" style="display: none; margin: 0 !important; /*margin-right: 5px !important; */">
+                                        <div id="txtProgress4" class="progress-bar progress-bar-striped progress-bar-danger active" role="progressbar"
+                                            aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
+                                            Ver asientos
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-xs-7 p-top-10 p-bottom-20 reset_styles">
+                            <div class="row">
+                                <div class="col-md-4 cursor_pointer" data-target="btnVerAsientos4" onclick="verCroquis(this)">
+                                    <h5 class="m-top-10 reset_styles font_size_12" style="color: green">PISO 1 - 
+                                                                
+                                        
+
+                                        <b class="m-top-10" style="cursor: pointer;" onclick="$('#servicios14').click();">
+                                            VIP
+                                                                   
+                                        </b>
+
+
+                                        
+                                        
+                                    </h5>
+
+                                    <font class="p-l-5 font_size_09 text_float_left">
+                                        <font class="" style="padding-right: 8px; margin-left: -5.5px;">
+                                            Desde <b>S/ 115</b>
+                                            <b class="text_color_red" hidden>ó 0 ptos</b>
+                                        </font>
+                                    </font>
+                                    <h5 class="p-top-10 reset_styles libres" style="color: black; font-weight: bolder">6 libres</h5>
+                                </div>
+
+                                <div class="col-md-8 display_blocks_none">
+                                    
+
+                                    
+
+                                    
+                                    <div class="info-servicios">
+                                        
+                                        <img onclick="$('#servicios14').click();" src="https://www.linea.pe/img_prestaciones/nuevos/asientos-160.png" title="Asientos 160°" alt="Asientos160" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios14').click();" src="https://www.linea.pe/img_prestaciones/nuevos/wifi.png" title="WiFi" alt="WiFi" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios14').click();" src="https://www.linea.pe/img_prestaciones/nuevos/aire-acondicionado.png" title="Aire Acondicionado" alt="Aireacondicionado" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios14').click();" src="https://www.linea.pe/img_prestaciones/nuevos/peliculas.png" title="Streaming" alt="Películas" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios14').click();" src="https://linea.pe/assets/images/circulo-blue.png" class="circulo-blue" title="Otros" style="height: 30px; margin-left: -196px; margin-top: 85px; position: absolute;" />
+                                        <p class="cant" style="position: absolute; margin-left: 165px; margin-top: 5px; color: white; font-weight: bold;" title="Otros" onclick="$('#servicios14').click();">+3</p>
+                                        
+                                    </div>
+                                    <div class="p-l-15 ">
+                                        
+                                        <font id="servicios14" class="info-servicios" data-id="4" data-servicios='[{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/asientos-160.png", "nombre":"Asientos 160°","etiqueta":"Asientos160"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/wifi.png", "nombre":"WiFi","etiqueta":"WiFi"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/aire-acondicionado.png", "nombre":"Aire Acondicionado","etiqueta":"Aireacondicionado"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/peliculas.png", "nombre":"Streaming","etiqueta":"Películas"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/servicios_higienicos.png", "nombre":"Servicios Higiénicos","etiqueta":"ServiciosHigiénicos"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/cargador-electrico.png", "nombre":"Cargador eléctrico","etiqueta":"Cargadoreléctrico"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/botiquin.png", "nombre":"Botiquín","etiqueta":"Botiquín"}]' onclick="mostrarServicio('', 'VIP', 'servicios14')">
+                                            <!-- Infórmese aquí sobre las prestaciones del servicio -->
+                                        </font>
+                                        
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <br class="cant-br" style="" />
+                            <hr style="margin: 10px 0 0 0; width: 80%;" />
+                            <div class="row">
+                                <div class="col-md-4 m-top-10 cursor_pointer" data-target="btnVerAsientos4" onclick="verCroquis(this)">
+                                    <h5 class="m-top-10 reset_styles font_size_12" style="color: green">PISO 2 - 
+                                                               
+                                        
+                                        <b class="m-top-10">SUPER VIP 2°PISO</b>
+
+                                        
+                                        
+                                    </h5>
+
+                                    <font class="p-l-5 font_size_09 text_float_left">
+                                        <font class="" style="padding-right: 8px; margin-left: -5.5px;">
+                                            Desde <b>S/ 155</b>
+                                            <b class="text_color_red" hidden>ó 0 ptos</b>
+                                        </font>
+                                    </font>
+                                    <h5 class="p-top-10 reset_styles libres" style="color: black; font-weight: bolder">15 libres</h5>
+                                </div>
+                                <div class="col-md-8 m-top-10 display_blocks_none">
+                                    
+
+
+
+
+                                    
+                                    <div class="info-servicios">
+                                        
+                                        <img onclick="$('#servicios24').click();" src="https://www.linea.pe/img_prestaciones/servicioabordo.png" title="Servicio a Bordo" alt="ServicioaBordo" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios24').click();" src="https://www.linea.pe/img_prestaciones/nuevos/asientos-180.png" title="Asientos 180°" alt="Asientos180" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios24').click();" src="https://www.linea.pe/img_prestaciones/nuevos/wifi.png" title="WiFi" alt="WiFi" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios24').click();" src="https://www.linea.pe/img_prestaciones/nuevos/aire-acondicionado.png" title="Aire Acondicionado" alt="Aireacondicionado" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios14').click();" class="circulo-blue" src="https://linea.pe/assets/images/circulo-blue.png" title="Otros" style="height: 30px; margin-left: -196px; margin-top: 85px; position: absolute;" />
+                                        <p class="cant" style="position: absolute; margin-left: 165px; margin-top: 5px; color: white; font-weight: bold;" title="Otros" onclick="$('#servicios24').click();">+4</p>
+                                        
+                                    </div>
+                                    <div class="p-l-15 ">
+                                        
+                                        <font id="servicios24" class="info-servicios" data-id="4" data-servicios='[{"ruta":"https://www.linea.pe/img_prestaciones/servicioabordo.png", "nombre":"Servicio a Bordo","etiqueta":"ServicioaBordo"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/asientos-180.png", "nombre":"Asientos 180°","etiqueta":"Asientos180"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/wifi.png", "nombre":"WiFi","etiqueta":"WiFi"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/aire-acondicionado.png", "nombre":"Aire Acondicionado","etiqueta":"Aireacondicionado"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/snack.png", "nombre":"Snack","etiqueta":"Snack"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/servicios_higienicos.png", "nombre":"Servicios Higiénicos","etiqueta":"ServiciosHigiénicos"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/cargador-electrico.png", "nombre":"Cargador eléctrico","etiqueta":"Cargadoreléctrico"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/botiquin.png", "nombre":"Botiquín","etiqueta":"Botiquín"}]' onclick="mostrarServicio('', 'SUPER VIP 2°PISO', 'servicios24')">
+                                            <!-- Infórmese aquí sobre las prestaciones del servicio -->
+                                        </font>
+                                        
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+
+                        
+                        <div class="col-md-3 col-xs-12 p-top-10 p-bottom-20 reset_styles font_size_09">
+                            <div class="col-md-12 col-xs-6 p-top-10 reset_styles display_blocks_none">
+                                <p class="text_color_red">Embarque:</p>
+                                Av. Paseo de La República 941- La Victoria
+                            </div>
+                            <div class="col-md-12 col-xs-6 p-top-10 reset_styles display_blocks_none">
+                                <p class="text_color_red">Desembarque:</p>
+                                Av. America Sur Nro 2857
+                            </div>
+
+                            <div class="col-md-12 col-xs-12 p-top-10 display_inline_block" style="margin-left: -5px; margin-top: -5px;">
+                                <span class="text_color_red">Embarque:</span>
+                                Av. Paseo de La República 941- La Victoria
+                                <br />
+                                <span class="text_color_red">Desembarque:</span>
+                                Av. America Sur Nro 2857
+                            </div>
+                        </div>
+
+                        
+                    </div>
+                </div>
+                <div id="bus4" class="panel-collapse collapse m-top-10">
+                </div>
+                
+                <div id="pnlItinerario5" class="row border_blocks itinerarios">
+                    <div class="panel-heading">
+                        <!-- Detalles generales del bus -->
+                        <div class="col-md-3 col-xs-5">
+                            <div class="col-md-12 col-xs-12 p-l-20 p-top-20 reset_styles">
+                                <div class="cursor_pointer" data-target="btnVerAsientos5" onclick="verCroquis(this)">
+                                    
+                                    <h2 class="text-uppercase font_size_2 reset_styles_m_top_20 text_color_red " style="margin-top: -5px; margin-left: -5px;">10:00 pm</h2>
+                                    <h5 class="text-uppercase fs_servicio reset_styles_m_top_20 " style="margin-top: -5px; margin-left: -5px;">DORADO</h5>
+                                </div>
+                                <div class="">
+                                    
+                                    
+                                    <div class="text-left font_size_09 cursor_pointer color_blue" style="padding-right: 12px; margin-left: -5px; margin-top: -5px;"
+                                        data-paradas="Lima-Terminal Plaza Norte, Chimbote-Terminal Chimbador" data-target="btnVerAsientos5" onclick="mostrarParadas(this)">
+                                        2 Paradas intermedias
+                                        
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12 col-xs-12" style="padding-top: 10px; padding-bottom: 10px; margin-left: -8px; display: none;">
+                                <div class="col-md-12 col-xs-12 p-l-20 p-top-20 reset_styles">
+                                    
+
+                                    <button  type="button" class="btn btn-primary btn_verAsiento" style="padding: 5px !important;"
+                                        id="btnVerAsientos5" onclick="validarHorario(this)"
+                                        data-id="5" data-puntos1="0" data-puntos2="0"
+                                        data-viaje="6185304" data-bus="0710" data-retorno="False" data-precio1="95" data-precio2="95"
+                                        data-serv1="DORADO" data-s1='23' data-serv2="DORADO" data-s2='23' data-escala='Lima-Terminal Plaza Norte, Chimbote-Terminal Chimbador'
+                                        data-p_min1="95.00" data-p_min2="95.00" data-p_max1="105.00" data-p_max2="105.00"
+                                        data-target="#bus5">
+                                        Ver asientos
+                                    </button>
+                                    <div id="btnProgress5" class="progress btnProgress btn_verAsiento" style="display: none; margin: 0 !important; /*margin-right: 5px !important; */">
+                                        <div id="txtProgress5" class="progress-bar progress-bar-striped progress-bar-danger active" role="progressbar"
+                                            aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
+                                            Ver asientos
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-xs-7 p-top-10 p-bottom-20 reset_styles">
+                            <div class="row">
+                                <div class="col-md-4 cursor_pointer" data-target="btnVerAsientos5" onclick="verCroquis(this)">
+                                    <h5 class="m-top-10 reset_styles font_size_12" style="color: green">PISO 1 - 
+                                                                
+                                        
+
+                                        <b class="m-top-10" style="cursor: pointer;" onclick="$('#servicios15').click();">
+                                            DORADO
+                                                                   
+                                        </b>
+
+
+                                        
+                                        
+                                    </h5>
+
+                                    <font class="p-l-5 font_size_09 text_float_left">
+                                        <font class="" style="padding-right: 8px; margin-left: -5.5px;">
+                                            Desde <b>S/ 95</b>
+                                            <b class="text_color_red" hidden>ó 0 ptos</b>
+                                        </font>
+                                    </font>
+                                    <h5 class="p-top-10 reset_styles libres" style="color: black; font-weight: bolder">24 libres</h5>
+                                </div>
+
+                                <div class="col-md-8 display_blocks_none">
+                                    
+
+                                    
+
+                                    
+                                    <div class="info-servicios">
+                                        
+                                        <img onclick="$('#servicios15').click();" src="https://www.linea.pe/img_prestaciones/nuevos/asientos-160.png" title="Asientos 160°" alt="Asientos160" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios15').click();" src="https://www.linea.pe/img_prestaciones/nuevos/wifi.png" title="WiFi" alt="WiFi" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios15').click();" src="https://www.linea.pe/img_prestaciones/nuevos/aire-acondicionado.png" title="Aire Acondicionado" alt="Aireacondicionado" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios15').click();" src="https://www.linea.pe/img_prestaciones/nuevos/peliculas.png" title="Streaming" alt="Películas" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios15').click();" src="https://linea.pe/assets/images/circulo-blue.png" class="circulo-blue" title="Otros" style="height: 30px; margin-left: -196px; margin-top: 85px; position: absolute;" />
+                                        <p class="cant" style="position: absolute; margin-left: 165px; margin-top: 5px; color: white; font-weight: bold;" title="Otros" onclick="$('#servicios15').click();">+3</p>
+                                        
+                                    </div>
+                                    <div class="p-l-15 ">
+                                        
+                                        <font id="servicios15" class="info-servicios" data-id="5" data-servicios='[{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/asientos-160.png", "nombre":"Asientos 160°","etiqueta":"Asientos160"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/wifi.png", "nombre":"WiFi","etiqueta":"WiFi"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/aire-acondicionado.png", "nombre":"Aire Acondicionado","etiqueta":"Aireacondicionado"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/peliculas.png", "nombre":"Streaming","etiqueta":"Películas"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/servicios_higienicos.png", "nombre":"Servicios Higiénicos","etiqueta":"ServiciosHigiénicos"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/cargador-electrico.png", "nombre":"Cargador eléctrico","etiqueta":"Cargadoreléctrico"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/botiquin.png", "nombre":"Botiquín","etiqueta":"Botiquín"}]' onclick="mostrarServicio('', 'DORADO', 'servicios15')">
+                                            <!-- Infórmese aquí sobre las prestaciones del servicio -->
+                                        </font>
+                                        
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+
+                        
+                        <div class="col-md-3 col-xs-12 p-top-10 p-bottom-20 reset_styles font_size_09">
+                            <div class="col-md-12 col-xs-6 p-top-10 reset_styles display_blocks_none">
+                                <p class="text_color_red">Embarque:</p>
+                                Av. Paseo de La República 941- La Victoria
+                            </div>
+                            <div class="col-md-12 col-xs-6 p-top-10 reset_styles display_blocks_none">
+                                <p class="text_color_red">Desembarque:</p>
+                                Av. America Sur Nro 2857
+                            </div>
+
+                            <div class="col-md-12 col-xs-12 p-top-10 display_inline_block" style="margin-left: -5px; margin-top: -5px;">
+                                <span class="text_color_red">Embarque:</span>
+                                Av. Paseo de La República 941- La Victoria
+                                <br />
+                                <span class="text_color_red">Desembarque:</span>
+                                Av. America Sur Nro 2857
+                            </div>
+                        </div>
+
+                        
+                    </div>
+                </div>
+                <div id="bus5" class="panel-collapse collapse m-top-10">
+                </div>
+                
+                <div id="pnlItinerario6" class="row border_blocks itinerarios">
+                    <div class="panel-heading">
+                        <!-- Detalles generales del bus -->
+                        <div class="col-md-3 col-xs-5">
+                            <div class="col-md-12 col-xs-12 p-l-20 p-top-20 reset_styles">
+                                <div class="cursor_pointer" data-target="btnVerAsientos6" onclick="verCroquis(this)">
+                                    
+                                    <h2 class="text-uppercase font_size_2 reset_styles_m_top_20 text_color_red " style="margin-top: -5px; margin-left: -5px;">10:30 pm</h2>
+                                    <h5 class="text-uppercase fs_servicio reset_styles_m_top_20 " style="margin-top: -5px; margin-left: -5px;">VIP/ESPECIAL</h5>
+                                </div>
+                                <div class="">
+                                    
+                                    
+                                    <div class="text-left font_size_09  color_blue" style="padding-right: 12px; margin-left: -5px; margin-top: -5px;"
+                                        data-paradas="" data-target="btnVerAsientos6" onclick="">
+                                        Sin paradas intermedias
+                                        
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12 col-xs-12" style="padding-top: 10px; padding-bottom: 10px; margin-left: -8px; display: none;">
+                                <div class="col-md-12 col-xs-12 p-l-20 p-top-20 reset_styles">
+                                    
+
+                                    <button  type="button" class="btn btn-primary btn_verAsiento" style="padding: 5px !important;"
+                                        id="btnVerAsientos6" onclick="validarHorario(this)"
+                                        data-id="6" data-puntos1="0" data-puntos2="0"
+                                        data-viaje="6185305" data-bus="0768" data-retorno="False" data-precio1="115" data-precio2="80"
+                                        data-serv1="VIP 1°PISO" data-s1='43' data-serv2="ESPECIAL 2°PISO" data-s2='44' data-escala=''
+                                        data-p_min1="115.00" data-p_min2="80.00" data-p_max1="125.00" data-p_max2="80.00"
+                                        data-target="#bus6">
+                                        Ver asientos
+                                    </button>
+                                    <div id="btnProgress6" class="progress btnProgress btn_verAsiento" style="display: none; margin: 0 !important; /*margin-right: 5px !important; */">
+                                        <div id="txtProgress6" class="progress-bar progress-bar-striped progress-bar-danger active" role="progressbar"
+                                            aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
+                                            Ver asientos
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-xs-7 p-top-10 p-bottom-20 reset_styles">
+                            <div class="row">
+                                <div class="col-md-4 cursor_pointer" data-target="btnVerAsientos6" onclick="verCroquis(this)">
+                                    <h5 class="m-top-10 reset_styles font_size_12" style="color: green">PISO 1 - 
+                                                                
+                                        
+
+                                        <b class="m-top-10" style="cursor: pointer;" onclick="$('#servicios16').click();">
+                                            VIP 1°PISO
+                                                                   
+                                        </b>
+
+
+                                        
+                                        
+                                    </h5>
+
+                                    <font class="p-l-5 font_size_09 text_float_left">
+                                        <font class="" style="padding-right: 8px; margin-left: -5.5px;">
+                                            Desde <b>S/ 115</b>
+                                            <b class="text_color_red" hidden>ó 0 ptos</b>
+                                        </font>
+                                    </font>
+                                    <h5 class="p-top-10 reset_styles libres" style="color: black; font-weight: bolder">8 libres</h5>
+                                </div>
+
+                                <div class="col-md-8 display_blocks_none">
+                                    
+
+                                    
+
+                                    
+                                    <div class="info-servicios">
+                                        
+                                        <img onclick="$('#servicios16').click();" src="https://www.linea.pe/img_prestaciones/nuevos/asientos-160.png" title="Asientos 160°" alt="Asientos160" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios16').click();" src="https://www.linea.pe/img_prestaciones/nuevos/wifi.png" title="WiFi" alt="WiFi" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios16').click();" src="https://www.linea.pe/img_prestaciones/nuevos/aire-acondicionado.png" title="Aire Acondicionado" alt="Aireacondicionado" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios16').click();" src="https://www.linea.pe/img_prestaciones/nuevos/peliculas.png" title="Streaming" alt="Películas" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios16').click();" src="https://linea.pe/assets/images/circulo-blue.png" class="circulo-blue" title="Otros" style="height: 30px; margin-left: -196px; margin-top: 85px; position: absolute;" />
+                                        <p class="cant" style="position: absolute; margin-left: 165px; margin-top: 5px; color: white; font-weight: bold;" title="Otros" onclick="$('#servicios16').click();">+3</p>
+                                        
+                                    </div>
+                                    <div class="p-l-15 ">
+                                        
+                                        <font id="servicios16" class="info-servicios" data-id="6" data-servicios='[{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/asientos-160.png", "nombre":"Asientos 160°","etiqueta":"Asientos160"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/wifi.png", "nombre":"WiFi","etiqueta":"WiFi"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/aire-acondicionado.png", "nombre":"Aire Acondicionado","etiqueta":"Aireacondicionado"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/peliculas.png", "nombre":"Streaming","etiqueta":"Películas"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/servicios_higienicos.png", "nombre":"Servicios Higiénicos","etiqueta":"ServiciosHigiénicos"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/cargador-electrico.png", "nombre":"Cargador eléctrico","etiqueta":"Cargadoreléctrico"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/botiquin.png", "nombre":"Botiquín","etiqueta":"Botiquín"}]' onclick="mostrarServicio('', 'VIP 1°PISO', 'servicios16')">
+                                            <!-- Infórmese aquí sobre las prestaciones del servicio -->
+                                        </font>
+                                        
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <br class="cant-br" style="" />
+                            <hr style="margin: 10px 0 0 0; width: 80%;" />
+                            <div class="row">
+                                <div class="col-md-4 m-top-10 cursor_pointer" data-target="btnVerAsientos6" onclick="verCroquis(this)">
+                                    <h5 class="m-top-10 reset_styles font_size_12" style="color: green">PISO 2 - 
+                                                               
+                                        
+                                        <b class="m-top-10">ESPECIAL 2°PISO</b>
+
+                                        
+                                        
+                                    </h5>
+
+                                    <font class="p-l-5 font_size_09 text_float_left">
+                                        <font class="" style="padding-right: 8px; margin-left: -5.5px;">
+                                            Precio Único <b>S/ 80</b>
+                                            <b class="text_color_red" hidden>ó 0 ptos</b>
+                                        </font>
+                                    </font>
+                                    <h5 class="p-top-10 reset_styles libres" style="color: black; font-weight: bolder">41 libres</h5>
+                                </div>
+                                <div class="col-md-8 m-top-10 display_blocks_none">
+                                    
+
+
+
+
+                                    
+                                    <div class="info-servicios">
+                                        
+                                        <img onclick="$('#servicios26').click();" src="https://www.linea.pe/img_prestaciones/nuevos/asiento-ergonomico.png" title="Asientos 140°" alt="AsientosErgonómicos" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios26').click();" src="https://www.linea.pe/img_prestaciones/nuevos/wifi.png" title="WiFi" alt="WiFi" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios26').click();" src="https://www.linea.pe/img_prestaciones/nuevos/aire-acondicionado.png" title="Aire Acondicionado" alt="Aireacondicionado" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios26').click();" src="https://www.linea.pe/img_prestaciones/nuevos/peliculas.png" title="Streaming" alt="Películas" style="height: 85px;" />
+                                        
+                                        <img onclick="$('#servicios16').click();" class="circulo-blue" src="https://linea.pe/assets/images/circulo-blue.png" title="Otros" style="height: 30px; margin-left: -196px; margin-top: 85px; position: absolute;" />
+                                        <p class="cant" style="position: absolute; margin-left: 165px; margin-top: 5px; color: white; font-weight: bold;" title="Otros" onclick="$('#servicios26').click();">+3</p>
+                                        
+                                    </div>
+                                    <div class="p-l-15 ">
+                                        
+                                        <font id="servicios26" class="info-servicios" data-id="6" data-servicios='[{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/asiento-ergonomico.png", "nombre":"Asientos 140°","etiqueta":"AsientosErgonómicos"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/wifi.png", "nombre":"WiFi","etiqueta":"WiFi"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/aire-acondicionado.png", "nombre":"Aire Acondicionado","etiqueta":"Aireacondicionado"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/peliculas.png", "nombre":"Streaming","etiqueta":"Películas"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/servicios_higienicos.png", "nombre":"Servicios Higiénicos","etiqueta":"ServiciosHigiénicos"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/cargador-electrico.png", "nombre":"Cargador eléctrico","etiqueta":"Cargadoreléctrico"},{"ruta":"https://www.linea.pe/img_prestaciones/nuevos/botiquin.png", "nombre":"Botiquín","etiqueta":"Botiquín"}]' onclick="mostrarServicio('', 'ESPECIAL 2°PISO', 'servicios26')">
+                                            <!-- Infórmese aquí sobre las prestaciones del servicio -->
+                                        </font>
+                                        
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+
+                        
+                        <div class="col-md-3 col-xs-12 p-top-10 p-bottom-20 reset_styles font_size_09">
+                            <div class="col-md-12 col-xs-6 p-top-10 reset_styles display_blocks_none">
+                                <p class="text_color_red">Embarque:</p>
+                                Av. Paseo de La República 941- La Victoria
+                            </div>
+                            <div class="col-md-12 col-xs-6 p-top-10 reset_styles display_blocks_none">
+                                <p class="text_color_red">Desembarque:</p>
+                                Av. America Sur Nro 2857
+                            </div>
+
+                            <div class="col-md-12 col-xs-12 p-top-10 display_inline_block" style="margin-left: -5px; margin-top: -5px;">
+                                <span class="text_color_red">Embarque:</span>
+                                Av. Paseo de La República 941- La Victoria
+                                <br />
+                                <span class="text_color_red">Desembarque:</span>
+                                Av. America Sur Nro 2857
+                            </div>
+                        </div>
+
+                        
+                    </div>
+                </div>
+                <div id="bus6" class="panel-collapse collapse m-top-10">
+                </div>
+                
+                <!--  Itinerarios -->
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Servicios -->
+<div class="modal fade" id="modalServicio" tabindex="-1" role="dialog" aria-labelledby="modalTitulo">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
+                <h4 class="modal-title" id="modalTitulo"></h4>
+            </div>
+            <div class="modal-body" id="modalServicioBody">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Alerta -->
+<div class="modal fade" id="modalAlerta" tabindex="-1" role="dialog" data-backdrop="true" aria-labelledby="modalAlertaTitulo">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
+                <h4 class="modal-title" id="modalAlertaTitulo">
+                    
+                        Mensaje
+                </h4>
+            </div>
+            <div class="modal-body" id="modalAlertaBody">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" style="font-size: 13px;">Entendido</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Disponibilidad Retorno -->
+<div class="modal fade" id="modalDisponibilidad" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="modalDisponibilidadTitulo">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                
+                <h4 class="modal-title" id="modalDisponibilidadTitulo">Aviso</h4>
+            </div>
+            <div class="modal-body" id="modalDisponibilidadBody">
+                <p>Estimado usuario,</p>
+                <p>Encontramos los asientos que seleccionó en el mismo servicio y horario para la fecha de retorno.</p>
+                <p><b>¿Desea que lo seleccionemos por usted?</b></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-dismiss="modal" id="btnConfirm" data-value="1" style="font-size: 13px;">Si</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" id="btnCancel" data-value="0" style="font-size: 13px;">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Cerrar Crokies -->
+<div class="modal fade" id="modalEliminarAsientos" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="modalEliminarAsientosTitulo">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                
+                <h4 class="modal-title" id="modalEliminarAsientosTitulo">Aviso</h4>
+            </div>
+            <div class="modal-body" id="modalEliminarAsientosBody">
+                
+                      Estimado Cliente,
+                      <br>
+                Al cerrar el croquis se eliminarán los asientos separados.
+                      <br>
+                <b>¿Seguro desea cerrar?</b>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-dismiss="modal" id="btnConfirmElimAsiento" data-value="1" style="font-size: 13px;">Si</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" id="btnCancelElimAsiento" data-value="0" style="font-size: 13px;">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Fin Modal Cerrar Crokies -->
+
+<!-- Modal Mensaje -->
+<div class="modal fade" id="modalMensaje" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="modalMensajeTitulo">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                
+                <h4 class="modal-title" id="modalMensajeTitulo">Mensaje</h4>
+            </div>
+            <div class="modal-body" id="modalMensajeBody">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Fin Modal Mensaje -->
+<script>
+    //$('[data-toggle="tooltip"]').tooltip();
+
+    $(window).on("scroll", function () {
+        var panel_pisos = $(".panel_pisos_ec");
+        if (panel_pisos.length > 0) {
+            var scroll_pnPisos = panel_pisos.offset().top;
+            if ($(window).scrollTop() > scroll_pnPisos) {
+                var num_calc = (window.innerWidth <= 425) ? 12
+                    : (window.innerWidth <= 500) ? 16
+                        : (window.innerWidth <= 768) ? 19
+                            : (window.innerWidth <= 800) ? 14
+                                : (window.innerWidth <= 1024) ? 20
+                                    : (window.innerWidth <= 1200) ? 24
+                                        : (window.innerWidth <= 1366) ? 12
+                                            : (window.innerWidth <= 1440) ? 9 : 12
+                    ;
+                var padding = window.innerWidth / num_calc;
+                $(".div_select_precios").css({
+                    "position": "fixed",
+                    "top": "5px",
+                    "z-index": "9",
+                    "background": "white",
+                    "width": "100%",
+                    "left": "0px",
+                    //"padding-bottom": "10px",
+                    "padding-left": padding,//"30px",
+                });
+
+                var margin = (window.innerWidth >= 1366) ? -65
+                    : (window.innerWidth >= 1200) ? -60
+                        : (window.innerWidth >= 1024) ? -40
+                            : (window.innerWidth >= 900) ? -30
+                                : (window.innerWidth >= 768) ? -20
+                                    : (window.innerWidth >= 700) ? -45
+                                        : (window.innerWidth >= 600) ? -30
+                                            : (window.innerWidth >= 500) ? -20
+                                                : (window.innerWidth > 400) ? -5
+                                                    : 0
+                    ;
+                $("#tab_precios_piso1, #tab_precios_piso2").css({
+                    "margin-left": margin //((window.innerWidth > 768) ? "-65px" : "0px")
+                });
+
+                $(".btnSiguienteP").css({
+                    "position": "fixed",
+                    "top": "-15px",
+                    "z-index": "10",
+                    "background": "white",
+                    "width": "auto",
+                    "right": "0", // "15px"
+                    "padding-right": (padding + 20),
+                });
+
+                /*$("#btnSiguiente, #btnProgressSig").css({
+                    "width": "100%",
+                });*/
+
+                $(".btnCerrarP").css({
+                    "position": "fixed",
+                    "top": "-15px",
+                    "z-index": "10",
+                    "background": "white",
+                    "width": "auto",
+                    //"right": "0", //180px
+                    "right": (padding + 200),
+                });
+            } else {
+                $(".div_select_precios").css({
+                    "position": "",
+                    "top": "",
+                    "z-index": "",
+                    "background": "",
+                    "width": "",
+                    "left": "",
+                    "padding-bottom": "",
+                    "padding-left": "",
+                });
+
+                $("#tab_precios_piso1, #tab_precios_piso2").css({
+                    "margin-left": ""
+                });
+
+                $(".btnSiguienteP, .btnCerrarP").css({
+                    "position": "",
+                    "top": "",
+                    "z-index": "1",
+                    "background": "",
+                    "width": "",
+                    "right": "",
+                    "padding-right": ""
+                });
+
+                /*$("#btnSiguiente, #btnProgressSig").css({
+                    "width": "85%",
+                });*/
+            }
+        }
+    });
+
+    var expandir = true;
+    function verCroquis(object) {
+        var idBtn = $(object).data().target;
+        var btnCerrarCroquis = $(".btnCerrar");
+        var split_btn = idBtn.split('btnVerAsientos');
+        if (split_btn.length > 1) {
+            if ($("#bus" + split_btn[1]).css("display") == "block") {
+                expandir = false;
+            }
+        }
+        if (expandir || btnCerrarCroquis.length == 0) {
+            var boton = $("#" + idBtn);
+            validarHorario(boton[0]);
+            expandir = false;
+            $("#imgModal").show();
+        } else {
+            $("#btnCerrar").click();
+            expandir = true;
+        }
+    }
+
+    function verPuntosED(object) {
+        var idBtn = $(object).data().target;
+        var btnCerrarCroquis = $(".btnCerrar")
+        if (expandir || btnCerrarCroquis.length == 0) {
+            var boton = $("#" + idBtn);
+            validarHorario(boton[0]);
+            expandir = false;
+            $("#imgModal").show();
+        } else {
+            $("#btnCerrar").click();
+            expandir = true;
+        }
+    }
+
+    function diferenciarPreciosPiso(object) {
+        var data_as = $(object).data();
+        var btn_bus = data_as.target;
+        var div_precios = data_as.parent;
+        $("#" + div_precios + " >" + ".precio_asiento").removeClass("color_red bold borderB-active m-bottom-10");
+        $("#" + div_precios + " >" + ".precio_asiento").addClass("color_gray");
+
+        $("." + btn_bus).children().css("opacity", "unset");
+        $("." + btn_bus).children().attr("disabled", false);
+
+        if (data_as.precio != "0") {
+            var id = "." + btn_bus + " >." + data_as.precio;
+            var item_as = $(id);
+            if (item_as.length > 0) {
+                $("." + btn_bus).children().css("opacity", "0.3");
+                $("." + btn_bus).children().attr("disabled", true);
+
+                $(id).css("opacity", "unset");
+                $(id).attr("disabled", false);
+            }
+        }
+
+        $(object).addClass("color_red bold borderB-active m-bottom-10");
+        $(object).removeClass("color_gray");
+    }
+
+    function mostrar_tabs_precios(piso) {
+        var num_pisos = $(".tab_precios_piso");
+        if (num_pisos.length > 1) {
+            $(".tab_precios_piso").parent().hide();
+            $("#tab_precios_piso" + piso).parent().show();
+            var valor = $(".panel_pisos_ec").offset().top;
+            valor = 330;
+            $("html,body").animate({ scrollTop: valor }, { duration: "slow" });
+        }
+    }
+
+    function mostrarParadas(object) {
+        var paradas = $(object).data().paradas;
+        var paradas_array = paradas.split(",");
+        if (paradas_array.length > 0) {
+            var html = "";
+            for (var i = 0; i < paradas_array.length; i++) {
+                html += '<p class="font_size_16p">- En ' + paradas_array[i] + '</p>'
+            }
+            $("#modalMensajeTitulo").html("Paradas intermedias");
+            $("#modalMensajeBody").html(html);
+            $("#modalMensaje").modal("show");
+        } else {
+            $("#modalMensajeTitulo").html("Mensaje");
+        }
+    }
+
+    function mostrarLoadPage(mostrar) {
+        if (mostrar == "1") {
+            $("#imgModal").show()
+        } else {
+            $("#imgModal").hide()
+        }
+    }
+
+    function obtenerPrecioServicio(id, tipo) {
+        var respuesta = "";
+        //var pisos = $(".panel_pisos_ec >div >ul> >li");
+        var pisos = $(".div_select_precios >ul >li");
+        for (var i = 0; i < pisos.length; i++) {
+            if (pisos[i].className == "active") {
+                switch (tipo) {
+                    case 1: //precio
+                        if (i == 0) {
+                            respuesta = $("#btnVerAsientos" + id).data().precio1;
+                        } else {
+                            respuesta = $("#btnVerAsientos" + id).data().precio2;
+                        }
+                        break;
+
+                    case 2://servicio
+                        if (i == 0) {
+                            respuesta = $("#btnVerAsientos" + id).data().serv1;
+                        } else {
+                            respuesta = $("#btnVerAsientos" + id).data().serv2;
+                        }
+                        break;
+
+                    case 3: //puntos
+                        if (i == 0) {
+                            respuesta = $("#btnVerAsientos" + id).data().puntos1;
+                        } else {
+                            respuesta = $("#btnVerAsientos" + id).data().puntos2;
+                        }
+                        break;
+                }
+            }
+        }
+        return respuesta;
+    }
+</script>
+
