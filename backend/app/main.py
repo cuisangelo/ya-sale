@@ -12,8 +12,10 @@ from fastapi.staticfiles import StaticFiles
 
 from app.api.guards import RateLimiter
 from app.api.routes import router
+from app.api.travelers import router as travelers_router
 from app.compare.service import CompareService
 from app.config import Settings, load_settings
+from app.connectors.atomicmemory import AtomicMemoryPreferenceStore, atomicmemory_client
 from app.connectors.cruzdelsur import CruzDelSurSource
 from app.connectors.extractor import LegExtractor
 from app.connectors.geocoding import GoogleGeocoder
@@ -28,10 +30,13 @@ from app.mcp_server import build_mcp
 from app.places.locator import PlaceLocator
 from app.places.repository import PlaceRepository
 from app.trips.planner import MAX_SEARCHES_PER_TRIP, TripPlanner
+from app.travelers.domain import PreferenceStore
 from app.trips.repository import RouteRepository
 from app.usage.repository import UsageRepository
 
 TRIPS_PER_MINUTE_PER_FINGERPRINT = 6
+# Saved preferences only add advice; the trip page must never wait long on them.
+PREFERENCES_TIMEOUT_S = 3.0
 WEB_DIR = Path(__file__).resolve().parent.parent / "web"
 
 
@@ -42,6 +47,7 @@ class Services:
     usage: UsageRepository
     limiter: RateLimiter
     compare: Any
+    preferences: PreferenceStore | None = None
 
 
 def build_services(settings: Settings, pool) -> Services:
@@ -65,7 +71,16 @@ def build_services(settings: Settings, pool) -> Services:
         usage=UsageRepository(pool, settings.team_fingerprints),
         limiter=RateLimiter(pool, per_minute=TRIPS_PER_MINUTE_PER_FINGERPRINT),
         compare=CompareService(client, planner),
+        preferences=_preference_store(settings),
     )
+
+
+def _preference_store(settings: Settings) -> PreferenceStore | None:
+    memory = settings.traveler_memory
+    if memory is None:
+        return None
+    client = atomicmemory_client(memory.api_url, memory.api_key, PREFERENCES_TIMEOUT_S)
+    return AtomicMemoryPreferenceStore(client, PREFERENCES_TIMEOUT_S)
 
 
 class McpWithoutTrailingSlash:
@@ -106,6 +121,7 @@ def create_app(settings: Settings, web_dir: Path | None = None) -> FastAPI:
         return {"ok": True}
 
     app.include_router(router)
+    app.include_router(travelers_router)
     # Mounted last so /api and /mcp keep priority over the static export.
     if web_dir is not None:
         app.mount("/", StaticFiles(directory=web_dir, html=True), name="web")

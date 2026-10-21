@@ -163,6 +163,19 @@ export interface CorrectionInput {
   display_name?: string | null;
 }
 
+export type Schedule = "day" | "night";
+
+export interface TravelerPreferences {
+  schedule: Schedule | null;
+  cheapest: boolean;
+}
+
+// enabled is false when the server runs without saved preferences; the trip works the same.
+export interface PreferencesState {
+  enabled: boolean;
+  preferences: TravelerPreferences | null;
+}
+
 export class ApiError extends Error {
   readonly status: number;
 
@@ -436,11 +449,33 @@ export function fetchRecentTrips(): Promise<RecentTrip[]> {
   return getJson("/api/trips/recent", parseRecentTrips);
 }
 
-async function postJson<T>(path: string, body: unknown, parse: (value: unknown) => T): Promise<T> {
+export function fetchPreferences(): Promise<PreferencesState> {
+  return getJson("/api/travelers/me/preferences", parsePreferencesState);
+}
+
+// Sending the request is the traveler's consent: the form only enables it once they tick the box.
+export function savePreferences(preferences: TravelerPreferences): Promise<PreferencesState> {
+  return sendJson("PUT", "/api/travelers/me/preferences", { ...preferences, consent: true }, parsePreferencesState);
+}
+
+export function clearPreferences(): Promise<PreferencesState> {
+  return sendJson("DELETE", "/api/travelers/me/preferences", undefined, parsePreferencesState);
+}
+
+function postJson<T>(path: string, body: unknown, parse: (value: unknown) => T): Promise<T> {
+  return sendJson("POST", path, body, parse);
+}
+
+async function sendJson<T>(
+  method: "POST" | "PUT" | "DELETE",
+  path: string,
+  body: unknown,
+  parse: (value: unknown) => T,
+): Promise<T> {
   const response = await fetch(path, {
-    method: "POST",
+    method,
     headers: { "content-type": "application/json", accept: "application/json" },
-    body: JSON.stringify(body),
+    body: body === undefined ? undefined : JSON.stringify(body),
   });
   if (!response.ok) throw await toApiError(response);
   return parse(await response.json());
@@ -617,4 +652,15 @@ export function parseRecentTrips(value: unknown): RecentTrip[] {
       lng: reqNumber(record, "lng"),
     };
   });
+}
+
+export function parsePreferencesState(value: unknown): PreferencesState {
+  const record = asRecord(value, "preferences state");
+  if (typeof record.enabled !== "boolean") throw new Error("Invalid enabled");
+  if (record.preferences == null) return { enabled: record.enabled, preferences: null };
+  const preferences = asRecord(record.preferences, "preferences");
+  const schedule = preferences.schedule;
+  if (schedule !== null && schedule !== "day" && schedule !== "night") throw new Error(`Invalid schedule: ${String(schedule)}`);
+  if (typeof preferences.cheapest !== "boolean") throw new Error("Invalid cheapest");
+  return { enabled: record.enabled, preferences: { schedule, cheapest: preferences.cheapest } };
 }

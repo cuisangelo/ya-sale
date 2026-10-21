@@ -5,6 +5,18 @@ Horas en hora de Lima. Las reglas para escribir acá están en [AGENTS.md](AGENT
 
 Tipos: **Cambio** · **Decisión** · **Prueba** · **Bloqueo** · **Deploy** · **Entrega**.
 
+## 2026-10-20
+
+### 23:42 · Cambio · Preferencias de viaje opcionales con consentimiento
+
+Se agrega guardar, recuperar, corregir y borrar horario y precio preferidos mediante Atomic Memory. Los consejos seleccionan salidas publicadas sin cambiar el planificador. Identidad anónima firmada por navegador, claves solo en servidor y límite de tres segundos. Sin configuración el flujo actual sigue disponible. Las confirmaciones malformadas no se presentan como éxito; se conserva la identidad consentida para reintentar.
+
+### 23:42 · Prueba · Backend, frontend y aplicación real
+
+`pytest -q`: 208 pruebas correctas contra PostgreSQL desechable. `vitest run`: 64 pruebas correctas. `tsc --noEmit` y `next build`: correctos. Se ejecutaron dentro de un contenedor local con las dependencias fijadas. El primer intento de instalación usó pnpm 12 y falló por el workspace; se corrigió usando pnpm 10.29.3 sin cambiar el lockfile.
+
+Se verificó en el navegador guardar noche y precio bajo, recargar y recuperar, corregir a día, borrar y recargar sin preferencias. Captura y video en `docs/pr-demos/traveler-preferences`. La demo usa salidas sintéticas y un proveedor HTTP local, no datos ni credenciales de producción. La implementación se revisó y verificó de forma independiente.
+
 ## 2026-10-18
 
 ### 01:24 · Bloqueo · GH Bus no responde desde Lambda y sale de producción

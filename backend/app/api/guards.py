@@ -14,6 +14,14 @@ def fingerprint(request: Request, salt: str) -> str:
     return hashlib.sha256(f"{salt}|{ip}|{agent}".encode()).hexdigest()[:16]
 
 
+def same_origin(request: Request, public_origin: str) -> bool:
+    """CSRF guard for cookie-authenticated writes: only the site's own pages may send them."""
+    if request.headers.get("origin") != public_origin:
+        return False
+    # Browsers that send Fetch Metadata also say so directly; older ones are covered by Origin.
+    return request.headers.get("sec-fetch-site", "same-origin") == "same-origin"
+
+
 class RateLimiter:
     """Sliding window kept in Postgres, so it holds however many instances serve the API."""
 
