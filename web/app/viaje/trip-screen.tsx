@@ -8,6 +8,7 @@ import { HopCard } from "../../components/HopCard";
 import { LiveIndicator } from "../../components/LiveIndicator";
 import { Logo } from "../../components/Logo";
 import { TripMap } from "../../components/TripMap";
+import { TravelerPreferences } from "../../components/TravelerPreferences";
 import { TripSkeleton } from "../../components/TripSkeleton";
 import {
   confirmLeg,
@@ -255,6 +256,8 @@ export function TripScreen() {
             ) : null}
           </section>
         ) : null}
+
+        {state.hops.length > 0 ? <TravelerPreferences trip={state} selectedModes={selectedModes} /> : null}
 
         {state.noRouteMessage ? <p className="banner">{state.noRouteMessage}</p> : null}
         {streamError ? <p className="banner">{streamError}</p> : null}
